@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Церковь "Невеста Агнца"</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #FDFBF8;
+            color: #3a3a3a;
+        }
+        h1, h2, h3 {
+            font-family: 'Cormorant Garamond', serif;
+        }
+        .hero-section {
+            background-image: url('https://placehold.co/1920x1080/EAE5E1/3a3a3a?text=Невеста+Агнца');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+        }
+        .scroll-reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .nav-link {
+            position: relative;
+            transition: color 0.3s;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -4px;
+            left: 50%;
+            background-color: #C0A080;
+            transition: width 0.4s, left 0.4s;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+            left: 0;
+        }
+        .btn-primary {
+            background-color: #A67B5B;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #8c6649;
+            transform: translateY(-2px);
+        }
+        .parallax-section {
+            background-image: url('https://placehold.co/1920x800/DCD5CC/FFFFFF?text=Слово+Божье');
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        /* Стили для анимации карты */
+        .map-container iframe {
+            transition: transform 0.4s ease-in-out;
+        }
+        .map-container:hover iframe {
+            transform: scale(1.025);
+        }
+        /* Стиль для градиентной пелены на фото */
+        .sermon-overlay {
+            background-image: radial-gradient(ellipse 70% 70%, rgba(220, 213, 204, 0.0), rgba(220, 213, 204, 0.6));
+        }
+    </style>
+</head>
+<body class="leading-normal tracking-normal">
+
+    <!-- Навигация -->
+    <nav id="navbar" class="fixed w-full z-30 top-0 text-white transition-all duration-300">
+        <div class="w-full container mx-auto flex flex-wrap items-center justify-between mt-0 py-4 px-6">
+            <div class="pl-4 flex items-center">
+                <a class="text-white no-underline hover:no-underline font-bold" style="font-family: 'Cormorant Garamond', serif; font-size: clamp(1.75rem, 1.5rem + 1vw, 2.25rem);" href="#">
+                    Невеста Агнца
+                </a>
+            </div>
+            <div class="block lg:hidden pr-4">
+                <button id="nav-toggle" class="flex items-center p-1 text-white hover:text-gray-200 focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+                    <svg class="fill-current h-6 w-6" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Меню</title><path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"/></svg>
+                </button>
+            </div>
+            <div class="w-full lg:flex lg:items-center lg:w-auto max-h-0 lg:max-h-none overflow-hidden lg:overflow-visible opacity-0 lg:opacity-100 lg:mt-0 z-20 transition-all ease-in-out duration-300" id="nav-content">
+                <ul class="list-reset lg:flex justify-end flex-1 items-center bg-[#4f4f4f]/90 lg:bg-transparent p-4 lg:p-0 rounded-lg lg:rounded-none">
+                    <li class="mr-3"><a class="nav-link inline-block py-2 px-4 text-white no-underline" href="#about">О нас</a></li>
+                    <li class="mr-3"><a class="nav-link inline-block py-2 px-4 text-white no-underline" href="#beliefs">Наша вера</a></li>
+                    <li class="mr-3"><a class="nav-link inline-block py-2 px-4 text-white no-underline" href="#sermons">Проповеди</a></li>
+                    <li class="mr-3"><a class="nav-link inline-block py-2 px-4 text-white no-underline" href="#events">События</a></li>
+                    <li class="mr-3"><a class="nav-link inline-block py-2 px-4 text-white no-underline" href="#contact">Контакты</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero секция -->
+    <div class="hero-section h-screen flex items-start justify-center text-center p-24">
+        <div id="hero-content-box" class="bg-black bg-opacity-40 p-8 rounded-lg transition-opacity duration-300">
+            <h1 class="text-white font-bold leading-tight mb-4 whitespace-nowrap" style="font-size: clamp(3rem, 2rem + 3vw, 4.5rem);">Добро пожаловать</h1>
+            <p class="text-white text-xl md:text-2xl font-light">в место, где обитают вера, <span class="whitespace-nowrap">надежда и любовь</span></p>
+        </div>
+    </div>
+
+    <!-- Основной контент -->
+    <div class="container mx-auto px-6 py-20">
+
+        <!-- О нас -->
+        <section id="about" class="scroll-reveal">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl lg:text-5xl font-semibold mb-4">Наша Миссия</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Мы существуем, чтобы славить Бога, делиться Евангелием Иисуса Христа и взращивать учеников, которые любят Бога и служат людям.</p>
+            </div>
+            <div class="flex flex-wrap items-center -mx-4">
+                <div class="w-full md:w-1/2 px-4 mb-8 md:mb-0">
+                    <img src="https://placehold.co/600x400/EAE5E1/3a3a3a?text=Наша+община" alt="Наша община" class="rounded-lg shadow-xl w-full h-auto">
+                </div>
+                <div class="w-full md:w-1/2 px-4">
+                    <h3 class="text-3xl font-semibold mb-4">Кто мы?</h3>
+                    <p class="mb-4 text-gray-700">Церковь "Невеста Агнца" — это семья верующих, объединенных общей целью познания Бога и преображения в образ Христа. Мы стремимся быть светом в нашем городе, неся весть о спасении и практическую помощь нуждающимся.</p>
+                    <p class="text-gray-700">Каждое воскресенье мы собираемся вместе для поклонения, изучения Библии и общения. Мы верим, что церковь — это не здание, а люди, живущие своей верой каждый день.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Наша вера -->
+        <section id="beliefs" class="py-20 scroll-reveal">
+            <div class="text-center mb-16">
+                 <h2 class="text-4xl lg:text-5xl font-semibold mb-4">Основы нашей веры</h2>
+                 <p class="text-lg text-gray-600 max-w-3xl mx-auto">Наши убеждения основаны на Слове Божьем, Библии.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-12">
+                <div class="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <i data-feather="book-open" class="mx-auto w-16 h-16 text-[#A67B5B] mb-4"></i>
+                    <h3 class="text-2xl font-semibold mb-2">Священное Писание</h3>
+                    <p class="text-gray-600">Мы верим, что Библия — это Богодухновенное и непогрешимое Слово Божье.</p>
+                </div>
+                 <div class="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <i data-feather="heart" class="mx-auto w-16 h-16 text-[#A67B5B] mb-4"></i>
+                    <h3 class="text-2xl font-semibold mb-2">Бог есть любовь</h3>
+                    <p class="text-gray-600">Мы верим в Единого Бога, существующего в трех лицах: Отец, Сын и Святой Дух.</p>
+                </div>
+                 <div class="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <i data-feather="users" class="mx-auto w-16 h-16 text-[#A67B5B] mb-4"></i>
+                    <h3 class="text-2xl font-semibold mb-2">Спасение и Церковь</h3>
+                    <p class="text-gray-600">Мы верим, что спасение даруется по благодати через веру в Иисуса Христа, и что Церковь — Его тело на земле.</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Параллакс секция -->
+    <div class="parallax-section h-96 flex items-center justify-center text-center text-white my-20 scroll-reveal">
+        <div class="bg-black bg-opacity-50 p-10 rounded-lg">
+            <h2 class="text-4xl md:text-5xl font-bold">"Ибо так возлюбил Бог мир..."</h2>
+            <p class="text-xl mt-2">(Иоанна 3:16)</p>
+        </div>
+    </div>
+    
+    <div class="container mx-auto px-6 py-20">
+
+        <!-- Проповеди -->
+        <section id="sermons" class="scroll-reveal">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl lg:text-5xl font-semibold mb-4">Последние проповеди</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Послушайте учение, которое вдохновляет и изменяет жизнь.</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Пример проповеди 1 -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
+                    <div class="relative">
+                        <img src="https://i.ibb.co/KchG6CKz/image.jpg/600x400/DCD5CC/3a3a3a?text=Фото 1" alt="Обложка проповеди" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 sermon-overlay"></div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-semibold mb-2">Я устал, я ухожу!</h3>
+                        <p class="text-gray-500 mb-4">Пастор Викторов Евгений | 12.10.2025</p>
+                        <a href="#" class="btn-primary text-white font-bold py-2 px-4 rounded-full inline-block">Слушать</a>
+                    </div>
+                </div>
+                 <!-- Пример проповеди 2 -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
+                    <div class="relative">
+                        <img src="https://i.ibb.co/rfm55Z7B/image.jpg/600x400/DCD5CC/3a3a3a?text=Фото 2" alt="Обложка проповеди" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 sermon-overlay"></div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-semibold mb-2">Руки вверх!</h3>
+                        <p class="text-gray-500 mb-4">Константин Фиошкин | 05.10.2025</p>
+                        <a href="#" class="btn-primary text-white font-bold py-2 px-4 rounded-full inline-block">Слушать</a>
+                    </div>
+                </div>
+                 <!-- Пример проповеди 3 -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
+                    <div class="relative">
+                        <img src="https://i.ibb.co/ymCBCBYt/image.jpg/600x400/DCD5CC/3a3a3a?text=Фото 3" alt="Обложка проповеди" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 sermon-overlay"></div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-semibold mb-2">Куда я иду?</h3>
+                        <p class="text-gray-500 mb-4">Владимир Фиошкин | 28.09.2025</p>
+                        <a href="#" class="btn-primary text-white font-bold py-2 px-4 rounded-full inline-block">Слушать</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- События -->
+        <section id="events" class="py-20 scroll-reveal">
+             <div class="text-center mb-16">
+                <h2 class="text-4xl lg:text-5xl font-semibold mb-4">Предстоящие события</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Присоединяйтесь к нам на наших мероприятиях.</p>
+            </div>
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white p-6 rounded-lg shadow-md mb-6 flex items-center space-x-6">
+                    <div class="text-center border-r border-gray-200 pr-6">
+                        <p class="text-4xl font-bold text-[#A67B5B]">14</p>
+                        <p class="text-md text-gray-500">Окт</p>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-semibold">Молодёжная домашняя группа</h3>
+                        <p class="text-gray-600"><i data-feather="clock" class="inline-block w-4 h-4 mr-1"></i> 18:00 - 20:00 | <i data-feather="map-pin" class="inline-block w-4 h-4 mr-1"></i> Кухня</p>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md mb-6 flex items-center space-x-6">
+                    <div class="text-center border-r border-gray-200 pr-6">
+                        <p class="text-4xl font-bold text-[#A67B5B]">16</p>
+                        <p class="text-md text-gray-500">Окт</p>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-semibold">Альфа-курс. Тема 2: Кто такой Иисус Христос?</h3>
+                        <p class="text-gray-600"><i data-feather="clock" class="inline-block w-4 h-4 mr-1"></i> 18:05 - 19:30 | <i data-feather="map-pin" class="inline-block w-4 h-4 mr-1"></i> Главный зал</p>
+                    </div>
+                </div>
+                 <div class="bg-white p-6 rounded-lg shadow-md flex items-center space-x-6">
+                    <div class="text-center border-r border-gray-200 pr-6">
+                        <p class="text-4xl font-bold text-[#A67B5B]">17</p>
+                        <p class="text-md text-gray-500">Окт</p>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-semibold">Изучение Библии</h3>
+                        <p class="text-gray-600"><i data-feather="clock" class="inline-block w-4 h-4 mr-1"></i> 17:30 - 18:50 | <i data-feather="map-pin" class="inline-block w-4 h-4 mr-1"></i> Кухня</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Контакты -->
+        <section id="contact" class="scroll-reveal">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl lg:text-5xl font-semibold mb-4">Мы ждем вас</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Приходите на наши служения и станьте частью нашей духовной семьи.</p>
+            </div>
+            <div class="flex flex-wrap bg-white p-8 md:p-12 rounded-lg shadow-xl">
+                <div class="w-full md:w-1/2 md:pr-12 mb-8 md:mb-0">
+                    <h3 class="text-3xl font-semibold mb-4">Время служений</h3>
+                    <p class="text-xl mb-2">Воскресенье: <strong>10:00</strong></p>
+                    <p class="text-xl mb-2">Четверг (Альфа-курс): <strong>18:00</strong></p>
+                    <p class="text-xl mb-6">Пятница (молитвенное собрание): <strong>19:00</strong></p>
+                    
+                    <h3 class="text-3xl font-semibold mb-4">Адрес</h3>
+                    <p class="text-xl mb-2">ул. Социалистическая 2, Чебоксары, Чувашская Республика</p>
+                    
+                    <h3 class="text-3xl font-semibold mb-4 mt-6">Свяжитесь с нами</h3>
+                    <p class="text-xl mb-2"><i data-feather="mail" class="inline-block w-5 h-5 mr-2"></i> nevestaagntsa@mail.ru</p>
+                    <p class="text-xl"><i data-feather="phone" class="inline-block w-5 h-5 mr-2"></i> +7 (937) 386-40-64</p>
+                </div>
+                <div class="w-full md:w-1/2">
+                    <div class="map-container rounded-lg shadow-inner overflow-hidden ring-2 ring-gray-200">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1112.396273323922!2d47.17778553539433!3d56.108807889080865!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x415a47e1e544bb75%3A0x2c60426a3864b65a!2z0YPQuy4g0KHQvtGG0LjQsNC70LjRgdGC0LjRh9C10YHQutCw0Y8sIDIsINCn0LXQsdC-0LrRgdCw0YDRiywg0KfRg9Cy0LDRiNGB0LrQsNGPINCg0LXRgdC_LiwgNDI4MDM4!5e0!3m2!1sru!2sru!4v1760383196905!5m2!1sru!2sru" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="w-full h-[450px] block"></iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Футер -->
+    <footer class="bg-[#3a3a3a] text-white py-12">
+        <div class="container mx-auto text-center">
+            <p class="text-2xl mb-4" style="font-family: 'Cormorant Garamond', serif;">РОХВЕП "Невеста Агнца"</p>
+            <p>&copy; <span id="year"></span> Все права защищены.</p>
+        </div>
+    </footer>
+
+
+    <script>
+        // Иконки
+        feather.replace();
+
+        // Мобильная навигация
+        const navToggle = document.getElementById('nav-toggle');
+        const navContent = document.getElementById('nav-content');
+        const heroContentBox = document.getElementById('hero-content-box');
+        
+        function toggleMobileMenu() {
+            const isMenuOpen = navContent.classList.contains('max-h-screen');
+
+            if (isMenuOpen) {
+                // Close menu
+                navContent.classList.remove('max-h-screen');
+                navContent.classList.add('max-h-0', 'opacity-0');
+                heroContentBox.classList.remove('opacity-0');
+            } else {
+                // Open menu
+                navContent.classList.remove('max-h-0', 'opacity-0');
+                navContent.classList.add('max-h-screen');
+                heroContentBox.classList.add('opacity-0');
+            }
+        }
+
+        navToggle.addEventListener('click', toggleMobileMenu);
+
+        // Смена фона навигации при прокрутке
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-[#4f4f4f]/90', 'shadow-lg');
+            } else {
+                navbar.classList.remove('bg-[#4f4f4f]/90', 'shadow-lg');
+            }
+        });
+
+        // Плавное появление элементов при прокрутке
+        const revealElements = document.querySelectorAll('.scroll-reveal');
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        revealElements.forEach(element => {
+            revealObserver.observe(element);
+        });
+
+        // Плавная прокрутка к якорям
+        document.querySelectorAll('#navbar a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                // Если мобильное меню открыто, закрываем его
+                const isMenuOpen = navContent.classList.contains('max-h-screen');
+                if (isMenuOpen) {
+                    toggleMobileMenu();
+                }
+
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+
+                // Ссылки, для которых нужна коррекция из-за навигационной панели
+                const linksThatNeedOffset = ['#about', '#sermons', '#contact'];
+
+                if (linksThatNeedOffset.includes(targetId) && targetElement) {
+                    // Применяем смещение для проблемных ссылок
+                    const navbarHeight = document.getElementById('navbar').offsetHeight;
+                    const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                    const offsetPosition = targetPosition - navbarHeight;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                } else if (targetElement) {
+                    // Используем стандартную прокрутку для остальных
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                } else if (targetId === '#') {
+                    // Прокрутка наверх для логотипа
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+        });
+        
+        // Установка текущего года в футере
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+    </script>
+</body>
+</html>
+
