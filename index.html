@@ -19,8 +19,7 @@
             font-family: 'Cormorant Garamond', serif;
         }
         .hero-section {
-            /* Я заменил второй фон-картинку на сплошной цвет, чтобы убрать текст с размерами */
-            background-image: url('https://i.ibb.co/99Jqj0MV/image.png/1200x400/00000000/FFFFFF?text=Ваше+изображение+здесь');
+            background-image: url('https://i.ibb.co/99Jqj0MV/image.png');
             background-color: #EAE5E1; /* Основной цвет фона */
             background-size: 80% auto;
             background-position: center bottom;
@@ -79,6 +78,17 @@
         /* Стиль для градиентной пелены на фото */
         .sermon-overlay {
             background-image: radial-gradient(ellipse 70% 70%, rgba(220, 213, 204, 0.0), rgba(220, 213, 204, 0.6));
+        }
+
+        /* Медиа-запрос для мобильных устройств */
+        @media (max-width: 768px) {
+            .hero-section, .parallax-section {
+                background-attachment: scroll; /* Отключаем параллакс на мобильных */
+            }
+            .hero-section {
+                 background-size: 100% auto; /* Увеличиваем размер картинки для лучшего вида */
+                 background-position: center 90%; /* Слегка опускаем картинку */
+            }
         }
     </style>
 </head>
@@ -185,7 +195,7 @@
                 <!-- Пример проповеди 1 -->
                 <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
                     <div class="relative">
-                        <img src="https://i.ibb.co/KchG6CKz/image.jpg/600x400/DCD5CC/3a3a3a?text=Фото 1" alt="Обложка проповеди" class="w-full h-full object-cover">
+                        <img src="https://i.ibb.co/KchG6CKz/image.jpg" alt="Обложка проповеди" class="w-full h-48 object-cover">
                         <div class="absolute inset-0 sermon-overlay"></div>
                     </div>
                     <div class="p-6">
@@ -197,7 +207,7 @@
                  <!-- Пример проповеди 2 -->
                 <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
                     <div class="relative">
-                        <img src="https://i.ibb.co/rfm55Z7B/image.jpg/600x400/DCD5CC/3a3a3a?text=Фото 2" alt="Обложка проповеди" class="w-full h-full object-cover">
+                        <img src="https://i.ibb.co/rfm55Z7B/image.jpg" alt="Обложка проповеди" class="w-full h-48 object-cover">
                         <div class="absolute inset-0 sermon-overlay"></div>
                     </div>
                     <div class="p-6">
@@ -209,7 +219,7 @@
                  <!-- Пример проповеди 3 -->
                 <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
                     <div class="relative">
-                        <img src="https://i.ibb.co/ymCBCBYt/image.jpg/600x400/DCD5CC/3a3a3a?text=Фото 3" alt="Обложка проповеди" class="w-full h-full object-cover">
+                        <img src="https://i.ibb.co/ymCBCBYt/image.jpg" alt="Обложка проповеди" class="w-full h-48 object-cover">
                         <div class="absolute inset-0 sermon-overlay"></div>
                     </div>
                     <div class="p-6">
@@ -357,36 +367,37 @@
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
                 
-                // Если мобильное меню открыто, закрываем его
+                const targetId = this.getAttribute('href');
                 const isMenuOpen = navContent.classList.contains('max-h-screen');
+
+                const performScroll = () => {
+                    if (targetId === '#') {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        return;
+                    }
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        const navbarTopBar = document.querySelector('#navbar > div');
+                        const navbarHeight = navbarTopBar ? navbarTopBar.offsetHeight : 0;
+                        
+                        const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                        const offsetPosition = targetPosition - navbarHeight;
+
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                };
+
+                // Если мобильное меню открыто, закрываем его и ждем завершения анимации
                 if (isMenuOpen) {
                     toggleMobileMenu();
-                }
-
-                const targetId = this.getAttribute('href');
-                const targetElement = document.querySelector(targetId);
-
-                // Ссылки, для которых нужна коррекция из-за навигационной панели
-                const linksThatNeedOffset = ['#about', '#sermons', '#contact'];
-
-                if (linksThatNeedOffset.includes(targetId) && targetElement) {
-                    // Применяем смещение для проблемных ссылок
-                    const navbarHeight = document.getElementById('navbar').offsetHeight;
-                    const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
-                    const offsetPosition = targetPosition - navbarHeight;
-
-                    window.scrollTo({
-                        top: offsetPosition,
-                        behavior: 'smooth'
-                    });
-                } else if (targetElement) {
-                    // Используем стандартную прокрутку для остальных
-                    targetElement.scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                } else if (targetId === '#') {
-                    // Прокрутка наверх для логотипа
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    setTimeout(performScroll, 300); // 300ms - это длительность анимации
+                } else {
+                    // Если меню уже закрыто (десктоп), скроллим сразу
+                    performScroll();
                 }
             });
         });
@@ -397,6 +408,4 @@
     </script>
 </body>
 </html>
-
-
 
