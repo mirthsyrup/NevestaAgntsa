@@ -14,26 +14,25 @@
             font-family: 'Montserrat', sans-serif;
             background-color: #FDFBF8;
             color: #3a3a3a;
+            overflow-x: hidden; /* Добавлено это правило для запрета горизонтальной прокрутки */
         }
         h1, h2, h3 {
             font-family: 'Cormorant Garamond', serif;
         }
         .hero-section {
-            background-image: url('https://i.ibb.co/99Jqj0MV/image.png');
-            background-color: #EAE5E1; /* Основной цвет фона */
-            background-size: 80% auto;
-            background-position: center bottom;
+            background-image: url('https://i.ibb.co/vv366x7x/IMG-7493.jpg'); 
+            background-color: #4a4a4a;
+            background-size: cover;
+            background-position: center center;
             background-repeat: no-repeat;
             background-attachment: fixed;
         }
         .scroll-reveal {
             opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+            transition: opacity 1.2s ease-out; 
         }
         .scroll-reveal.visible {
             opacity: 1;
-            transform: translateY(0);
         }
         .nav-link {
             position: relative;
@@ -68,26 +67,19 @@
             background-repeat: no-repeat;
             background-size: cover;
         }
-        /* Стили для анимации карты */
         .map-container iframe {
             transition: transform 0.4s ease-in-out;
         }
         .map-container:hover iframe {
             transform: scale(1.025);
         }
-        /* Стиль для градиентной пелены на фото */
         .sermon-overlay {
             background-image: radial-gradient(ellipse 70% 70%, rgba(220, 213, 204, 0.0), rgba(220, 213, 204, 0.6));
         }
 
-        /* Медиа-запрос для мобильных устройств */
-        @media (max-width: 768px) {
-            .hero-section, .parallax-section {
-                background-attachment: scroll; /* Отключаем параллакс на мобильных */
-            }
+        @media (min-width: 769px) {
             .hero-section {
-                 background-size: 100% auto; /* Увеличиваем размер картинки для лучшего вида */
-                 background-position: center 90%; /* Слегка опускаем картинку */
+                background-image: url('https://i.ibb.co/TBdVGKgb/IMG-7493-1.jpg');
             }
         }
     </style>
@@ -98,7 +90,7 @@
     <nav id="navbar" class="fixed w-full z-30 top-0 text-white transition-all duration-300">
         <div class="w-full container mx-auto flex flex-wrap items-center justify-between mt-0 py-4 px-6">
             <div class="pl-4 flex items-center">
-                <a class="text-white no-underline hover:no-underline font-bold" style="font-family: 'Cormorant Garamond', serif; font-size: clamp(1.75rem, 1.5rem + 1vw, 2.25rem);" href="#">
+                <a class="text-white no-underline hover-no-underline font-bold" style="font-family: 'Cormorant Garamond', serif; font-size: clamp(1.75rem, 1.5rem + 1vw, 2.25rem);" href="#">
                     Невеста Агнца
                 </a>
             </div>
@@ -120,7 +112,7 @@
     </nav>
 
     <!-- Hero секция -->
-    <div class="hero-section h-screen flex items-start justify-center text-center p-24">
+    <div class="hero-section h-screen flex items-start justify-center text-center pt-48 md:pt-40">
         <div id="hero-content-box" class="bg-black bg-opacity-40 p-8 rounded-lg transition-opacity duration-300">
             <h1 class="text-white font-bold leading-tight mb-4 whitespace-nowrap" style="font-size: clamp(3rem, 2rem + 3vw, 4.5rem);">Добро пожаловать</h1>
             <p class="text-white text-xl md:text-2xl font-light">в место, где обитают вера, <span class="whitespace-nowrap">надежда и любовь</span></p>
@@ -128,10 +120,10 @@
     </div>
 
     <!-- Основной контент -->
-    <div class="container mx-auto px-6 py-20">
+    <div class="container mx-auto px-6">
 
         <!-- О нас -->
-        <section id="about" class="scroll-reveal">
+        <section id="about" class="scroll-reveal pt-20 pb-20">
             <div class="text-center mb-16">
                 <h2 class="text-4xl lg:text-5xl font-semibold mb-4">Наша Миссия</h2>
                 <p class="text-lg text-gray-600 max-w-3xl mx-auto">Мы существуем, чтобы славить Бога, делиться Евангелием Иисуса Христа и взращивать учеников, которые любят Бога и служат людям.</p>
@@ -149,8 +141,8 @@
         </section>
 
         <!-- Наша вера -->
-        <section id="beliefs" class="py-20 scroll-reveal">
-            <div class="text-center mb-16">
+        <section id="beliefs" class="scroll-reveal pb-20">
+             <div class="text-center mb-16">
                  <h2 class="text-4xl lg:text-5xl font-semibold mb-4">Основы нашей веры</h2>
                  <p class="text-lg text-gray-600 max-w-3xl mx-auto">Наши убеждения основаны на Слове Божьем, Библии.</p>
             </div>
@@ -183,10 +175,10 @@
         </div>
     </div>
     
-    <div class="container mx-auto px-6 py-20">
+    <div class="container mx-auto px-6">
 
         <!-- Проповеди -->
-        <section id="sermons" class="scroll-reveal">
+        <section id="sermons" class="scroll-reveal pb-20">
             <div class="text-center mb-16">
                 <h2 class="text-4xl lg:text-5xl font-semibold mb-4">Последние проповеди</h2>
                 <p class="text-lg text-gray-600 max-w-3xl mx-auto">Послушайте учение, которое вдохновляет и изменяет жизнь.</p>
@@ -232,7 +224,7 @@
         </section>
 
         <!-- События -->
-        <section id="events" class="py-20 scroll-reveal">
+        <section id="events" class="scroll-reveal pb-20">
              <div class="text-center mb-16">
                 <h2 class="text-4xl lg:text-5xl font-semibold mb-4">Предстоящие события</h2>
                 <p class="text-lg text-gray-600 max-w-3xl mx-auto">Присоединяйтесь к нам на наших мероприятиях.</p>
@@ -272,7 +264,7 @@
         </section>
 
         <!-- Контакты -->
-        <section id="contact" class="scroll-reveal">
+        <section id="contact" class="scroll-reveal pb-20">
             <div class="text-center mb-16">
                 <h2 class="text-4xl lg:text-5xl font-semibold mb-4">Мы ждем вас</h2>
                 <p class="text-lg text-gray-600 max-w-3xl mx-auto">Приходите на наши служения и станьте частью нашей духовной семьи.</p>
@@ -285,15 +277,15 @@
                     <p class="text-xl mb-6">Пятница (молитвенное собрание): <strong>19:00</strong></p>
                     
                     <h3 class="text-3xl font-semibold mb-4">Адрес</h3>
-                    <p class="text-xl mb-2">ул. Социалистическая 2, Чебоксары, Чувашская Республика</p>
+                    <p class="text-xl mb-2">ул. Социалистическая 2г, Чебоксары, Чувашская Республика</p>
                     
                     <h3 class="text-3xl font-semibold mb-4 mt-6">Свяжитесь с нами</h3>
-                    <p class="text-xl mb-2"><i data-feather="mail" class="inline-block w-5 h-5 mr-2"></i> nevestaagntsa@mail.ru</p>
+                    <p class="text-xl mb-2"><i data-feather="mail" class="inline-block w-5 h-5 mr-2"></i> nevestaagntsa@gmail.com</p>
                     <p class="text-xl"><i data-feather="phone" class="inline-block w-5 h-5 mr-2"></i> +7 (937) 386-40-64</p>
                 </div>
                 <div class="w-full md:w-1/2">
                     <div class="map-container rounded-lg shadow-inner overflow-hidden ring-2 ring-gray-200">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1112.396273323922!2d47.17778553539433!3d56.108807889080865!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x415a47e1e544bb75%3A0x2c60426a3864b65a!2z0YPQuy4g0KHQvtGG0LjQsNC70LjRgdGC0LjRh9C10YHQutCw0Y8sIDIsINCn0LXQsdC-0LrRgdCw0YDRiywg0KfRg9Cy0LDRiNGB0LrQsNGPINCg0LXRgdC_LiwgNDI4MDM4!5e0!3m2!1sru!2sru!4v1760383196905!5m2!1sru!2sru" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="w-full h-[450px] block"></iframe>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d1112.4094609903534!2d47.17689979387128!3d56.108351600870385!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zNTbCsDA2JzI驢LjEiTiA0N8KwMTAnMzcuNyJF!5e0!3m2!1sru!2sru!4v1760735929993!5m2!1sru!2sru" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="w-full h-[450px] block"></iframe>
                     </div>
                 </div>
             </div>
@@ -362,7 +354,30 @@
             revealObserver.observe(element);
         });
 
-        // Плавная прокрутка к якорям
+        // --- НОВЫЙ БЛОК ПЛАВНОЙ ПРОКРУТКИ ---
+        function smoothScroll(targetPosition, duration = 1000) {
+            const startPosition = window.pageYOffset;
+            const distance = targetPosition - startPosition;
+            let startTime = null;
+
+            function animation(currentTime) {
+                if (startTime === null) startTime = currentTime;
+                const timeElapsed = currentTime - startTime;
+                const run = easeInOutQuad(timeElapsed, startPosition, distance, duration);
+                window.scrollTo(0, run);
+                if (timeElapsed < duration) requestAnimationFrame(animation);
+            }
+
+            function easeInOutQuad(t, b, c, d) {
+                t /= d / 2;
+                if (t < 1) return c / 2 * t * t + b;
+                t--;
+                return -c / 2 * (t * (t - 2) - 1) + b;
+            }
+
+            requestAnimationFrame(animation);
+        }
+
         document.querySelectorAll('#navbar a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -372,7 +387,7 @@
 
                 const performScroll = () => {
                     if (targetId === '#') {
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        smoothScroll(0);
                         return;
                     }
                     
@@ -384,19 +399,14 @@
                         const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
                         const offsetPosition = targetPosition - navbarHeight;
 
-                        window.scrollTo({
-                            top: offsetPosition,
-                            behavior: 'smooth'
-                        });
+                        smoothScroll(offsetPosition, 1000); // 1000 мс = 1 секунда
                     }
                 };
 
-                // Если мобильное меню открыто, закрываем его и ждем завершения анимации
                 if (isMenuOpen) {
                     toggleMobileMenu();
-                    setTimeout(performScroll, 300); // 300ms - это длительность анимации
+                    setTimeout(performScroll, 300); // Небольшая задержка, чтобы меню успело закрыться
                 } else {
-                    // Если меню уже закрыто (десктоп), скроллим сразу
                     performScroll();
                 }
             });
