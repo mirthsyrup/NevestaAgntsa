@@ -61,7 +61,7 @@
             transform: translateY(-2px);
         }
         .parallax-section {
-            background-image: url('https://placehold.co/1920x800/DCD5CC/FFFFFF?text=Слово+Божье');
+            background-image: url('https://i.ibb.co/Y40Fv2C4/image.jpg');
             background-attachment: fixed;
             background-position: center;
             background-repeat: no-repeat;
@@ -75,6 +75,13 @@
         }
         .sermon-overlay {
             background-image: radial-gradient(ellipse 70% 70%, rgba(220, 213, 204, 0.0), rgba(220, 213, 204, 0.6));
+        }
+
+        /* Медиа-запрос для мобильных устройств */
+        @media (max-width: 768px) {
+            .hero-section, .parallax-section {
+                background-attachment: scroll; /* Отключаем параллакс на мобильных */
+            }
         }
 
         @media (min-width: 769px) {
@@ -112,10 +119,10 @@
     </nav>
 
     <!-- Hero секция -->
-    <div class="hero-section h-screen flex items-start justify-center text-center pt-48 md:pt-40">
-        <div id="hero-content-box" class="bg-black bg-opacity-40 p-8 rounded-lg transition-opacity duration-300">
-            <h1 class="text-white font-bold leading-tight mb-4 whitespace-nowrap" style="font-size: clamp(3rem, 2rem + 3vw, 4.5rem);">Добро пожаловать</h1>
-            <p class="text-white text-xl md:text-2xl font-light">в место, где обитают вера, <span class="whitespace-nowrap">надежда и любовь</span></p>
+    <div class="hero-section h-screen flex items-start justify-center text-center pt-48 md:pt-40 px-4">
+        <div id="hero-content-box" class="bg-black bg-opacity-40 rounded-lg p-6 md:p-8 transition-opacity duration-300">
+            <h1 class="text-white font-bold leading-tight mb-4 whitespace-nowrap" style="font-size: clamp(2.5rem, 1.5rem + 4vw, 4.5rem);">Добро пожаловать</h1>
+            <p class="text-white text-lg sm:text-xl md:text-2xl font-light">в место, где обитают вера, <span class="whitespace-nowrap">надежда и любовь</span></p>
         </div>
     </div>
 
@@ -170,8 +177,8 @@
     <!-- Параллакс секция -->
     <div class="parallax-section h-96 flex items-center justify-center text-center text-white my-20 scroll-reveal">
         <div class="bg-black bg-opacity-50 p-10 rounded-lg">
-            <h2 class="text-4xl md:text-5xl font-bold">"Ибо так возлюбил Бог мир..."</h2>
-            <p class="text-xl mt-2">(Иоанна 3:16)</p>
+            <h2 class="text-4xl md:text-5xl font-bold">"…пойди, я покажу тебе жену, невесту Агнца"</h2>
+            <p class="text-xl mt-2">(Откровение 21:9)</p>
         </div>
     </div>
     
@@ -285,7 +292,7 @@
                 </div>
                 <div class="w-full md:w-1/2">
                     <div class="map-container rounded-lg shadow-inner overflow-hidden ring-2 ring-gray-200">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d1112.4094609903534!2d47.17689979387128!3d56.108351600870385!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zNTbCsDA2JzI驢LjEiTiA0N8KwMTAnMzcuNyJF!5e0!3m2!1sru!2sru!4v1760735929993!5m2!1sru!2sru" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="w-full h-[450px] block"></iframe>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d1112.4122668845284!2d47.17697796688766!3d56.108254517691094!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zNTbCsDA2JzI5LjAiTiA0N8KwMTAnMzcuNyJF!5e0!3m2!1sru!2sru!4v1760897054901!5m2!1sru!2sru" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="w-full h-[450px] block"></iframe>
                     </div>
                 </div>
             </div>
