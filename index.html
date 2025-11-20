@@ -1,475 +1,842 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Церковь "Невеста Агнца"</title>
+    <title>Компендиум Травника</title>
+    <!-- Подключаем Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Подключаем шрифт Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/feather-icons"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Применяем шрифт Inter */
         body {
-            font-family: 'Montserrat', sans-serif;
-            background-color: #FDFBF8;
-            color: #3a3a3a;
-            overflow-x: hidden; /* Добавлено это правило для запрета горизонтальной прокрутки */
+            font-family: 'Inter', sans-serif;
         }
-        h1, h2, h3 {
-            font-family: 'Cormorant Garamond', serif;
+        /* Стили для кастомного скроллбара */
+        ::-webkit-scrollbar {
+            width: 8px;
         }
-        .hero-section {
-            background-image: url('https://i.ibb.co/vv366x7x/IMG-7493.jpg'); 
-            background-color: #4a4a4a;
-            background-size: cover;
-            background-position: center center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
+        ::-webkit-scrollbar-track {
+            background: #1f2937; /* bg-gray-800 */
         }
-        .scroll-reveal {
+        ::-webkit-scrollbar-thumb {
+            background: #4b5563; /* bg-gray-600 */
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280; /* bg-gray-500 */
+        }
+
+        /* --- НОВЫЕ СТИЛИ ДЛЯ ПЕРЕКЛЮЧАТЕЛЕЙ --- */
+        /* Стили для кастомного переключателя (для Ночь/День и Сюжет/Простой) */
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .toggle-input {
             opacity: 0;
-            transition: opacity 1.2s ease-out; 
-        }
-        .scroll-reveal.visible {
-            opacity: 1;
-        }
-        .nav-link {
-            position: relative;
-            transition: color 0.3s;
-        }
-        .nav-link::after {
-            content: '';
-            position: absolute;
             width: 0;
-            height: 1px;
-            bottom: -4px;
-            left: 50%;
-            background-color: #C0A080;
-            transition: width 0.4s, left 0.4s;
+            height: 0;
         }
-        .nav-link:hover::after {
-            width: 100%;
-            left: 0;
+        .toggle-slider {
+            position: relative;
+            display: block;
+            width: 3.5rem; /* 56px */
+            height: 2rem; /* 32px */
+            border-radius: 9999px; /* rounded-full */
+            transition: background-color 0.3s ease;
         }
-        .btn-primary {
-            background-color: #A67B5B;
-            transition: background-color 0.3s, transform 0.3s;
+        .toggle-dot {
+            position: absolute;
+            left: 0.25rem; /* 4px */
+            top: 0.25rem; /* 4px */
+            width: 1.5rem; /* 24px */
+            height: 1.5rem; /* 24px */
+            border-radius: 9999px; /* rounded-full */
+            transition: transform 0.3s ease, background-color 0.3s ease;
         }
-        .btn-primary:hover {
-            background-color: #8c6649;
-            transform: translateY(-2px);
+        
+        /* Стили для Ночь/День */
+        /* День (unchecked) */
+        .toggle-input:not(:checked) + .toggle-slider.time-slider {
+            background-color: #facc15; /* bg-yellow-400 */
         }
-        .parallax-section {
-            background-image: url('https://i.ibb.co/Y40Fv2C4/image.jpg');
-            background-attachment: fixed;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
+        .toggle-input:not(:checked) + .toggle-slider > .toggle-dot.time-dot {
+            background-color: #fef08a; /* bg-yellow-100 */
+            transform: translateX(0);
         }
-        .map-container iframe {
-            transition: transform 0.4s ease-in-out;
+        /* Ночь (checked) */
+        .toggle-input:checked + .toggle-slider.time-slider {
+            background-color: #3730a3; /* bg-indigo-800 */
         }
-        .map-container:hover iframe {
-            transform: scale(1.025);
-        }
-        .sermon-overlay {
-            background-image: radial-gradient(ellipse 70% 70%, rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.5));
-        }
-
-        /* Медиа-запрос для мобильных устройств */
-        @media (max-width: 768px) {
-            .hero-section, .parallax-section {
-                background-attachment: scroll; /* Отключаем параллакс на мобильных */
-            }
+        .toggle-input:checked + .toggle-slider > .toggle-dot.time-dot {
+            background-color: #c7d2fe; /* bg-blue-200 */
+            transform: translateX(1.5rem); /* 24px */
         }
 
-        @media (min-width: 769px) {
-            .hero-section {
-                background-image: url('https://i.ibb.co/TBdVGKgb/IMG-7493-1.jpg');
-            }
+        /* Стили для Сюжет/Простой */
+        /* Сюжет (unchecked) */
+        .toggle-input:not(:checked) + .toggle-slider.mode-slider {
+            background-color: #6366f1; /* bg-indigo-500 */
         }
+        .toggle-input:not(:checked) + .toggle-slider > .toggle-dot.mode-dot {
+            background-color: #e0e7ff; /* bg-indigo-100 */
+            transform: translateX(0);
+        }
+        /* Простой (checked) */
+        .toggle-input:checked + .toggle-slider.mode-slider {
+            background-color: #16a34a; /* bg-green-600 */
+        }
+        .toggle-input:checked + .toggle-slider > .toggle-dot.mode-dot {
+            background-color: #dcfce7; /* bg-green-100 */
+            transform: translateX(1.5rem); /* 24px */
+        }
+
     </style>
 </head>
-<body class="leading-normal tracking-normal">
+<body class="bg-gray-900 text-gray-100 h-full overflow-y-auto">
 
-    <!-- Навигация -->
-    <nav id="navbar" class="fixed w-full z-30 top-0 text-white transition-all duration-300">
-        <div class="w-full container mx-auto flex flex-wrap items-center justify-between mt-0 py-4 px-6">
-            <div class="pl-4 flex items-center">
-                <a class="text-white no-underline hover-no-underline font-bold" style="font-family: 'Cormorant Garamond', serif; font-size: clamp(1.75rem, 1.5rem + 1vw, 2.25rem);" href="#">
-                    Невеста Агнца
-                </a>
-            </div>
-            <div class="block lg:hidden pr-4">
-                <button id="nav-toggle" class="flex items-center p-1 text-white hover:text-gray-200 focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
-                    <svg class="fill-current h-6 w-6" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Меню</title><path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"/></svg>
-                </button>
-            </div>
-            <div class="w-full lg:flex lg:items-center lg:w-auto max-h-0 lg:max-h-none overflow-hidden lg:overflow-visible opacity-0 lg:opacity-100 lg:mt-0 z-20 transition-all ease-in-out" id="nav-content">
-                <ul class="list-reset lg:flex justify-end flex-1 items-center bg-[#4f4f4f]/90 lg:bg-transparent p-4 lg:p-0 rounded-lg lg:rounded-none">
-                    <li class="mr-3"><a class="nav-link inline-block py-2 px-4 text-white no-underline" href="#about">О нас</a></li>
-                    <li class="mr-3"><a class="nav-link inline-block py-2 px-4 text-white no-underline" href="#beliefs">Наша вера</a></li>
-                    <li class="mr-3"><a class="nav-link inline-block py-2 px-4 text-white no-underline" href="#sermons">Проповеди</a></li>
-                    <li class="mr-3"><a class="nav-link inline-block py-2 px-4 text-white no-underline" href="#events">События</a></li>
-                    <li class="mr-3"><a class="nav-link inline-block py-2 px-4 text-white no-underline" href="#contact">Контакты</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <div class="container max-w-7xl mx-auto p-4 md:p-8">
+        <h1 class="text-4xl font-bold text-center text-green-400 mb-8">Компендиум Травника</h1>
 
-    <!-- Hero секция -->
-    <div class="hero-section h-screen flex items-start justify-center text-center pt-48 md:pt-40 px-4">
-        <div id="hero-content-box" class="bg-black bg-opacity-40 rounded-lg p-6 md:p-8 transition-opacity duration-300">
-            <h1 class="text-white font-bold leading-tight mb-4 whitespace-nowrap" style="font-size: clamp(2.5rem, 1.5rem + 4vw, 4.5rem);">Добро пожаловать</h1>
-            <p class="text-white text-lg sm:text-xl md:text-2xl font-light">в место, где обитают вера, <span class="whitespace-nowrap">надежда и любовь</span></p>
-        </div>
-    </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-    <!-- Основной контент -->
-    <div class="container mx-auto px-6">
-
-        <!-- О нас -->
-        <section id="about" class="scroll-reveal pt-20 pb-20">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl lg:text-5xl font-semibold mb-4">Наша Миссия</h2>
-                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Мы существуем, чтобы славить Бога, делиться Евангелием Иисуса Христа и взращивать учеников, которые любят Бога и служат людям.</p>
-            </div>
-            <div class="flex flex-wrap items-center -mx-4">
-                <div class="w-full md:w-1/2 px-4 mb-8 md:mb-0">
-                    <img src="https://i.ibb.co/rG2ZthSs/IMG-7508.jpg" alt="Наша община" class="rounded-lg shadow-xl w-full h-auto">
-                </div>
-                <div class="w-full md:w-1/2 px-4">
-                    <h3 class="text-3xl font-semibold mb-4">Кто мы?</h3>
-                    <p class="mb-4 text-gray-700">Церковь "Невеста Агнца" — это семья верующих, объединенных общей целью познания Бога и преображения в образ Христа. Мы стремимся быть светом в нашем городе, неся весть о спасении и практическую помощь нуждающимся.</p>
-                    <p class="text-gray-700">Каждое воскресенье мы собираемся вместе для поклонения, изучения Библии и общения. Мы верим, что церковь — это не здание, а люди, живущие своей верой каждый день.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Наша вера -->
-        <section id="beliefs" class="scroll-reveal pb-20">
-             <div class="text-center mb-16">
-                 <h2 class="text-4xl lg:text-5xl font-semibold mb-4">Основы нашей веры</h2>
-                 <p class="text-lg text-gray-600 max-w-3xl mx-auto">Наши убеждения основаны на Слове Божьем, Библии.</p>
-            </div>
-            <div class="grid md:grid-cols-3 gap-12">
-                <div class="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
-                    <i data-feather="book-open" class="mx-auto w-16 h-16 text-[#A67B5B] mb-4"></i>
-                    <h3 class="text-2xl font-semibold mb-2">Священное Писание</h3>
-                    <p class="text-gray-600">Мы верим, что Библия — это Богодухновенное и непогрешимое Слово Божье.</p>
-                </div>
-                 <div class="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
-                    <i data-feather="heart" class="mx-auto w-16 h-16 text-[#A67B5B] mb-4"></i>
-                    <h3 class="text-2xl font-semibold mb-2">Бог есть любовь</h3>
-                    <p class="text-gray-600">Мы верим в Единого Бога, существующего в трех лицах: Отец, Сын и Святой Дух.</p>
-                </div>
-                 <div class="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
-                    <i data-feather="users" class="mx-auto w-16 h-16 text-[#A67B5B] mb-4"></i>
-                    <h3 class="text-2xl font-semibold mb-2">Спасение и Церковь</h3>
-                    <p class="text-gray-600">Мы верим, что спасение даруется по благодати через веру в Иисуса Христа, и что Церковь — Его тело на земле.</p>
-                </div>
-            </div>
-        </section>
-
-    </div>
-
-    <!-- Параллакс секция -->
-    <div class="parallax-section h-96 flex items-center justify-center text-center text-white my-20 scroll-reveal">
-        <div class="bg-black bg-opacity-50 p-10 rounded-lg">
-            <h2 class="text-4xl md:text-5xl font-bold">"…пойди, я покажу тебе жену, невесту Агнца"</h2>
-            <p class="text-xl mt-2">(Откровение 21:9)</p>
-        </div>
-    </div>
-    
-    <div class="container mx-auto px-6">
-
-        <!-- Проповеди -->
-        <section id="sermons" class="scroll-reveal pb-20">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl lg:text-5xl font-semibold mb-4">Последние проповеди</h2>
-                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Послушайте учение, которое вдохновляет и изменяет жизнь.</p>
-            </div>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Пример проповеди 1 -->
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
-                    <div class="relative aspect-[3/2]">
-                        <img src="https://i.ibb.co/WNhp555j/image.png" alt="Обложка проповеди" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 sermon-overlay"></div>
-                    </div>
-                    <div class="pt-4 pb-3 px-6">
-                        <h3 class="text-2xl font-semibold mb-1">Слова отражают Сердце</h3>
-                        <p class="text-gray-500 mb-2">Сергей Изосимов | 19.10.2025</p>
-                        <a href="https://rutube.ru/video/7f33b5e88102fff6fc5d329fce1fbf71/" class="btn-primary text-white font-bold py-2 px-4 rounded-full inline-block">Слушать</a>
-                    </div>
-                </div>
-                 <!-- Пример проповеди 2 -->
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
-                    <div class="relative aspect-[3/2]">
-                        <img src="https://i.ibb.co/v6jc25Fb/image.jpg" alt="Обложка проповеди" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 sermon-overlay"></div>
-                    </div>
-                    <div class="pt-4 pb-3 px-6">
-                        <h3 class="text-2xl font-semibold mb-1">Я устал, я ухожу!</h3>
-                        <p class="text-gray-500 mb-2">Евгений Викторов | 12.10.2025</p>
-                        <a href="https://rutube.ru/video/79a62cb25a0edf96a89b929cd25910f3/" class="btn-primary text-white font-bold py-2 px-4 rounded-full inline-block">Слушать</a>
-                    </div>
-                </div>
-                 <!-- Пример проповеди 3 -->
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
-                    <div class="relative aspect-[3/2]">
-                        <img src="https://i.ibb.co/Kp1pLZvc/image.jpg" alt="Обложка проповеди" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 sermon-overlay"></div>
-                    </div>
-                    <div class="pt-4 pb-3 px-6">
-                        <h3 class="text-2xl font-semibold mb-1">Руки вверх!</h3>
-                        <p class="text-gray-500 mb-2">Константин Фиошкин | 05.10.2025</p>
-                        <a href="https://rutube.ru/video/2348815eeafacd1bfa9169186194af34/" class="btn-primary text-white font-bold py-2 px-4 rounded-full inline-block">Слушать</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- События -->
-        <section id="events" class="scroll-reveal pb-20">
-             <div class="text-center mb-16">
-                <h2 class="text-4xl lg:text-5xl font-semibold mb-4">Предстоящие события</h2>
-                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Присоединяйтесь к нам на наших мероприятиях.</p>
-            </div>
-            <div class="max-w-4xl mx-auto">
-                <div class="bg-white p-6 rounded-lg shadow-md mb-6 flex items-center space-x-6">
-                    <div class="text-center border-r border-gray-200 pr-6">
-                        <p class="text-4xl font-bold text-[#A67B5B]">21</p>
-                        <p class="text-md text-gray-500">Окт</p>
-                    </div>
-                    <div>
-                        <h3 class="text-2xl font-semibold">Молодёжная домашняя группа</h3>
-                        <p class="text-gray-600">
-                           <span class="whitespace-nowrap">
-                               <i data-feather="clock" class="inline-block w-4 h-4 mr-1"></i> 18:00 - 20:00
-                           </span> | 
-                           <span class="whitespace-nowrap">
-                              <i data-feather="map-pin" class="inline-block w-4 h-4 mr-1"></i> Главынй зал
-                           </span>
-                        </p>
-                    </div>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-md mb-6 flex items-center space-x-6">
-                    <div class="text-center border-r border-gray-200 pr-6">
-                        <p class="text-4xl font-bold text-[#A67B5B]">23</p>
-                        <p class="text-md text-gray-500">Окт</p>
-                    </div>
-                    <div>
-                        <h3 class="text-2xl font-semibold">Альфа-курс. Тема 3: Зачем Иисус умер?</h3>
-                        <p class="text-gray-600">
-                           <span class="whitespace-nowrap">
-                               <i data-feather="clock" class="inline-block w-4 h-4 mr-1"></i> 18:05 - 20:00
-                           </span> | 
-                           <span class="whitespace-nowrap">
-                              <i data-feather="map-pin" class="inline-block w-4 h-4 mr-1"></i> Главный зал
-                           </span>
-                        </p>
-                    </div>
-                </div>
-                 <div class="bg-white p-6 rounded-lg shadow-md flex items-center space-x-6">
-                    <div class="text-center border-r border-gray-200 pr-6">
-                        <p class="text-4xl font-bold text-[#A67B5B]">24</p>
-                        <p class="text-md text-gray-500">Окт</p>
-                    </div>
-                    <div>
-                        <h3 class="text-2xl font-semibold">Изучение Библии</h3>
-                        <p class="text-gray-600">
-                           <span class="whitespace-nowrap">
-                               <i data-feather="clock" class="inline-block w-4 h-4 mr-1"></i> 17:30 - 18:30
-                           </span> | 
-                           <span class="whitespace-nowrap">
-                              <i data-feather="map-pin" class="inline-block w-4 h-4 mr-1"></i> Кухня
-                           </span>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Контакты -->
-        <section id="contact" class="scroll-reveal pb-20">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl lg:text-5xl font-semibold mb-4">Мы ждем вас</h2>
-                <p class="text-lg text-gray-600 max-w-3xl mx-auto">Приходите на наши служения и станьте частью нашей духовной семьи.</p>
-            </div>
-            <div class="flex flex-wrap bg-white p-8 md:p-12 rounded-lg shadow-xl">
-                <div class="w-full md:w-1/2 md:pr-12 mb-8 md:mb-0">
-                    <h3 class="text-3xl font-semibold mb-4">Время служений</h3>
-                    <p class="text-lg md:text-xl mb-2">Воскресенье: <strong>10:00</strong></p>
-                    <p class="text-lg md:text-xl mb-2">Четверг: <strong>18:00</strong><br>(Альфа-курс)</p>
-                    <p class="text-lg md:text-xl mb-6">Пятница: <strong>19:00</strong><br>(Молитвенное собрание)</p>
+            <!-- ЛЕВАЯ КОЛОНКА: Настройки и Действия -->
+            <div class="lg:col-span-1 space-y-6 lg:sticky lg:top-8 lg:self-start">
+                
+                <!-- Блок Настроек Поиска -->
+                <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                    <h2 class="text-2xl font-bold text-green-400 mb-4 border-b border-gray-700 pb-2">Настройки Поиска</h2>
                     
-                    <h3 class="text-3xl font-semibold mb-4">Адрес</h3>
-                    <p class="text-lg md:text-xl mb-2">ул. Социалистическая 2г, Чебоксары, Чувашская Республика</p>
-                    
-                    <h3 class="text-3xl font-semibold mb-4 mt-6">Свяжитесь с нами</h3>
-                    <p class="text-lg md:text-xl mb-2">
-    <span class="inline-flex items-center whitespace-nowrap">
-        <i data-feather="mail" class="inline-block w-5 h-5 mr-2"></i> nevestaagntsa@gmail.com
-    </span>
-</p>
-<p class="text-lg md:text-xl">
-    <span class="inline-flex items-center whitespace-nowrap">
-        <i data-feather="phone" class="inline-block w-5 h-5 mr-2"></i> +7 (937) 386-40-64
-    </span>
-</p>
+                    <!-- Фильтр Местности -->
+                    <div class="mb-4">
+                        <label for="location-filter" class="block text-sm font-medium text-gray-300 mb-2">Текущая Местность:</label>
+                        <select id="location-filter" class="block w-full bg-gray-700 border-gray-600 rounded-md p-2 text-white focus:ring-green-500 focus:border-green-500">
+                            <!-- ИЗМЕНЕНЫ ОПЦИII -->
+                            <option value="povsemestno">Повсеместно</option>
+                            <option value="pustyni">Пустыни</option>
+                            <option value="luga">Луга</option>
+                            <option value="lesa">Леса</option>
+                            <option value="poberezhje">Побережье/Берега</option>
+                            <option value="bolota">Болота</option>
+                            <option value="holmy">Холмы</option>
+                            <option value="arktika">Арктика</option>
+                            <option value="podzemje">Подземье</option>
+                            <option value="gory">Горы</option>
+                            <!-- <option value="special">Специальные (Сбор)</option> --> <!-- Убрано, так как по новой логике не используется -->
+                        </select>
+                    </div>
+
+                    <!-- *** НОВЫЙ БЛОК: Сложность Поиска *** -->
+                    <div class="mb-4">
+                        <label for="search-difficulty-filter" class="block text-sm font-medium text-gray-300 mb-2">Сложность Поиска (СЛ):</label>
+                        <select id="search-difficulty-filter" class="block w-full bg-gray-700 border-gray-600 rounded-md p-2 text-white focus:ring-green-500 focus:border-green-500">
+                            <option value="targeted">На отдыхе (СЛ 10)</option>
+                            <option value="moving">Медленный темп (СЛ 15)</option>
+                            <option value="fast">Средний темп (СЛ 20)</option>
+                            <option value="running">Быстрый темп (СЛ 25)</option>
+                        </select>
+                    </div>
+
+                    <!-- *** ОБНОВЛЕННЫЙ БЛОК: Переключатели *** -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <!-- Переключатель Ночь/День -->
+                        <div>
+                            <label for="night-toggle" class="toggle-label">
+                                <input type="checkbox" id="night-toggle" class="toggle-input">
+                                <div class="toggle-slider time-slider">
+                                    <div class="toggle-dot time-dot"></div>
+                                </div>
+                                <div class="ml-3 text-gray-300 font-medium" id="time-label">День</div>
+                            </label>
+                        </div>
+                        
+                        <!-- НОВЫЙ Переключатель Режима Игры -->
+                        <div>
+                            <label for="game-mode-toggle" class="toggle-label">
+                                <input type="checkbox" id="game-mode-toggle" class="toggle-input">
+                                <div class="toggle-slider mode-slider">
+                                    <div class="toggle-dot mode-dot"></div>
+                                </div>
+                                <div class="ml-3 text-gray-300 font-medium" id="game-mode-label">Сюжет</div>
+                            </label>
+                        </div>
+                    </div>
                 </div>
-                <div class="w-full md:w-1/2">
-                    <div class="map-container rounded-lg shadow-inner overflow-hidden ring-2 ring-gray-200 aspect-[4/3]">
-                        <!-- Карта была заменена -->
-                        <iframe 
-                            src="https://yandex.ru/map-widget/v1/?from=mapframe&ll=47.176302%2C56.108181&mode=whatshere&source=mapframe&utm_source=mapframe&whatshere%5Bpoint%5D=47.175503%2C56.107952&whatshere%5Bzoom%5D=17&z=17.13" 
-                            class="w-full h-full" 
-                            allowfullscreen="true"
-                            loading="lazy">
-                        </iframe>
+
+                <!-- Блок Сбора Растений -->
+                <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                    <h2 class="text-2xl font-bold text-green-400 mb-4">Поиск и Сбор</h2>
+                    
+                    <!-- Кнопка Поиска -->
+                    <button id="search-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg text-lg transition duration-200 shadow-md">
+                        Бросить d20 для **поиска**
+                    </button>
+                    <div class="text-center mt-4">
+                        <p class="text-lg">Результат Поиска d20: <span id="search-d20-result" class="font-bold text-2xl text-yellow-300">-</span></p>
+                    </div>
+                    
+                    <h3 class="text-xl font-semibold text-gray-200 mt-6 mb-2">Результаты Поиска:</h3>
+                    <div id="search-results-display" class="min-h-[100px] bg-gray-700 p-4 rounded-lg border border-gray-600 text-gray-300 overflow-y-auto max-h-[200px]">
+                        <p class="italic text-gray-400">Нажмите кнопку, чтобы найти растения...</p>
+                    </div>
+
+                    <!-- Разделитель -->
+                    <hr class="border-gray-600 my-6">
+
+                    <!-- Кнопка Сбора (Оставлена, но логика отключена по запросу) -->
+                    <button id="gather-btn" class="w-full bg-gray-500 text-white font-bold py-3 px-4 rounded-lg text-lg transition duration-200 shadow-md cursor-not-allowed opacity-50">
+                        Бросить d20 для **сбора**
+                    </button>
+                    <div class="text-center mt-4">
+                        <p class="text-lg">Результат Сбора d20: <span id="gather-d20-result" class="font-bold text-2xl text-yellow-300">-</span></p>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-gray-200 mt-6 mb-2">Собранная Добыча:</h3>
+                    <div id="loot-display" class="min-h-[100px] bg-gray-700 p-4 rounded-lg border border-gray-600 text-gray-300 overflow-y-auto max-h-[200px]">
+                        <p class="italic text-gray-400">Ожидание сбора...</p>
+                    </div>
+                </div>
+
+                <!-- Блок Броска Кубиков -->
+                <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                    <h2 class="text-2xl font-bold text-indigo-400 mb-4">Броски Кубиков</h2>
+                    
+                    <!-- Поле для множителя -->
+                    <div class="mb-4">
+                        <label for="dice-multiplier" class="block text-sm font-medium text-gray-300 mb-2">Количество (Множитель):</label>
+                        <!-- Заменяем input на select -->
+                        <select id="dice-multiplier" class="block w-full bg-gray-700 border-gray-600 rounded-md p-2 text-white focus:ring-indigo-500 focus:border-indigo-500">
+                            <!-- Опции от 1 до 30 будут добавлены скриптом -->
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-3">
+                        <button data-die="4" class="dice-btn bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 shadow">d4</button>
+                        <button data-die="6" class="dice-btn bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 shadow">d6</button>
+                        <button data-die="8" class="dice-btn bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 shadow">d8</button>
+                        <button data-die="10" class="dice-btn bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 shadow">d10</button>
+                        <button data-die="12" class="dice-btn bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 shadow">d12</button>
+                        <button data-die="20" class="dice-btn bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 shadow">d20</button>
+                    </div>
+                    <p class="text-center text-lg mt-4">Результат: <span id="dice-result" class="font-bold text-2xl text-yellow-300">-</span></p>
+                </div>
+            </div>
+
+            <!-- ПРАВАЯ КОЛОНКА: Компендиум -->
+            <div class="lg:col-span-2">
+                <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+                    <h2 class="text-3xl font-bold text-green-400 mb-4">Компендиум</h2>
+                    
+                    <!-- Фильтр Категорий -->
+                    <div>
+                        <label for="category-filter" class="block text-sm font-medium text-gray-300 mb-2">Фильтр по Категории:</label>
+                        <select id="category-filter" class="block w-full md:w-1/2 bg-gray-700 border-gray-600 rounded-md p-2 text-white focus:ring-green-500 focus:border-green-500">
+                            <!-- ИЗМЕНЕНЫ ОПЦИИ -->
+                            <option value="all">Все Категории</option>
+                            <option value="potion">Ингредиенты Зелий</option>
+                            <option value="poison">Ингредиенты Ядов</option>
+                            <option value="magic_potion">Ингредиенты Магических Зелий</option>
+                        </select>
+                    </div>
+
+                    <!-- Контейнер для списка растений -->
+                    <div id="plant-list-container" class="mt-6 space-y-6">
+                        <!-- Сюда будет рендериться список растений -->
                     </div>
                 </div>
             </div>
-        </section>
 
-    </div>
-
-    <!-- Футер -->
-    <footer class="bg-[#3a3a3a] text-white py-12">
-        <div class="container mx-auto text-center">
-            <p class="text-2xl mb-4" style="font-family: 'Cormorant Garamond', serif;">МРОХВЕП "Церковь "Невеста Агнца"</p>
-            <p>&copy; <span id="year"></span></p>
         </div>
-    </footer>
-
+    </div>
 
     <script>
-        // Иконки
-        feather.replace();
+        // --- БАЗА ДАННЫХ РАСТЕНИЙ (ОСНОВНОЙ СПИСОК) ---
+        // Rarity: 'common', 'uncommon', 'rare', 'very_rare'
+        // Time: 'any' (по просьбе пользователя механика оставлена)
+        // Locations: 'povsemestno', 'pustyni', 'luga', 'lesa', 'poberezhje', 'bolota', 'holmy', 'arktika', 'podzemje', 'gory', 'special'
+        // Category: 'potion' (Зелья), 'poison' (Яды), 'magic_potion' (Магические зелья)
+        const plantDatabase = [
+            // ----- ИНГРЕДИЕНТЫ ЗЕЛИЙ -----
+            { id: 1, name: "Кровьтрава", category: "potion", locations: ["povsemestno"], time: "any", rarity: "common", description: "Эффект: Может быть смешано с любым другим ингредиентом, содержащим Эффект Зелья, чтобы стать источником еды на 1 день. Неизменяемый." },
+            { id: 2, name: "Хромовая слизь", category: "potion", locations: ["poberezhje", "podzemje"], time: "any", rarity: "rare", description: "Специальный (модификатор): Итоговый Эффект после всех вычислений становится абсолютно противоположным. Это зависит от Мастера, относительно каждого зелья/яда." },
+            { id: 3, name: "Сушёная Эфедра", category: "potion", locations: ["pustyni", "gory"], time: "any", rarity: "uncommon", description: "Модификатор: Увеличивает тип кости на 1 для одного исцеляющего эффекта." },
+            { id: 4, name: "Рвоск", category: "potion", locations: ["lesa", "bolota"], time: "any", rarity: "common", description: "Специальный (модификатор): Задерживает Эффект действия ингредиентов на 1d6 раундов." },
+            { id: 5, name: "Фенхелёвый шёлк", category: "potion", locations: ["arktika", "podzemje"], time: "any", rarity: "common", description: "Эффект: Стабилизирует температуру тела, чтобы выдержать холод или влажность на 1 час. Неизменяемый." },
+            { id: 6, name: "Кисть Генгкоу", category: "potion", locations: ["holmy", "podzemje"], time: "any", rarity: "uncommon", description: "Модификатор: Удваивает кол-во костей при броске любого исцеляющего эффекта. Эффект исцеления делится пополам на два раунда и срабатывает в конце вашего хода." },
+            { id: 7, name: "Нектар Гиацинта", category: "potion", locations: ["poberezhje", "luga"], time: "any", rarity: "common", description: "Эффект: Уменьшает на 1d6 раундов эффект яда на цели, однако не может убрать его полностью, один раунд все равно будет нанесен урон от яда." },
+            { id: 8, name: "Веточка лаванды", category: "potion", locations: ["poberezhje", "luga", "holmy"], time: "any", rarity: "common", description: "Специальный (модификатор): Делает зелье или яд более стабильный для его безопасного создания. Накапливаемый до 3." },
+            { id: 9, name: "Корень Мандрагоры", category: "potion", locations: ["povsemestno"], time: "any", rarity: "common", description: "Эффект: Ослабляет любую болезнь или яд наполовину в течении 2к12 часов. Препятствует только уже существующим ядам или заболеваниям. Неизменяемый." },
+            { id: 10, name: "Семена Молочая", category: "potion", locations: ["povsemestno"], time: "any", rarity: "common", description: "Модификатор: Удваивает кол-во костей при броске любого исцеляющего эффекта, но убирает модификатор Алхимии." },
+            { id: 11, name: "Корень дикого Шалфея", category: "potion", locations: ["povsemestno"], time: "any", rarity: "common", description: "Эффект: Исцеляет 2к4 + Модификатор Алхимии. Накапливаемый до 5." },
 
-        // Мобильная навигация
-        const navToggle = document.getElementById('nav-toggle');
-        const navContent = document.getElementById('nav-content');
-        const heroContentBox = document.getElementById('hero-content-box');
-        
-        function toggleMobileMenu() {
-            const isMenuOpen = navContent.classList.contains('max-h-screen');
+            // ----- ИНГРЕДИЕНТЫ ЯДОВ -----
+            { id: 12, name: "Арктический плющ", category: "poison", locations: ["arktika", "gory"], time: "any", rarity: "common", description: "Модификатор: Заменяет урон ядом на холод или урон некротической энергией; цель становится отравлена на 1 минуту при провале спасброска Телосложения. Комбинируемый." },
+            { id: 13, name: "Шляпка мухомора", category: "poison", locations: ["poberezhje", "bolota"], time: "any", rarity: "common", description: "Модификатор: Меняет любой эффект яда на не летальный, цель падает без сознания." },
+            { id: 14, name: "Дыхание Василиска", category: "poison", locations: ["gory"], time: "any", rarity: "very_rare", description: "Эффект: Медленно парализует врага. Цель должна совершать спасбросок Телосложения каждый ход в течении 4-х ходов. Пока цель находится под действием этого эффекта, то она считается замедленной, как при наложении заклинания Замедление. При провале спасброска цель парализуется на 4 часа. Не комбинируемый. Неизменяемый." },
+            { id: 15, name: "Сок кактуса", category: "poison", locations: ["pustyni", "luga"], time: "any", rarity: "common", description: "Модификатор: Цель не получает никакого урона от яда и не замечает его действия, пока не пройдет 5 ходов с момента начала действия яда. После этого цель получает урон за все прошедшие ходы единовременно. Агрегатный." },
+            { id: 16, name: "Цветы Дракуса", category: "poison", locations: ["pustyni", "luga", "gory"], time: "any", rarity: "common", description: "Модификатор: Изменяет урон от яда на огненный или кислотный урон; цель всё еще отравлена на 1 мин. при провале спасброска Телосложения. Комбинируемый." },
+            { id: 17, name: "Морозные бобы", category: "poison", locations: ["arktika", "gory"], time: "any", rarity: "rare", description: "Модификатор: Когда цель отравлена, её скорость падает на 10 футов на 1 минуту. Неизменяемый." },
+            { id: 18, name: "Листья Харрады", category: "poison", locations: ["lesa", "luga", "holmy"], time: "any", rarity: "common", description: "Эффект/Модификатор: Пока отравлена, цель имеет помехи на проверки. Неизменяемый." },
+            { id: 19, name: "Ртутный мох", category: "poison", locations: ["povsemestno"], time: "any", rarity: "uncommon", description: "Модификатор: Удваивает кол-во костей на любой Эффект яда, но уменьшает время действия Эффекта вдвое. Комбинируемый." },
+            { id: 20, name: "Сияющий синтоцвет", category: "poison", locations: ["podzemje"], time: "any", rarity: "rare", description: "Модификатор: Изменяет урон ядом на урон от света; цель всё еще отравлена на 1 минуту при провале спасброска Телосложения. Комбинируемый." },
+            { id: 21, name: "Ягоды шиповцета", category: "poison", locations: ["pustyni", "bolota"], time: "any", rarity: "uncommon", description: "Специальный (модификатор): Увеличивает тип кости на 1 за любой Модификатор. Для чар увеличивает ранг заклинания." },
+            { id: 22, name: "Лепестки языка вирма", category: "poison", locations: ["povsemestno"], time: "any", rarity: "common", description: "Эффект: 1к4 + Мод. Алхимии урона ядом за атаку. Цель считается отравленной на 1 минуту. Накапливаемый до 5." },
+            { id: 23, name: "Яд василиска", category: "poison", locations: ["special"], time: "any", rarity: "very_rare", description: "Эффект (спасбросок): 5к6 + Мод. Алхимии урона ядом за атаку или за раунд, если сделан как агрегатный. Цель становится отравлена на 1 минуту при провале спасброска Телосложения. Агрегатный." },
+            { id: 24, name: "Яд гигантских ос", category: "poison", locations: ["special"], time: "any", rarity: "rare", description: "Эффект (спасбросок): 3к6 + Мод. Алхимии урона ядом за атаку или за раунд, если сделан как агрегатный. Цель становится отравлена на 1 минуту при провале спасброска Телосложения. Агрегатный." },
+            { id: 25, name: "Яд гигантских скорпионов", category: "poison", locations: ["special"], time: "any", rarity: "rare", description: "Эффект (спасбросок): 4к10 + Мод. Алхимии урона ядом за атаку или за раунд, если сделан как агрегатный. Накапливаемый до 4. Агрегатный." },
+            
+            // ----- ИНГРЕДИЕНТЫ МАГИЧЕСКИХ ЗЕЛИЙ -----
+            { id: 26, name: "Корень Стрела", category: "magic_potion", locations: ["pustyni", "luga", "lesa"], time: "any", rarity: "uncommon", description: "Магия: +1 к броскам атаки, когда используется на оружие." },
+            { id: 27, name: "Синий Кривожаб", category: "magic_potion", locations: ["poberezhje", "lesa", "bolota"], time: "any", rarity: "rare", description: "Магия: Игрок создаёт Зелье газообразной формы." },
+            { id: 28, name: "Ко-Глонд", category: "magic_potion", locations: ["pustyni", "poberezhje"], time: "any", rarity: "rare", description: "Магия: Игрок создаёт Зелье ясновидения." },
+            { id: 29, name: "Дьявольский кроволист", category: "magic_potion", locations: ["holmy", "bolota", "podzemje"], time: "any", rarity: "very_rare", description: "Магия: Игрок создаёт Зелье живучести." },
+            { id: 30, name: "Элементальная вода", category: "magic_potion", locations: ["povsemestno", "gory", "bolota", "podzemje"], time: "any", rarity: "rare", description: "Модификатор (Магия): Ингредиент, требуемый для всех Магических зелий." },
+            { id: 31, name: "Дьявольский плющ", category: "magic_potion", locations: ["arktika", "podzemje"], time: "any", rarity: "rare", description: "Магия: Игрок создаёт Зелье чтения мыслей." },
+            { id: 32, name: "Водоподох", category: "magic_potion", locations: ["poberezhje", "bolota"], time: "any", rarity: "uncommon", description: "Магия: Игрок создаёт Зелье подводного дыхания." },
+            { id: 33, name: "Сердце Желеодрева", category: "magic_potion", locations: ["arktika", "lesa", "holmy"], time: "any", rarity: "uncommon", description: "Магия: Игрок создаёт Зелье увеличения." },
+            { id: 34, name: "Светопыль шляпки", category: "magic_potion", locations: ["gory", "podzemje"], time: "any", rarity: "rare", description: "Магия: Игрок создаёт Зелье героизма." },
+            { id: 35, name: "Порошок мэрипоти", category: "magic_potion", locations: ["arktika", "podzemje"], time: "any", rarity: "very_rare", description: "Магия: Игрок создаёт Зелье долголетия." },
+            { id: 36, name: "Ягоды Паслёна", category: "magic_potion", locations: ["lesa", "holmy"], time: "any", rarity: "uncommon", description: "Магия: Игрок создаёт Масло ускользания." },
+            { id: 37, name: "Изначальный бальзам", category: "magic_potion", locations: ["gory", "bolota", "podzemje"], time: "any", rarity: "rare", description: "Магия: Игрок создаёт Зелье силы великана." },
+            { id: 38, name: "Каменный вьюн", category: "magic_potion", locations: ["holmy", "gory"], time: "any", rarity: "rare", description: "Магия: Игрок создаёт Зелье неуязвимости." },
+            { id: 39, name: "Бобы Суили", category: "magic_potion", locations: ["pustyni", "luga"], time: "any", rarity: "common", description: "Магия: Игрок создаёт Зелье лазанья." },
+            { id: 40, name: "Серебряный гибискус", category: "magic_potion", locations: ["arktika", "podzemje"], time: "any", rarity: "rare", description: "Магия: При употреблении позволяет использовать случайное элементальное дыхание 3 раза. Неизменяемый." },
+            { id: 41, name: "Листохвост", category: "magic_potion", locations: ["luga", "holmy"], time: "any", rarity: "very_rare", description: "Магия: Игрок создаёт Зелье скорости." },
+            { id: 42, name: "Вердинская крапива", category: "magic_potion", locations: ["lesa"], time: "any", rarity: "uncommon", description: "Магия: Игрок создаёт Зелье дружбы с животными." },
+            { id: 43, name: "Корень пустоты", category: "magic_potion", locations: ["arktika", "pustyni"], time: "any", rarity: "very_rare", description: "Магия: Игрок создаёт Зелье полёта." },
+            { id: 44, name: "Стебли Гифломы", category: "magic_potion", locations: ["lesa", "podzemje"], time: "any", rarity: "very_rare", description: "Магия: Игрок создаёт Зелье невидимости." },
+            { id: 45, name: "Зловонная луковица", category: "magic_potion", locations: ["poberezhje", "bolota"], time: "any", rarity: "rare", description: "Магия: Игрок создаёт Зелье уменьшения." },
+        ];
 
-            if (isMenuOpen) {
-                // --- Процесс ЗАКРЫТИЯ ---
-
-                // 1. Устанавливаем БЫСТРУЮ скорость
-                navContent.classList.remove('duration-[700ms]'); // Убираем медленную на всякий случай
-                navContent.classList.add('duration-300');       // Добавляем быструю
-
-                // 2. Запускаем анимацию закрытия
-                navContent.classList.remove('max-h-screen');
-                navContent.classList.add('max-h-0', 'opacity-0');
-                heroContentBox.classList.remove('opacity-0');
-
-            } else {
-                // --- Процесс ОТКРЫТИЯ ---
-
-                // 1. Устанавливаем МЕДЛЕННУЮ скорость
-                navContent.classList.remove('duration-300');        // Убираем быструю на всякий случай
-                navContent.classList.add('duration-[700ms]');   // Добавляем медленную
-
-                // 2. Запускаем анимацию открытия
-                navContent.classList.remove('max-h-0', 'opacity-0');
-                navContent.classList.add('max-h-screen');
-                heroContentBox.classList.add('opacity-0');
+        // --- НОВАЯ БАЗА ДАННЫХ: Таблицы Поиска по d12 ---
+        // (Основано на фотографиях из image_58c328, image_58c32b, image_58c342, image_58c345)
+        // 'povsemestno' означает, что нужно сделать бросок по таблице 'povsemestno'.
+        const locationLootTables = {
+            'povsemestno': {
+                1: { id: 1 }, 2: { id: 9 }, 3: { id: 19 }, 4: { id: 19 }, 5: { id: 30 }, 6: { id: 11 },
+                7: { id: 1 }, 8: { id: 22 }, 9: { id: 22 }, 10: { id: 10 }, 11: { id: 10 }, 12: { id: 9 }
+            },
+            'arktika': {
+                1: { id: 5 }, 2: { id: 40, note: "1d4 шт." }, 3: { id: 35, note: "1-2 шт." }, 4: { id: 33 }, 5: { id: 17, note: "1-2 шт." },
+                6: 'povsemestno', 7: 'povsemestno', 8: 'povsemestno',
+                9: { id: 12 }, 10: { id: 5 }, 11: { id: 31, note: "1d4 шт." }, 12: { id: 43, note: "1 шт." } // 1 шт. взято из Доп. правила для "Корень пустоты"
+            },
+            'poberezhje': {
+                1: { id: 13, note: "только на берегу" }, 2: { id: 32, note: "1-2 шт." }, 3: { id: 13, note: "только на берегу" }, 4: { id: 7 }, 5: { id: 2, note: "1-2 шт." },
+                6: 'povsemestno', 7: 'povsemestno', 8: 'povsemestno',
+                9: { id: 8, note: "только на берегу" }, 10: { id: 27, note: "только на берегу" }, 11: { id: 45, note: "1 шт." }, 12: { id: 28, note: "1d4" }
+            },
+            'pustyni': {
+                1: { id: 15, note: "2 шт." }, 2: { id: 28, note: "1d4" }, 3: { id: 11 }, 4: { id: 3 }, 5: { id: 15, note: "2 шт." }, // Ошибка в таблице (id 11 - Корень дикого шалфея), но по фото id 3 (Сушеная Эфедра) тоже есть. Ставлю 3.
+                6: 'povsemestno', 7: 'povsemestno', 8: 'povsemestno',
+                9: { id: 16 }, 10: { id: 39 }, 11: { id: 21 }, 12: { id: 43, note: "доп. 1 Элементальная вода" }
+            },
+            'lesa': {
+                1: { id: 4 }, 2: { id: 18 }, 3: { id: 36 }, 4: { id: 4 }, 5: { id: 42 },
+                6: 'povsemestno', 7: 'povsemestno', 8: 'povsemestno',
+                9: { id: 26 }, 10: { id: 33 }, 11: { id: 27, note: "1-2 шт." }, 12: { id: 44, note: "Ночью 2 шт., днем перебросить" }
+            },
+            'luga': {
+                1: { id: 8, note: "1d4 шт." }, 2: { id: 18 }, 3: { id: 16 }, 4: { id: 8, note: "2 шт." }, 5: { id: 26 },
+                6: 'povsemestno', 7: 'povsemestno', 8: 'povsemestno',
+                9: { id: 39, note: "1-2 шт." }, 10: { id: 15, note: "1-2 шт." }, 11: { id: 41 }, 12: { id: 7 }
+            },
+            'holmy': {
+                // В фото-таблице "Холмы" 11 записей, дублирую последнюю для d12
+                1: { id: 29 }, 2: { id: 36 }, 3: { id: 41, note: "2 шт." }, 4: { id: 8 },
+                5: 'povsemestno', 6: 'povsemestno', 7: 'povsemestno',
+                8: { id: 33 }, 9: { id: 6 }, 10: { id: 38, note: "1-2 шт." }, 11: { id: 18 }, 12: { id: 18 } // Дубликат id 18
+            },
+            'gory': {
+                1: { id: 30 }, 2: { id: 14, note: "1-2 шт." }, 3: { id: 17, note: "2 шт." }, 4: { id: 12, note: "2 шт." }, 5: { id: 3 },
+                6: 'povsemestno', 7: 'povsemestno', 8: 'povsemestno',
+                9: { id: 16 }, 10: { id: 34, note: "2 шт. в пещерах" }, 11: { id: 38, note: "1d4 шт." }, 12: { id: 37 }
+            },
+            'bolota': {
+                // В фото-таблице "Болота" 11 записей, дублирую последнюю для d12
+                1: { id: 30 }, 2: { id: 29 }, 3: { id: 21 }, 4: { id: 4 }, 5: { id: 13 },
+                6: 'povsemestno', 7: 'povsemestno', 8: 'povsemestno',
+                9: { id: 27, note: "2 шт." }, 10: { id: 45 }, 11: { id: 32, note: "2 шт. если дождь" }, 12: { id: 37 } // Дубликат id 37
+            },
+            'podzemje': {
+                1: { id: 30 }, 2: { id: 37, note: "2 шт." }, 3: { id: 40 }, 4: { id: 29 }, 5: { id: 2 }, 6: { id: 35, note: "1d4 шт." },
+                7: { id: 5 }, 8: { id: 31 }, 9: { id: 6, note: "1d4 шт." }, 10: { id: 34, note: "2 шт." }, 11: { id: 20 }, 12: { id: 44, note: "1-2 шт." }
             }
-        }
+        };
 
-        navToggle.addEventListener('click', toggleMobileMenu);
 
-        // Смена фона навигации при прокрутке
-        const navbar = document.getElementById('navbar');
-        window.addEventListener('scroll', function() {
-            if (window.scrollY > 50) {
-                navbar.classList.add('bg-[#4f4f4f]/90', 'shadow-lg');
-            } else {
-                navbar.classList.remove('bg-[#4f4f4f]/90', 'shadow-lg');
+        // --- Глобальные Элементы DOM ---
+        let locationFilter, nightToggle, timeLabel, categoryFilter;
+        let searchBtn, searchD20ResultEl, searchResultsDisplayEl;
+        let gatherBtn, gatherD20ResultEl, lootDisplayEl;
+        let diceResultEl, diceMultiplierEl;
+        let plantListContainerEl;
+        // --- НОВЫЕ Глобальные Элементы ---
+        let searchDifficultyFilter, gameModeToggle, gameModeLabel;
+
+
+        // --- ИНИЦИАЛИЗАЦИЯ ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Инициализация элементов
+            locationFilter = document.getElementById('location-filter');
+            nightToggle = document.getElementById('night-toggle');
+            timeLabel = document.getElementById('time-label');
+            categoryFilter = document.getElementById('category-filter');
+            
+            // Элементы Поиска
+            searchBtn = document.getElementById('search-btn');
+            searchD20ResultEl = document.getElementById('search-d20-result');
+            searchResultsDisplayEl = document.getElementById('search-results-display');
+            
+            // Элементы Сбора
+            gatherBtn = document.getElementById('gather-btn');
+            gatherD20ResultEl = document.getElementById('gather-d20-result');
+            lootDisplayEl = document.getElementById('loot-display');
+            
+            // Другие элементы
+            diceResultEl = document.getElementById('dice-result');
+            diceMultiplierEl = document.getElementById('dice-multiplier');
+            plantListContainerEl = document.getElementById('plant-list-container');
+
+            // --- НОВЫЕ Элементы ---
+            searchDifficultyFilter = document.getElementById('search-difficulty-filter');
+            gameModeToggle = document.getElementById('game-mode-toggle');
+            gameModeLabel = document.getElementById('game-mode-label');
+            
+            // --- ЗАПОЛНЕНИЕ ВЫПАДАЮЩЕГО СПИСКА МНОЖИТЕЛЯ ---
+            for (let i = 1; i <= 30; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                diceMultiplierEl.appendChild(option);
             }
-        });
 
-        // Плавное появление элементов при прокрутке
-        const revealElements = document.querySelectorAll('.scroll-reveal');
-        const revealObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
-                }
+            // --- ОБРАБОТЧИКИ СОБЫТИЙ ---
+
+            // Переключатель Ночь/День
+            nightToggle.addEventListener('change', () => {
+                const isNight = nightToggle.checked;
+                timeLabel.textContent = isNight ? 'Ночь' : 'День';
+                renderPlantList(); // Обновляем компандиум
             });
-        }, { threshold: 0.1 });
 
-        revealElements.forEach(element => {
-            revealObserver.observe(element);
-        });
+            // --- НОВЫЙ Обработчик: Режим Игры ---
+            gameModeToggle.addEventListener('change', () => {
+                const isSimpleMode = gameModeToggle.checked;
+                gameModeLabel.textContent = isSimpleMode ? 'Простой' : 'Сюжет';
+            });
 
-        // --- НОВЫЙ БЛОК ПЛАВНОЙ ПРОКРУТКИ ---
-        function smoothScroll(targetPosition, duration = 1000) {
-            const startPosition = window.pageYOffset;
-            const distance = targetPosition - startPosition;
-            let startTime = null;
+            // Фильтры Компендиума
+            locationFilter.addEventListener('change', renderPlantList);
+            categoryFilter.addEventListener('change', renderPlantList);
 
-            function animation(currentTime) {
-                if (startTime === null) startTime = currentTime;
-                const timeElapsed = currentTime - startTime;
-                const run = easeInOutQuad(timeElapsed, startPosition, distance, duration);
-                window.scrollTo(0, run);
-                if (timeElapsed < duration) requestAnimationFrame(animation);
-            }
+            // Кнопка Поиска (бывший Сбор)
+            searchBtn.addEventListener('click', handleSearchRoll); // *** ЛОГИКА ПОЛНОСТЬЮ ИЗМЕНЕНА ***
 
-            function easeInOutQuad(t, b, c, d) {
-                t /= d / 2;
-                if (t < 1) return c / 2 * t * t + b;
-                t--;
-                return -c / 2 * (t * (t - 2) - 1) + b;
-            }
+            // Кнопка Сбора (логика не изменена, но больше не вызывается)
+            gatherBtn.addEventListener('click', handleGatherRoll);
 
-            requestAnimationFrame(animation);
-        }
-
-        document.querySelectorAll('#navbar a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                
-                const targetId = this.getAttribute('href');
-                const isMenuOpen = navContent.classList.contains('max-h-screen');
-
-                const performScroll = () => {
-                    if (targetId === '#') {
-                        smoothScroll(0);
-                        return;
+            // Кнопки Обычных Кубиков
+            document.querySelectorAll('.dice-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const sides = parseInt(button.dataset.die, 10);
+                    const multiplier = parseInt(diceMultiplierEl.value, 10) || 1;
+                    
+                    let totalSum = 0;
+                    for (let i = 0; i < multiplier; i++) {
+                        totalSum += rollDice(sides);
                     }
                     
-                    const targetElement = document.querySelector(targetId);
-                    if (targetElement) {
-                        const navbarTopBar = document.querySelector('#navbar > div');
-                        const navbarHeight = navbarTopBar ? navbarTopBar.offsetHeight : 0;
-                        
-                        const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
-                        const offsetPosition = targetPosition - navbarHeight;
+                    diceResultEl.textContent = totalSum;
+                });
+            });
 
-                        smoothScroll(offsetPosition, 1000); // 1000 мс = 1 секунда
-                    }
-                };
-
-                if (isMenuOpen) {
-                    toggleMobileMenu();
-                    setTimeout(performScroll, 300); // Небольшая задержка, чтобы меню успело закрыться
-                } else {
-                    performScroll();
+            // Обработчик для аккордеонов
+            plantListContainerEl.addEventListener('click', (e) => {
+                const toggleButton = e.target.closest('.plant-toggle-btn');
+                if (!toggleButton) return;
+                const details = toggleButton.nextElementSibling;
+                if (details) {
+                    details.classList.toggle('hidden');
                 }
             });
-        });
-        
-        // Установка текущего года в футере
-        document.getElementById('year').textContent = '2003 - ' + new Date().getFullYear();
 
+            // Первоначальная отрисовка
+            renderPlantList();
+            
+            // Инициализация переключателей
+            nightToggle.dispatchEvent(new Event('change'));
+            gameModeToggle.dispatchEvent(new Event('change')); // *** НОВЫЙ ВЫЗОВ ***
+            
+            // Инициализация кнопки сбора (остается выключенной)
+            gatherBtn.disabled = true;
+        });
+
+        // --- ОСНОВНЫЕ ФУНКЦИИ ---
+
+        /**
+         * Бросает кубик с заданным количеством граней.
+         * @param {number} sides - Количество граней (4, 6, 8, 10, 12, 20)
+         * @returns {number} - Результат броска (1-sides)
+         */
+        function rollDice(sides) {
+            return Math.floor(Math.random() * sides) + 1;
+        }
+
+        /**
+         * Возвращает CSS-класс для редкости растения.
+         */
+        function getRarityClass(rarity) {
+            switch (rarity) {
+                case 'common': return 'bg-gray-500 text-gray-100';
+                case 'uncommon': return 'bg-blue-600 text-white';
+                case 'rare': return 'bg-purple-600 text-white';
+                case 'very_rare': return 'bg-yellow-500 text-gray-900 font-bold';
+                default: return 'bg-gray-400 text-gray-900';
+            }
+        }
+
+        /**
+         * Возвращает SVG-иконку для категории.
+         */
+        function getCategoryIcon(category) {
+            const icons = {
+                'potion': `
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-blue-400">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.05 4.575a1.575 1.575 0 1 0-3.15 0v3m3.15-3v-1.5a1.575 1.575 0 0 1 3.15 0v1.5m-3.15 0 .075.075a1.575 1.575 0 0 0 2.25 2.25l.075.075v-4.875M10.05 4.575h.008v.008h-.008v-.008Zm-3.15 0h.008v.008h-.008v-.008Zm0 9a1.5 1.5 0 0 0-1.5 1.5v5.25a1.5 1.5 0 0 0 1.5 1.5h3a1.5 1.5 0 0 0 1.5-1.5v-5.25a1.5 1.5 0 0 0-1.5-1.5h-3Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm3-3h.008v.008h-.008v-.008Z" />
+                    </svg>`,
+                'poison': `
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-red-400">
+                         <path stroke-linecap="round" stroke-linejoin="round" d="M11.412 15.655 9.75 12.75l-1.662 2.905m-1.662-2.905L4.764 12.75l-1.662 2.905m7.5 0-3.324 5.817a.375.375 0 0 1-.65 0L2.697 16.126c-.866-1.5.217-3.374 1.948-3.374h14.71c1.73 0 2.813 1.874 1.948 3.374L13.088 21.943a.375.375 0 0 1-.65 0Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12.963 2.286a.375.375 0 0 0-.927 0L8.38 3.961a.375.375 0 0 0-.17.316v3.621a.375.375 0 0 0 .17.316l3.655 1.675a.375.375 0 0 0 .416 0l3.655-1.675a.375.375 0 0 0 .17-.316V4.277a.375.375 0 0 0-.17-.316L12.963 2.286Z" />
+                    </svg>`,
+                'magic_potion': `
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-purple-400">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.452-2.452L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.452-2.452L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.452 2.452L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.452 2.452ZM16.5 13.5h-3" />
+                    </svg>`,
+                default: `
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-400">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>`
+            };
+            return icons[category] || icons.default;
+        }
+
+        /**
+         * Отрисовывает полный список растений в Компендиуме.
+         */
+        function renderPlantList() {
+            if (!plantListContainerEl) return;
+
+            const currentLocation = locationFilter.value;
+            const isNight = nightToggle.checked;
+            const currentTime = isNight ? 'night' : 'day';
+            const currentCategory = categoryFilter.value;
+
+            // 'special' локация больше не используется в поиске, но может быть в базе
+            const validPlants = plantDatabase.filter(p => !p.locations.includes('special'));
+
+            const filteredPlants = validPlants.filter(plant => {
+                const locationMatch = plant.locations.includes(currentLocation);
+                const timeMatch = (plant.time === currentTime || plant.time === 'any');
+                const categoryMatch = (currentCategory === 'all' || plant.category === currentCategory);
+                return locationMatch && timeMatch && categoryMatch;
+            });
+
+            plantListContainerEl.innerHTML = '';
+
+            if (filteredPlants.length === 0) {
+                plantListContainerEl.innerHTML = '<p class="text-gray-400 italic">По вашим фильтрам ничего не найдено.</p>';
+                return;
+            }
+
+            const categories = {};
+            filteredPlants.forEach(plant => {
+                if (!categories[plant.category]) {
+                    categories[plant.category] = [];
+                }
+                categories[plant.category].push(plant);
+            });
+            
+            const categoryNames = {
+                'potion': 'Ингредиенты Зелий', 
+                'poison': 'Ингредиенты Ядов', 
+                'magic_potion': 'Ингредиенты Магических Зелий'
+            };
+
+            const sortedCategories = Object.keys(categories).sort((a, b) => 
+                categoryNames[a].localeCompare(categoryNames[b])
+            );
+
+            for (const categoryKey of sortedCategories) {
+                const categoryName = categoryNames[categoryKey] || categoryKey;
+                const plantsInCategory = categories[categoryKey];
+
+                let categoryHtml = `
+                    <div>
+                        <h3 class="text-2xl font-semibold text-green-300 mt-6 border-b border-gray-700 pb-2 mb-4">
+                            ${categoryName}
+                        </h3>
+                        <div class="space-y-3">
+                `;
+
+                plantsInCategory.sort((a, b) => a.name.localeCompare(b.name));
+
+                plantsInCategory.forEach(plant => {
+                    categoryHtml += `
+                        <div class="bg-gray-700 rounded-lg shadow-md overflow-hidden">
+                            <!-- 1. Кликабельный Заголовок Карточки -->
+                            <button class="plant-toggle-btn w-full flex items-center justify-between p-4 text-left hover:bg-gray-600 focus:outline-none focus:bg-gray-600 transition duration-150">
+                                <div class="flex items-center">
+                                    <span class="mr-3 flex-shrink-0">
+                                        ${getCategoryIcon(plant.category)}
+                                    </span>
+                                    <h4 class="text-lg font-bold text-white">${plant.name}</h4>
+                                </div>
+                                <span class="text-xs font-medium px-3 py-1 rounded-full ${getRarityClass(plant.rarity)} flex-shrink-0 ml-4">
+                                    ${plant.rarity}
+                                </span>
+                            </button>
+                            
+                            <!-- 2. Скрытый Блок с Деталями -->
+                            <div class="plant-details p-4 bg-gray-800 border-t border-gray-600 hidden">
+                                <p class="text-sm text-gray-300 mb-3">${plant.description}</p>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="text-xs font-medium px-2 py-1 rounded-md bg-gray-600 text-gray-200">
+                                        Время: ${plant.time === 'any' ? 'Любое' : (plant.time === 'day' ? 'День' : 'Ночь')}
+                                    </span>
+                                    <span class="text-xs font-medium px-2 py-1 rounded-md bg-gray-600 text-gray-200">
+                                        Места: ${plant.locations.map(loc => {
+                                            const option = document.querySelector(`#location-filter option[value='${loc}']`);
+                                            return option ? option.textContent : loc;
+                                        }).join(', ')}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                categoryHtml += '</div></div>';
+                plantListContainerEl.innerHTML += categoryHtml;
+            }
+        }
+
+        // --- *** НОВАЯ ЛОГИКА ПОИСКА *** ---
+        /**
+         * Обрабатывает бросок d20 для ПОИСКА растений по новым правилам.
+         */
+        function handleSearchRoll() {
+            const roll = rollDice(20);
+            searchD20ResultEl.textContent = roll;
+
+            // 1. Получаем все настройки
+            const difficultyValue = searchDifficultyFilter.value;
+            const isSimpleMode = gameModeToggle.checked;
+            const currentLocation = locationFilter.value;
+            const isNight = nightToggle.checked; // <--- (1) Вы ПРАВИЛЬНО получили 'isNight'
+
+            // 2. Определяем СЛ (DC)
+            let dc = 10;
+            switch (difficultyValue) {
+                case 'targeted': dc = 10; break;
+                case 'moving': dc = 15; break;
+                case 'fast': dc = 20; break;
+                case 'running': dc = 25; break;
+            }
+
+            // 3. Проверяем успех броска
+            if (roll < dc) {
+                searchResultsDisplayEl.innerHTML = `<p class="italic text-red-400 font-semibold">Поиск не дал результатов (Бросок ${roll} < СЛ ${dc}).</p>`;
+                // Сбрасываем сбор (пока не используется, но для чистоты)
+                resetGatherState();
+                return;
+            }
+
+            // 4. Поиск успешен! Определяем количество бросков d12
+            let quantityRoll = rollDice(4) + 1;
+            if (isSimpleMode) {
+                quantityRoll += rollDice(4); // 2d4+1
+            }
+            // (isSimpleMode ? 2d4 : 1d4) + 1
+
+            // 5. Генерируем добычу
+            const aggregatedLoot = {};
+            const lootDetails = []; // Для хранения доп. информации
+
+            for (let i = 0; i < quantityRoll; i++) {
+                // *** (2) ОШИБКА БЫЛА ЗДЕСЬ: Вы не передавали 'isNight' в функцию ***
+                // БЫЛО: const lootEntry = getLootEntry(currentLocation, rollDice(12));
+                // СТАЛО:
+                const lootEntry = getLootEntry(currentLocation, rollDice(12), isNight);
+                
+                // Добавляем в агрегированный список
+                if (lootEntry) {
+                    const plant = plantDatabase.find(p => p.id === lootEntry.id);
+                    if (plant) {
+                        const key = plant.id;
+                        // Проверяем "Доп. правила"
+                        let qty = 1;
+                        if (lootEntry.note) {
+                             // Простой парсинг заметки (по примеру "2 шт.")
+                            if (lootEntry.note.includes("2 шт.")) qty = 2;
+                            // (Более сложный парсинг d4/d6 можно добавить здесь)
+                        }
+
+                        if (lootEntry.note && lootEntry.note.includes("доп. 1 Элементальная вода")) {
+                            // Особый случай для Корня пустоты
+                            aggregatedLoot[43] = (aggregatedLoot[43] || 0) + 1; // Корень пустоты
+                            aggregatedLoot[30] = (aggregatedLoot[30] || 0) + 1; // Элементальная вода
+                            lootDetails.push(`Найден ${plant.name} + 1 Элементальная вода`);
+                        } else {
+                            aggregatedLoot[key] = (aggregatedLoot[key] || 0) + qty;
+                            lootDetails.push(`Найден ${plant.name} (x${qty}) ${lootEntry.note ? `[${lootEntry.note}]` : ''}`);
+                        }
+                    }
+                }
+            }
+
+            // 6. Отображаем результаты
+            renderAggregatedLoot(aggregatedLoot, roll, dc, lootDetails);
+
+            // 7. Сбрасываем кнопку сбора (пока не используется)
+            resetGatherState();
+        }
+
+        /**
+         * НОВАЯ ФУНКЦИЯ: Получает запись о добыче из таблицы по d12,
+         * обрабатывая переадресацию на 'povsemestno'.
+         * *** ОБНОВЛЕНО: *** Добавлена обработка времени суток и переброс.
+         */
+        function getLootEntry(locationKey, d12Roll, isNight) { // <-- (1) Добавлен isNight
+            const table = locationLootTables[locationKey];
+            if (!table) {
+                console.error(`Нет таблицы добычи для: ${locationKey}`);
+                return null;
+            }
+
+            let entry = table[d12Roll];
+
+            // *** НОВАЯ ЛОГИКА (2): Проверка на Стебли Гифломы (id: 44) ***
+            // id 44 = Стебли Гифломы. Если они выпали (entry.id === 44) И сейчас НЕ ночь (!isNight)
+            if (entry && entry.id === 44 && !isNight) {
+                // "днем перебросить"
+                let newRoll = rollDice(12);
+                // Перебрасываем, пока не выпадет что-то другое
+                while (newRoll === d12Roll) { 
+                    newRoll = rollDice(12);
+                }
+                // Получаем новую запись
+                entry = table[newRoll];
+            }
+
+            // Если выпал "Повсеместный ингредиент"
+            if (entry === 'povsemestno') {
+                const universalRoll = rollDice(12);
+                entry = locationLootTables['povsemestno'][universalRoll];
+            }
+
+            return entry;
+        }
+
+
+        /**
+         * НОВАЯ ФУНКЦИЯ: Отрисовывает агрегированный список найденной добычи.
+         */
+        function renderAggregatedLoot(lootMap, roll, dc, details) {
+            searchResultsDisplayEl.innerHTML = ''; // Очищаем
+
+            if (Object.keys(lootMap).length === 0) {
+                searchResultsDisplayEl.innerHTML = `<p class="italic text-green-400">Поиск успешен (Бросок ${roll} >= СЛ ${dc}), но вы ничего не нашли (возможно, из-за пустых бросков d12).</p>`;
+                return;
+            }
+
+            let html = `<p class="italic text-green-300 font-semibold mb-3">Поиск успешен! (Бросок ${roll} >= СЛ ${dc}). Найдено:</p>`;
+            html += '<ul class="list-disc list-inside space-y-1">';
+            
+            for (const plantId in lootMap) {
+                const plant = plantDatabase.find(p => p.id === parseInt(plantId));
+                const count = lootMap[plantId];
+                if (plant) {
+                    html += `<li class="text-white"><span class="font-bold text-yellow-300">${count}x</span> ${plant.name}</li>`;
+                }
+            }
+            html += '</ul>';
+
+            // Показываем детали бросков (для отладки)
+            // html += '<hr class="border-gray-600 my-2">';
+            // html += '<p class="text-xs text-gray-400 italic">' + details.join(', ') + '</p>';
+
+            searchResultsDisplayEl.innerHTML = html;
+        }
+
+        /**
+         * Сбрасывает состояние сбора.
+         */
+        function resetGatherState() {
+            gatherD20ResultEl.textContent = '-';
+            lootDisplayEl.innerHTML = '<p class="italic text-gray-400">Ожидание сбора...</p>';
+            gatherBtn.disabled = true;
+            gatherBtn.classList.add('bg-gray-500', 'cursor-not-allowed', 'opacity-50');
+            gatherBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+        }
+
+
+        /**
+         * Обрабатывает бросок d20 для СБОРА растений (ПОКА НЕ ИСПОЛЬЗУЕТСЯ).
+         * Эта функция оставлена без изменений, как вы и просили.
+         */
+        function handleGatherRoll() {
+            const gatherRoll = rollDice(20);
+            gatherD20ResultEl.textContent = gatherRoll;
+
+            // Эта логика (potentialLoot) больше не работает,
+            // так как 'potentialLoot' не заполняется.
+            const actualPlants = []; // potentialLoot.filter(p => p.rarity !== 'none' && p.name !== 'Ничего');
+
+            if (actualPlants.length === 0) {
+                renderGatheredLoot([], gatherRoll); // Показать, что собирать было нечего
+                return;
+            }
+            // ... остальная часть старой логики ...
+        }
+
+
+        /**
+         * Отрисовывает СУЩЕСТВЕННО собранную добычу. (ПОКА НЕ ИСПОЛЬЗUЕТСЯ)
+         */
+        function renderGatheredLoot(lootArray, roll) {
+            lootDisplayEl.innerHTML = '';
+
+            if (roll <= 5) {
+                lootDisplayEl.innerHTML = `<p class="italic text-red-400 font-semibold">Провал сбора! Вы ничего не смогли собрать, или повредили найденное.</p>`;
+                return;
+            }
+            
+            if (lootArray.length === 0) {
+                lootDisplayEl.innerHTML = `<p class="italic text-gray-400">Собирать было нечего.</p>`;
+                return;
+            }
+            
+            lootArray.forEach(plant => {
+                lootDisplayEl.innerHTML += `
+                    <div class="bg-green-100 p-3 rounded-md mb-2 shadow">
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-lg font-bold text-green-900">${plant.name}</h4>
+                            <span class="text-xs font-medium px-2 py-0.5 rounded-full ${getRarityClass(plant.rarity)}">
+                                ${plant.rarity}
+                            </span>
+                        </div>
+                        <p class="text-sm text-green-800">${plant.description}</p>
+                    </div>
+                `;
+            });
+        }
     </script>
 </body>
 </html>
