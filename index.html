@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Церковь 'Невеста Агнца' - место веры, надежды и любви. Христианская община в Чебоксарах.">
+    <meta name="description" content="Церковь 'Невеста Агнца' в Чебоксарах.">
     <title>Церковь "Невеста Агнца"</title>
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✝️</text></svg>">
@@ -18,7 +18,7 @@
                         gold: '#A67B5B',
                         'gold-dark': '#8C6242', 
                         'gold-light': '#C29D7F',
-                        dark: '#1F1F1F',
+                        dark: '#161616',
                         paper: '#F9F7F2',
                     },
                     fontFamily: {
@@ -26,8 +26,15 @@
                         sans: ['Montserrat', 'sans-serif'],
                     },
                     boxShadow: {
-                        'soft': '0 20px 40px -10px rgba(166, 123, 91, 0.15)',
+                        'soft': '0 20px 40px -10px rgba(166, 123, 91, 0.10)',
                         'glow': '0 0 20px rgba(166, 123, 91, 0.3)',
+                        'card': '0 10px 30px -5px rgba(0, 0, 0, 0.05)',
+                    },
+                    transitionTimingFunction: {
+                        'custom-ease': 'cubic-bezier(0.16, 1, 0.3, 1)',
+                    },
+                    backgroundImage: {
+                        'gold-gradient': 'linear-gradient(135deg, rgba(166, 123, 91, 0.1) 0%, rgba(166, 123, 91, 0.01) 100%)',
                     }
                 }
             }
@@ -46,19 +53,12 @@
             color: theme('colors.dark');
             overflow-x: hidden;
         }
-        
-        .bg-noise {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 50;
-            opacity: 0.03;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-        }
 
+        /* Блокировка скролла при открытом меню */
+        body.menu-open {
+            overflow: hidden;
+        }
+        
         h1, h2, h3, h4 {
             font-family: 'Cormorant Garamond', serif;
         }
@@ -97,10 +97,10 @@
         .floating-orb {
             position: absolute;
             border-radius: 50%;
-            filter: blur(100px);
-            opacity: 0.5;
+            filter: blur(80px);
             z-index: 0;
             animation: float 20s infinite alternate;
+            pointer-events: none;
         }
         @keyframes float {
             0% { transform: translate(0, 0) rotate(0deg); }
@@ -126,25 +126,19 @@
             opacity: 0.5;
         }
         
-        .decorative-line::after {
-            content: '';
-            display: block;
-            width: 60px;
-            height: 2px;
-            background-color: theme('colors.gold');
-            margin: 1.5rem auto;
+        /* Анимация подчеркивания ссылок */
+        .nav-link {
+            position: relative;
         }
-
         .nav-link::after {
             content: '';
             position: absolute;
             width: 0;
             height: 1px;
             bottom: -2px;
-            left: 50%;
-            background-color: white;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            transform: translateX(-50%);
+            left: 0; 
+            background-color: theme('colors.gold');
+            transition: width 0.3s ease-out;
         }
         .nav-link:hover::after {
             width: 100%;
@@ -152,20 +146,79 @@
 
         /* Glass effect class */
         .glass-panel {
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
         }
 
         @media (max-width: 768px) {
             .hero-bg, .parallax-section { background-attachment: scroll; }
         }
+        
+        /* Логика мобильного меню */
+        #mobile-menu {
+            transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.4s;
+        }
+        #mobile-menu.menu-hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        #mobile-menu.menu-visible {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        /* Анимация иконки бургера */
+        .hamburger-icon {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .close-icon {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0) rotate(-90deg);
+            opacity: 0;
+        }
+        
+        button.is-active .hamburger-icon {
+            transform: scale(0) rotate(90deg);
+            opacity: 0;
+        }
+        button.is-active .close-icon {
+            transform: translate(-50%, -50%) scale(1) rotate(0);
+            opacity: 1;
+        }
+
+        /* Декоративные паттерны */
+        .pattern-grid {
+            background-image: radial-gradient(#A67B5B 0.5px, transparent 0.5px);
+            background-size: 20px 20px;
+        }
+        
+        .skew-bg {
+            position: absolute;
+            background: linear-gradient(135deg, rgba(166, 123, 91, 0.03), rgba(166, 123, 91, 0));
+            transform: skewY(-6deg);
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
     </style>
 </head>
 <body class="antialiased selection:bg-gold selection:text-white relative">
-
-    <div class="bg-noise"></div>
 
     <div id="preloader">
         <div class="text-center">
@@ -174,33 +227,72 @@
         </div>
     </div>
 
-    <nav id="navbar" class="fixed w-full z-40 top-0 text-white transition-all duration-500 border-b border-white/5">
-        <div class="w-full container mx-auto flex flex-wrap items-center justify-between py-5 px-6">
-            <a class="text-white no-underline font-bold tracking-wide flex items-center gap-2 group" href="#">
-                <span style="font-size: 1.75rem;" class="font-serif group-hover:text-gold-light transition-colors">Невеста Агнца</span>
+    <!-- 
+      ХЕДЕР 
+    -->
+    <nav id="navbar" class="fixed w-full z-[100] top-0 text-white transition-all duration-500 border-b border-white/5 h-[64px] flex items-center">
+        <div class="w-full container mx-auto flex items-center justify-between px-6">
+            
+            <!-- Логотип (Иконка крестика) -->
+            <a class="text-white no-underline flex items-center group relative z-[101]" href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 group-hover:text-gold-light transition-colors" viewBox="0 0 24 24">
+                    <path 
+                        d="M12 2v20M5 10h14" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        stroke-width="3" 
+                        stroke-linecap="round" 
+                        stroke-linejoin="round" 
+                        class="fill-current"
+                    /> 
+                </svg>
             </a>
 
-            <div class="block lg:hidden">
-                <button id="nav-toggle" type="button" class="flex items-center px-3 py-2 text-white hover:text-gold transition focus:outline-none" aria-label="Меню">
-                    <i data-feather="menu" class="w-6 h-6"></i>
+            <!-- Кнопка Бургер -->
+            <div class="block lg:hidden relative z-[101]">
+                <button id="nav-toggle" type="button" class="relative w-10 h-10 flex items-center justify-center text-white focus:outline-none" aria-label="Меню">
+                    <div class="hamburger-icon">
+                        <i data-feather="menu" class="w-6 h-6"></i>
+                    </div>
+                    <div class="close-icon text-gold">
+                        <i data-feather="x" class="w-7 h-7"></i>
+                    </div>
                 </button>
             </div>
 
-            <div class="w-full hidden lg:block lg:flex lg:items-center lg:w-auto transition-all duration-300 absolute lg:static top-full left-0 bg-dark lg:bg-transparent border-t border-gray-800 lg:border-none shadow-2xl lg:shadow-none p-8 lg:p-0" id="nav-content">
-                <ul class="list-reset lg:flex justify-end flex-1 items-center gap-8 space-y-4 lg:space-y-0">
-                    <li><a class="nav-link text-xs uppercase tracking-[0.15em] hover:text-white/80 transition" href="#about">О нас</a></li>
-                    <li><a class="nav-link text-xs uppercase tracking-[0.15em] hover:text-white/80 transition" href="#sermons">Проповеди</a></li>
-                    <li><a class="nav-link text-xs uppercase tracking-[0.15em] hover:text-white/80 transition" href="#events">События</a></li>
-                    <li><a class="nav-link text-xs uppercase tracking-[0.15em] hover:text-white/80 transition" href="#contact">Контакты</a></li>
-                    <li>
-                        <a class="inline-block py-3 px-6 text-white border border-white/30 hover:border-gold hover:bg-gold hover:text-white rounded-full transition duration-500 text-xs uppercase tracking-[0.15em]" href="#donate">
-                            Пожертвовать
-                        </a>
-                    </li>
+            <!-- Навигация -->
+            <div class="hidden lg:flex items-center gap-10">
+                <ul class="flex items-center gap-8">
+                    <li><a class="nav-link text-xs uppercase tracking-[0.2em] font-medium text-white/80 hover:text-white transition" href="#about">О нас</a></li>
+                    <li><a class="nav-link text-xs uppercase tracking-[0.2em] font-medium text-white/80 hover:text-white transition" href="#sermons">Проповеди</a></li>
+                    <li><a class="nav-link text-xs uppercase tracking-[0.2em] font-medium text-white/80 hover:text-white transition" href="#events">События</a></li>
+                    <li><a class="nav-link text-xs uppercase tracking-[0.2em] font-medium text-white/80 hover:text-white transition" href="#contact">Контакты</a></li>
                 </ul>
+                <a class="inline-flex items-center justify-center py-2 px-6 text-gold border border-gold/40 hover:border-gold hover:bg-gold hover:text-white rounded-full transition-all duration-300 text-[11px] font-bold uppercase tracking-[0.2em]" href="#donate">
+                    Пожертвовать
+                </a>
             </div>
         </div>
     </nav>
+
+    <!-- МОБИЛЬНОЕ МЕНЮ -->
+    <div id="mobile-menu" class="fixed inset-0 z-[90] bg-dark/95 backdrop-blur-sm flex flex-col justify-center items-center menu-hidden lg:hidden">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] bg-gold/5 rounded-full blur-[80px] pointer-events-none"></div>
+        <ul class="flex flex-col items-center gap-8 relative z-10 text-center">
+            <li><a class="text-2xl font-serif italic text-white hover:text-gold transition-colors duration-300" href="#about">О нас</a></li>
+            <li><a class="text-2xl font-serif italic text-white hover:text-gold transition-colors duration-300" href="#sermons">Проповеди</a></li>
+            <li><a class="text-2xl font-serif italic text-white hover:text-gold transition-colors duration-300" href="#events">События</a></li>
+            <li><a class="text-2xl font-serif italic text-white hover:text-gold transition-colors duration-300" href="#contact">Контакты</a></li>
+            <li class="mt-8 transform scale-110">
+                <a class="inline-flex items-center justify-center py-4 px-10 bg-gold text-white rounded-full shadow-lg shadow-gold/20 hover:shadow-gold/40 transition-all duration-300 text-xs font-bold uppercase tracking-[0.25em]" href="#donate">
+                    Пожертвовать
+                </a>
+            </li>
+        </ul>
+        <div class="absolute bottom-10 text-white/20 text-[10px] uppercase tracking-[0.3em]">
+            Невеста Агнца
+        </div>
+    </div>
 
     <!-- Hero Section -->
     <div class="hero-bg relative h-screen min-h-[700px] flex items-center justify-center overflow-hidden">
@@ -212,14 +304,13 @@
                 <span class="py-1.5 px-5 border border-white/30 rounded-full text-white/90 text-[11px] font-medium uppercase tracking-[0.25em] backdrop-blur-sm bg-white/5">Христианская церковь</span>
             </div>
             <h1 class="text-white font-medium leading-[1.1] mb-8 drop-shadow-xl" style="font-size: clamp(3.5rem, 6vw, 7rem);">
-                Дом для <br><span class="italic font-light text-gold-light">твоего сердца</span>
+                Невеста <br><span class="italic font-light text-gold-light">Агнца</span>
             </h1>
-            <!-- Заменил font-light на font-normal для лучшей читаемости -->
             <p class="text-white/90 text-lg md:text-xl font-normal mb-12 max-w-xl mx-auto leading-relaxed tracking-wide antialiased">
-                *вставить текст*
+                ㅤ
             </p>
             <div class="flex flex-col sm:flex-row gap-5 justify-center items-center">
-                <a href="#events" class="bg-paper text-dark hover:bg-white py-4 px-10 rounded-full text-sm font-medium uppercase tracking-widest transition duration-300 shadow-glow hover:shadow-[0_0_40px_rgba(255,255,255,0.6)]">
+                <a href="#contact" class="bg-paper text-dark hover:bg-white py-4 px-10 rounded-full text-sm font-medium uppercase tracking-widest transition duration-300 shadow-glow hover:shadow-[0_0_40px_rgba(255,255,255,0.6)]">
                     Присоединиться
                 </a>
                 <a href="#sermons" class="group flex items-center gap-2 text-white hover:text-gold-light transition duration-300 text-sm font-medium uppercase tracking-widest border-b border-transparent hover:border-gold-light pb-1">
@@ -237,9 +328,11 @@
     <!-- Content Wrapper -->
     <div class="bg-paper relative z-10">
         
-        <!-- О нас -->
+        <!-- О НАС (Декор добавлен) -->
         <section id="about" class="py-32 px-6 relative overflow-hidden">
-            <div class="floating-orb w-96 h-96 bg-gold top-0 left-[-100px] opacity-10"></div>
+            <!-- Фоновые украшения -->
+            <div class="absolute top-0 right-0 w-1/2 h-full bg-gold/5 -skew-x-12 transform translate-x-1/3 z-0 pointer-events-none"></div>
+            <div class="floating-orb w-96 h-96 bg-gold top-20 left-[-100px] opacity-10"></div>
             
             <div class="container mx-auto relative z-10">
                 <div class="text-center mb-24 fade-up">
@@ -252,13 +345,13 @@
                 <div class="flex flex-col lg:flex-row items-center gap-16">
                     <div class="w-full lg:w-1/2 fade-up">
                         <div class="relative group">
+                            <!-- Декор вокруг фото -->
                             <div class="absolute -inset-4 border border-gold/20 rounded-t-full rounded-b-[10rem] z-0 transform rotate-2 transition duration-700 group-hover:rotate-0"></div>
-                            <img src="https://i.ibb.co/rG2ZthSs/IMG-7508.jpg" alt="Community" class="relative z-10 w-full h-[500px] object-cover rounded-t-full rounded-b-[10rem] shadow-2xl transition duration-700">
+                            <img src="https://i.ibb.co/LDLL2zgB/image.jpg" alt="Community" class="relative z-10 w-full h-[500px] object-cover rounded-t-full rounded-b-[10rem] shadow-2xl transition duration-700">
                         </div>
                     </div>
                     <div class="w-full lg:w-1/2 fade-up lg:pl-10">
                         <h3 class="text-4xl mb-8 italic text-dark">Свет миру и соль земли</h3>
-                        <!-- Увеличил вес шрифта и контраст -->
                         <div class="space-y-6 text-[#4a4a4a] font-normal text-lg leading-relaxed">
                             <p>
                                 *вставить текст*
@@ -278,30 +371,33 @@
             </div>
         </section>
 
-        <!-- Вера (Обновленные карточки) -->
-        <section id="beliefs" class="py-32 px-6 relative">
-            <div class="container mx-auto">
+        <!-- ВЕРА (Декор добавлен) -->
+        <section id="beliefs" class="py-32 px-6 relative overflow-hidden">
+            <!-- Фоновые украшения -->
+            <div class="absolute inset-0 pattern-grid opacity-30 pointer-events-none"></div>
+            <div class="floating-orb w-[600px] h-[600px] bg-gold-light bottom-[-200px] right-[-200px] opacity-5"></div>
+
+            <div class="container mx-auto relative z-10">
                 <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
                     <!-- Item 1 -->
-                    <!-- Добавлен класс glass-panel и shadow-soft -->
-                    <div class="glass-panel rounded-[2.5rem] p-10 hover:-translate-y-2 transition duration-500 group flex flex-col items-center text-center fade-up shadow-soft">
-                        <div class="mb-6 p-4 rounded-full bg-paper text-gold group-hover:bg-gold group-hover:text-white transition duration-500 shadow-inner">
+                    <div class="glass-card rounded-[2.5rem] p-10 hover:-translate-y-2 transition duration-500 group flex flex-col items-center text-center fade-up">
+                        <div class="mb-6 p-4 rounded-full bg-white/50 text-gold group-hover:bg-gold group-hover:text-white transition duration-500 shadow-sm">
                             <i data-feather="book-open" class="w-8 h-8"></i>
                         </div>
                         <h3 class="text-2xl mb-4 font-serif text-dark">Библия</h3>
                         <p class="text-gray-600 font-normal leading-relaxed text-sm">*вставить текст*</p>
                     </div>
                     <!-- Item 2 -->
-                    <div class="glass-panel rounded-[2.5rem] p-10 hover:-translate-y-2 transition duration-500 group flex flex-col items-center text-center fade-up shadow-soft" style="transition-delay: 100ms;">
-                        <div class="mb-6 p-4 rounded-full bg-paper text-gold group-hover:bg-gold group-hover:text-white transition duration-500 shadow-inner">
+                    <div class="glass-card rounded-[2.5rem] p-10 hover:-translate-y-2 transition duration-500 group flex flex-col items-center text-center fade-up" style="transition-delay: 100ms;">
+                        <div class="mb-6 p-4 rounded-full bg-white/50 text-gold group-hover:bg-gold group-hover:text-white transition duration-500 shadow-sm">
                             <i data-feather="heart" class="w-8 h-8"></i>
                         </div>
                         <h3 class="text-2xl mb-4 font-serif text-dark">Бог</h3>
                         <p class="text-gray-600 font-normal leading-relaxed text-sm">*вставить текст*</p>
                     </div>
                     <!-- Item 3 -->
-                    <div class="glass-panel rounded-[2.5rem] p-10 hover:-translate-y-2 transition duration-500 group flex flex-col items-center text-center fade-up shadow-soft" style="transition-delay: 200ms;">
-                        <div class="mb-6 p-4 rounded-full bg-paper text-gold group-hover:bg-gold group-hover:text-white transition duration-500 shadow-inner">
+                    <div class="glass-card rounded-[2.5rem] p-10 hover:-translate-y-2 transition duration-500 group flex flex-col items-center text-center fade-up" style="transition-delay: 200ms;">
+                        <div class="mb-6 p-4 rounded-full bg-white/50 text-gold group-hover:bg-gold group-hover:text-white transition duration-500 shadow-sm">
                             <i data-feather="users" class="w-8 h-8"></i>
                         </div>
                         <h3 class="text-2xl mb-4 font-serif text-dark">Церковь</h3>
@@ -313,7 +409,7 @@
 
         <!-- Цитата Параллакс -->
         <div class="parallax-section relative h-[60vh] flex items-center justify-center bg-fixed bg-cover bg-center overflow-hidden" style="background-image: url('https://i.ibb.co/TBWVkSc6/image.png');">
-            <div class="absolute inset-0 bg-black/40"></div> <!-- Убрал backdrop-blur-[2px] -->
+            <div class="absolute inset-0 bg-black/40"></div>
             <div class="container mx-auto px-6 relative z-10 text-center text-white fade-up">
                 <div class="w-16 h-16 mx-auto mb-8 rounded-full border border-white/20 flex items-center justify-center bg-white/5 backdrop-blur-md">
                     <i data-feather="message-circle" class="w-8 h-8 text-white/80"></i>
@@ -323,9 +419,12 @@
             </div>
         </div>
 
-        <!-- Проповеди -->
-        <section id="sermons" class="py-32 px-6">
-            <div class="container mx-auto">
+        <!-- ПРОПОВЕДИ (Декор добавлен) -->
+        <section id="sermons" class="py-32 px-6 relative overflow-hidden">
+            <!-- Фоновые украшения -->
+            <div class="skew-bg top-20 bg-gold/5 h-1/2"></div>
+            
+            <div class="container mx-auto relative z-10">
                 <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6 fade-up">
                     <div>
                         <span class="text-gold-dark font-medium text-xs uppercase tracking-[0.2em] mb-2 block">Служение слова</span>
@@ -337,9 +436,9 @@
                 </div>
 
                 <div class="grid md:grid-cols-3 gap-10">
-                    <!-- Card 1 -->
+                    <!-- Cards with improved hover effects -->
                     <div class="group fade-up">
-                        <div class="relative aspect-[4/3] overflow-hidden rounded-2xl mb-6 bg-gray-200 sermon-media-container cursor-pointer shadow-soft group-hover:shadow-2xl transition duration-500">
+                        <div class="relative aspect-[4/3] overflow-hidden rounded-2xl mb-6 bg-gray-200 sermon-media-container cursor-pointer shadow-lg group-hover:shadow-2xl transition duration-500 border border-white/50">
                             <div class="sermon-preview absolute inset-0 z-10 bg-gray-200">
                                 <img src="https://i.ibb.co/WNhp555j/image.png" alt="Cover" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700">
                                 <div class="absolute inset-0 bg-dark/20 group-hover:bg-dark/10 transition"></div>
@@ -355,12 +454,11 @@
                         </div>
                         <h3 class="text-2xl font-serif mb-2 group-hover:text-gold transition">Слова отражают Сердце</h3>
                         <p class="text-xs font-medium uppercase tracking-wider text-gray-400 mb-1">19.10.2025</p>
-                        <p class="text-sm text-gray-600 font-medium">Пастор Сергей Изосимов</p>
+                        <p class="text-sm text-gray-600 font-medium">Сергей Изосимов</p>
                     </div>
-
                     <!-- Card 2 -->
                     <div class="group fade-up" style="transition-delay: 100ms;">
-                         <div class="relative aspect-[4/3] overflow-hidden rounded-2xl mb-6 bg-gray-200 sermon-media-container cursor-pointer shadow-soft group-hover:shadow-2xl transition duration-500">
+                         <div class="relative aspect-[4/3] overflow-hidden rounded-2xl mb-6 bg-gray-200 sermon-media-container cursor-pointer shadow-lg group-hover:shadow-2xl transition duration-500 border border-white/50">
                             <div class="sermon-preview absolute inset-0 z-10 bg-gray-200">
                                 <img src="https://i.ibb.co/v6jc25Fb/image.jpg" alt="Cover" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700">
                                 <div class="absolute inset-0 bg-dark/20 group-hover:bg-dark/10 transition"></div>
@@ -378,10 +476,9 @@
                          <p class="text-xs font-medium uppercase tracking-wider text-gray-400 mb-1">12.10.2025</p>
                         <p class="text-sm text-gray-600 font-medium">Евгений Викторов</p>
                     </div>
-
                     <!-- Card 3 -->
                     <div class="group fade-up" style="transition-delay: 200ms;">
-                        <div class="relative aspect-[4/3] overflow-hidden rounded-2xl mb-6 bg-gray-200 sermon-media-container cursor-pointer shadow-soft group-hover:shadow-2xl transition duration-500">
+                        <div class="relative aspect-[4/3] overflow-hidden rounded-2xl mb-6 bg-gray-200 sermon-media-container cursor-pointer shadow-lg group-hover:shadow-2xl transition duration-500 border border-white/50">
                             <div class="sermon-preview absolute inset-0 z-10 bg-gray-200">
                                 <img src="https://i.ibb.co/Kp1pLZvc/image.jpg" alt="Cover" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700">
                                 <div class="absolute inset-0 bg-dark/20 group-hover:bg-dark/10 transition"></div>
@@ -403,123 +500,191 @@
             </div>
         </section>
 
-        <!-- События (Обновленные билеты) -->
-        <section id="events" class="py-32 px-6 bg-white relative overflow-hidden">
-            <div class="floating-orb w-[500px] h-[500px] bg-gold bottom-[-100px] right-[-100px] opacity-5"></div>
+        <!-- СОБЫТИЯ -->
+        <section id="events" class="py-32 px-6 relative overflow-hidden">
+            <!-- Фоновые украшения -->
+            <div class="absolute left-0 top-1/3 w-full h-96 bg-gradient-to-r from-gold/5 via-transparent to-transparent -skew-y-3 pointer-events-none"></div>
+            <div class="floating-orb w-64 h-64 bg-gold top-20 right-20 opacity-10"></div>
             
             <div class="container mx-auto relative z-10">
                 <div class="text-center mb-20 fade-up">
                     <div class="title-decoration mb-4">
                         <span class="text-gold-dark font-medium text-xs uppercase tracking-[0.2em]">Календарь</span>
                     </div>
-                    <h2 class="text-5xl text-dark">Ближайшие встречи</h2>
+                    <h2 class="text-5xl text-dark">Ближайшие события</h2>
                 </div>
 
-                <div class="max-w-4xl mx-auto grid gap-8">
-                    <!-- Event Ticket 1 -->
-                    <div class="group flex flex-col md:flex-row bg-paper hover:bg-white rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-soft border border-transparent hover:border-gold/20 fade-up">
-                        <div class="bg-dark text-white p-8 flex flex-col justify-center items-center min-w-[160px] relative">
-                            <span class="text-4xl font-bold font-serif text-gold">20</span> <!-- Сделал число золотым для акцента -->
-                            <span class="text-xs uppercase tracking-[0.2em] text-white/70">Ноября</span>
-                            
-                            <div class="absolute right-[-1px] top-1/2 transform -translate-y-1/2 translate-x-1/2 w-4 h-4 bg-white rounded-full transition-colors"></div>
-                            <div class="absolute right-[-1px] top-0 transform -translate-y-1/2 w-4 h-4 bg-white rounded-full"></div>
-                            <div class="absolute right-[-1px] bottom-0 transform translate-y-1/2 w-4 h-4 bg-white rounded-full"></div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    
+                    <!-- Event Card 1 -->
+                    <div class="glass-card rounded-[2rem] p-8 flex flex-col items-start hover:-translate-y-2 transition duration-500 fade-up group relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-gold/10 rounded-bl-[4rem] -mr-4 -mt-4 transition-transform group-hover:scale-125 duration-700"></div>
+                        
+                        <div class="flex items-baseline gap-2 mb-6 text-gold-dark">
+                            <span class="text-6xl font-serif leading-none">6</span>
+                            <span class="text-sm uppercase tracking-widest font-semibold">Декабря</span>
                         </div>
-                        <div class="p-8 flex-grow flex flex-col justify-center">
-                            <h3 class="text-2xl font-serif mb-3 group-hover:text-gold transition">Альфа-Курс</h3>
-                            <div class="flex flex-wrap gap-6 text-sm text-gray-600 font-medium uppercase tracking-wider">
-                                <span class="flex items-center gap-2"><i data-feather="clock" class="w-4 h-4 text-gold"></i> 18:00</span>
-                                <span class="flex items-center gap-2"><i data-feather="map-pin" class="w-4 h-4 text-gold"></i> Главный зал</span>
+                        
+                        <h3 class="text-2xl font-serif text-dark mb-4 group-hover:text-gold transition-colors">Семинар по добрачным отношениям</h3>
+                        
+                        <div class="space-y-3 mb-8 w-full">
+                            <div class="flex items-center gap-3 text-sm text-gray-500">
+                                <div class="w-8 h-8 rounded-full bg-paper flex items-center justify-center text-gold">
+                                    <i data-feather="clock" class="w-4 h-4"></i>
+                                </div>
+                                <span>10:00 - 18:00</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-gray-500">
+                                <div class="w-8 h-8 rounded-full bg-paper flex items-center justify-center text-gold">
+                                    <i data-feather="map-pin" class="w-4 h-4"></i>
+                                </div>
+                                <span>Главный зал</span>
                             </div>
                         </div>
-                        <div class="p-8 flex items-center justify-center border-l border-dashed border-gray-200">
-                             <span class="w-12 h-12 rounded-full border border-gray-300 flex items-center justify-center text-gray-400 group-hover:bg-gold group-hover:text-white group-hover:border-gold transition">
-                                 <i data-feather="arrow-right" class="w-5 h-5"></i>
-                             </span>
-                        </div>
+
+                        <a href="#" class="mt-auto w-full py-3 rounded-xl border border-gold/30 text-gold text-xs font-bold uppercase tracking-widest text-center hover:bg-gold hover:text-white transition-all duration-300">
+                            Подробнее
+                        </a>
                     </div>
 
-                    <!-- Event Ticket 2 -->
-                    <div class="group flex flex-col md:flex-row bg-paper hover:bg-white rounded-3xl overflow-hidden transition-all duration-300 hover:shadow-soft border border-transparent hover:border-gold/20 fade-up" style="transition-delay: 100ms;">
-                        <div class="bg-dark text-white p-8 flex flex-col justify-center items-center min-w-[160px] relative">
-                            <span class="text-2xl font-bold font-serif text-gold">21-23</span>
-                            <span class="text-xs uppercase tracking-[0.2em] text-white/70">Ноября</span>
-                            
-                             <div class="absolute right-[-1px] top-1/2 transform -translate-y-1/2 translate-x-1/2 w-4 h-4 bg-white rounded-full transition-colors"></div>
-                            <div class="absolute right-[-1px] top-0 transform -translate-y-1/2 w-4 h-4 bg-white rounded-full"></div>
-                            <div class="absolute right-[-1px] bottom-0 transform translate-y-1/2 w-4 h-4 bg-white rounded-full"></div>
+                    <!-- Event Card 2 -->
+                    <div class="glass-card rounded-[2rem] p-8 flex flex-col items-start hover:-translate-y-2 transition duration-500 fade-up group relative overflow-hidden" style="transition-delay: 100ms;">
+                         <div class="absolute top-0 right-0 w-24 h-24 bg-gold/10 rounded-bl-[4rem] -mr-4 -mt-4 transition-transform group-hover:scale-125 duration-700"></div>
+                        
+                        <div class="flex items-baseline gap-2 mb-6 text-gold-dark">
+                            <span class="text-6xl font-serif leading-none">24</span>
+                            <span class="text-sm uppercase tracking-widest font-semibold">Декабря</span>
                         </div>
-                        <div class="p-8 flex-grow flex flex-col justify-center">
-                            <h3 class="text-2xl font-serif mb-3 group-hover:text-gold transition">Альфа-Уикенд</h3>
-                            <div class="flex flex-wrap gap-6 text-sm text-gray-600 font-medium uppercase tracking-wider">
-                                <span class="flex items-center gap-2"><i data-feather="clock" class="w-4 h-4 text-gold"></i> по расписанию</span>
-                                <span class="flex items-center gap-2"><i data-feather="map-pin" class="w-4 h-4 text-gold"></i> Усадьба</span>
+                        
+                        <h3 class="text-2xl font-serif text-dark mb-4 group-hover:text-gold transition-colors">Внутреннее рождество</h3>
+                        
+                        <div class="space-y-3 mb-8 w-full">
+                            <div class="flex items-center gap-3 text-sm text-gray-500">
+                                <div class="w-8 h-8 rounded-full bg-paper flex items-center justify-center text-gold">
+                                    <i data-feather="calendar" class="w-4 h-4"></i>
+                                </div>
+                                <span>Вечер</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-gray-500">
+                                <div class="w-8 h-8 rounded-full bg-paper flex items-center justify-center text-gold">
+                                    <i data-feather="map-pin" class="w-4 h-4"></i>
+                                </div>
+                                <span>Главный зал</span>
                             </div>
                         </div>
-                        <div class="p-8 flex items-center justify-center border-l border-dashed border-gray-200">
-                             <span class="w-12 h-12 rounded-full border border-gray-300 flex items-center justify-center text-gray-400 group-hover:bg-gold group-hover:text-white group-hover:border-gold transition">
-                                 <i data-feather="arrow-right" class="w-5 h-5"></i>
-                             </span>
-                        </div>
+
+                        <a href="#" class="mt-auto w-full py-3 rounded-xl border border-gold/30 text-gold text-xs font-bold uppercase tracking-widest text-center hover:bg-gold hover:text-white transition-all duration-300">
+                            Подробнее
+                        </a>
                     </div>
+
+                    <!-- Event Card 3 (New Placeholder) -->
+                     <div class="glass-card rounded-[2rem] p-8 flex flex-col items-start hover:-translate-y-2 transition duration-500 fade-up group relative overflow-hidden" style="transition-delay: 200ms;">
+                         <div class="absolute top-0 right-0 w-24 h-24 bg-gold/10 rounded-bl-[4rem] -mr-4 -mt-4 transition-transform group-hover:scale-125 duration-700"></div>
+                        
+                        <div class="flex items-baseline gap-2 mb-6 text-gold-dark">
+                            <span class="text-6xl font-serif leading-none">7</span>
+                            <span class="text-sm uppercase tracking-widest font-semibold">Января</span>
+                        </div>
+                        
+                        <h3 class="text-2xl font-serif text-dark mb-4 group-hover:text-gold transition-colors">Рождество (благовестие)</h3>
+                        
+                        <div class="space-y-3 mb-8 w-full">
+                            <div class="flex items-center gap-3 text-sm text-gray-500">
+                                <div class="w-8 h-8 rounded-full bg-paper flex items-center justify-center text-gold">
+                                    <i data-feather="clock" class="w-4 h-4"></i>
+                                </div>
+                                <span>Вечер</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-gray-500">
+                                <div class="w-8 h-8 rounded-full bg-paper flex items-center justify-center text-gold">
+                                    <i data-feather="map-pin" class="w-4 h-4"></i>
+                                </div>
+                                <span>Главный зал</span>
+                            </div>
+                        </div>
+
+                        <a href="#" class="mt-auto w-full py-3 rounded-xl border border-gold/30 text-gold text-xs font-bold uppercase tracking-widest text-center hover:bg-gold hover:text-white transition-all duration-300">
+                            Подробнее
+                        </a>
+                    </div>
+
                 </div>
             </div>
         </section>
 
         <!-- Пожертвования -->
-        <section id="donate" class="py-24 px-6">
-            <div class="container mx-auto fade-up">
-                <div class="relative rounded-[3rem] overflow-hidden shadow-soft bg-[#2D2D2D]">
-                    <!-- Фоновый узор -->
-                    <div class="absolute top-0 right-0 w-full h-full opacity-10 pointer-events-none" 
-                         style="background-image: radial-gradient(#A67B5B 1px, transparent 1px); background-size: 20px 20px;">
-                    </div>
+        <section id="donate" class="py-24 px-6 relative overflow-hidden">
+             <!-- Фоновые элементы -->
+            <div class="absolute top-0 right-0 w-1/2 h-full bg-gold/5 -skew-x-12 transform translate-x-1/4 z-0"></div>
+            <div class="absolute bottom-0 left-0 w-96 h-96 bg-gold/10 rounded-full blur-[100px] z-0"></div>
+
+            <div class="container mx-auto relative z-10 fade-up">
+                <div class="max-w-6xl mx-auto glass-panel bg-white/60 rounded-[3rem] p-8 md:p-16 shadow-soft border border-white/50 backdrop-blur-xl">
                     
-                    <div class="flex flex-wrap relative z-10">
-                        <div class="w-full lg:w-3/5 p-12 lg:p-20 flex flex-col justify-center text-white">
-                            <div class="inline-block mb-6">
-                                <span class="bg-gold text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Поддержка</span>
-                            </div>
-                            <h2 class="text-4xl lg:text-6xl font-medium mb-8 leading-tight font-serif">
-                                *вставить текст*
-                            </h2>
-                            <p class="text-gray-300 text-lg mb-10 max-w-lg font-normal leading-relaxed">
-                                *вставить текст*
-                            </p>
-                            <div class="flex flex-col sm:flex-row gap-6">
-                                <a href="#" class="bg-gold hover:bg-[#8f684b] text-white text-center px-10 py-4 rounded-full transition duration-300 shadow-lg shadow-gold/30 flex items-center justify-center gap-3 font-medium hover:-translate-y-1">
-                                    <i data-feather="credit-card" class="w-5 h-5"></i> Пожертвовать онлайн
-                                </a>
-                            </div>
-                        </div>
+                    <div class="text-center mb-12">
+                        <span class="text-gold-dark font-medium text-xs uppercase tracking-[0.25em] mb-3 block">Доброхотно дающего любит Бог</span>
+                        <h2 class="text-4xl md:text-5xl font-serif text-dark mb-6">Пожертвование</h2>
+                        <div class="w-24 h-1 bg-gold mx-auto rounded-full opacity-50"></div>
+                    </div>
+
+                    <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
                         
-                        <div class="w-full lg:w-2/5 bg-[#363636] p-12 lg:p-20 flex flex-col items-center justify-center border-l border-white/5">
-                            <div class="bg-white p-6 rounded-3xl shadow-2xl mb-6 transform rotate-2 hover:rotate-0 transition duration-500">
-                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://example.com/donate" alt="QR Code" class="w-48 h-48 opacity-90">
-                            </div>
-                            <h3 class="text-white text-xl font-medium mb-2">QR-код</h3>
-                            <p class="text-gray-400 text-sm text-center">*вставить текст*</p>
+                        <!-- Левая колонка: Текст и Кнопка -->
+                        <div class="text-center lg:text-left">
+                            <p class="text-xl italic text-gray-600 font-serif mb-8 leading-relaxed">
+                                "Каждый уделяй по расположению сердца, не с огорчением и не с принуждением; ибо доброхотно дающего любит Бог."
+                                <br><span class="text-sm font-sans font-medium not-italic text-gold mt-2 block tracking-wider uppercase">2 Коринфянам 9:7</span>
+                            </p>
+                            <p class="text-gray-500 mb-10 font-light leading-relaxed">
+                                Ваша поддержка помогает нам распространять Благую Весть, заботиться о нуждающихся и развивать служения церкви. Спасибо за ваше открытое сердце!
+                            </p>
+                            
+                            <a href="#" class="inline-flex items-center justify-center gap-3 bg-gold hover:bg-gold-dark text-white px-10 py-5 rounded-full shadow-lg shadow-gold/30 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 font-medium tracking-wide uppercase text-sm group">
+                                <i data-feather="credit-card" class="w-5 h-5"></i>
+                                <span>Пожертвовать онлайн</span>
+                                <i data-feather="arrow-right" class="w-4 h-4 ml-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all"></i>
+                            </a>
                         </div>
+
+                        <!-- Правая колонка: QR и Банковские детали -->
+                        <div class="relative">
+                            <div class="bg-white rounded-[2rem] p-8 shadow-xl border border-gray-100 transform rotate-1 hover:rotate-0 transition duration-500 relative overflow-hidden group">
+                                <div class="absolute top-0 right-0 w-20 h-20 bg-gold/10 rounded-bl-[4rem] transition-all group-hover:scale-150 duration-500"></div>
+                                
+                                <div class="flex flex-col md:flex-row items-center gap-8">
+                                    <div class="w-40 h-40 flex-shrink-0 bg-white p-2 rounded-xl shadow-inner border border-gray-100">
+                                        <img src="https://i.ibb.co/21zxW0jD/qr.png" alt="QR Code" class="w-full h-full object-contain">
+                                    </div>
+                                    <div class="text-center md:text-left">
+                                        <h4 class="text-xl font-serif text-dark mb-2">Быстрый перевод</h4>
+                                        <p class="text-sm text-gray-500 mb-4">Наведите камеру телефона на QR-код для перевода через СБП</p>
+                                        <div class="inline-flex items-center gap-2 text-gold font-medium text-sm bg-gold/5 px-4 py-2 rounded-lg">
+                                            <i data-feather="smartphone" class="w-4 h-4"></i>
+                                            <span>Сбербанк</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Контакты (Убрал старый блок, так как он дублируется в новом футере) -->
-        
-        <!-- Новый Футер в стиле референса -->
+        <!-- Футер -->
         <footer id="contact" class="relative pt-24 pb-8 text-white overflow-hidden">
-            <!-- Фоновое изображение (Библия/Книги) -->
+            <!-- Фоновое изображение -->
             <div class="absolute inset-0 z-0">
                 <img src="https://i.pinimg.com/1200x/9e/fb/5f/9efb5ff706f935e156511c59e688be28.jpg" alt="Background" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-[#2b221b]/85 mix-blend-multiply"></div> <!-- Теплое затемнение -->
+                <div class="absolute inset-0 bg-[#2b221b]/85 mix-blend-multiply"></div>
             </div>
 
             <div class="container mx-auto px-6 relative z-10">
                 <div class="grid md:grid-cols-2 gap-16 items-start">
                     
-                    <!-- Левая колонка (Контакты) -->
+                    <!-- Левая колонка -->
                     <div class="fade-up">
                         <h2 class="text-6xl font-serif text-[#E5D4C3] mb-8 tracking-wide">Контакты</h2>
                         
@@ -549,22 +714,26 @@
                         </div>
                     </div>
 
-                    <!-- Правая колонка (Расписание) -->
+                    <!-- Правая колонка -->
                     <div class="fade-up md:pl-10 md:border-l border-white/10">
                         <h3 class="text-xl font-bold mb-6 text-[#A67B5B] uppercase tracking-widest">Время служений</h3>
                         
                         <div class="space-y-4 text-white/90 text-lg font-light">
                             <div class="flex justify-between border-b border-white/10 pb-2">
                                 <span>Воскресенье</span>
-                                <span>10:00 — 12:00</span>
+                                <span>10:00</span>
                             </div>
                             <div class="flex justify-between border-b border-white/10 pb-2">
-                                <span>Четверг (Альфа)</span>
-                                <span>18:00 — 20:00</span>
+                                <span>Вторник (Домашние группы)</span>
+                                <span>18:00</span>
                             </div>
                             <div class="flex justify-between border-b border-white/10 pb-2">
-                                <span>Пятница (Молитва)</span>
-                                <span>19:00 — 20:30</span>
+                                <span>Четверг (Альфа курс / Основы веры)</span>
+                                <span>18:00</span>
+                            </div>
+                            <div class="flex justify-between border-b border-white/10 pb-2">
+                                <span>Пятница (Изучение библии / <br>ㅤㅤㅤㅤㅤМолитва и поклонение)</br></span>
+                                <span>17:30 / 19:00</span>
                             </div>
                             <div class="pt-4 text-sm text-white/50 italic">
                                 *Возможны изменения в праздничные дни
@@ -609,41 +778,71 @@
         });
 
         const navToggle = document.getElementById('nav-toggle');
-        const navContent = document.getElementById('nav-content');
-        const navLinks = document.querySelectorAll('.nav-link'); 
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navbar = document.getElementById('navbar');
+        const mobileLinks = document.querySelectorAll('#mobile-menu a'); 
+
+        let isMenuOpen = false;
 
         function toggleMenu() {
-            navContent.classList.toggle('hidden');
+            isMenuOpen = !isMenuOpen;
+            
+            if (isMenuOpen) {
+                // Открываем меню
+                mobileMenu.classList.remove('menu-hidden');
+                mobileMenu.classList.add('menu-visible');
+                navToggle.classList.add('is-active');
+                
+                // Делаем хедер темным немедленно при открытии
+                navbar.classList.add('bg-dark/95', 'backdrop-blur-sm', 'border-transparent');
+                navbar.classList.remove('border-white/5');
+
+                // Блокируем скролл страницы
+                document.body.classList.add('menu-open');
+                
+            } else {
+                // Закрываем меню
+                mobileMenu.classList.remove('menu-visible');
+                mobileMenu.classList.add('menu-hidden');
+                navToggle.classList.remove('is-active');
+                
+                // Возвращаем стили хедеру в зависимости от скролла
+                handleScroll();
+
+                // Разблокируем скролл страницы
+                document.body.classList.remove('menu-open');
+            }
         }
 
         navToggle.addEventListener('click', toggleMenu);
 
-        navLinks.forEach(link => {
+        // Закрываем меню при клике на любую ссылку внутри него
+        mobileLinks.forEach(link => {
             link.addEventListener('click', () => {
-                if (window.innerWidth < 1024) { 
-                    navContent.classList.add('hidden');
-                }
+                if (isMenuOpen) toggleMenu();
             });
         });
 
-        window.addEventListener('resize', () => {
-            if (window.innerWidth >= 1024) {
-                navContent.classList.remove('hidden');
-            } else {
-                navContent.classList.add('hidden');
-            }
-        });
+        // Функция обработки скролла
+        function handleScroll() {
+            // Если меню открыто, мы ничего не меняем (оно должно быть темным)
+            if (isMenuOpen) return;
 
-        const navbar = document.getElementById('navbar');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                navbar.classList.add('bg-dark/90', 'backdrop-blur-md', 'shadow-xl');
-                navbar.classList.remove('py-5', 'border-white/5');
-                navbar.classList.add('py-3');
+            if (window.scrollY > 20) {
+                navbar.classList.add('bg-dark/80', 'backdrop-blur-sm', 'shadow-md', 'border-white/10');
+                navbar.classList.remove('border-white/5', 'bg-transparent');
             } else {
-                navbar.classList.remove('bg-dark/90', 'backdrop-blur-md', 'shadow-xl');
-                navbar.classList.add('py-5', 'border-white/5');
-                navbar.classList.remove('py-3');
+                navbar.classList.remove('bg-dark/80', 'backdrop-blur-sm', 'shadow-md', 'border-white/10', 'bg-dark/95');
+                navbar.classList.add('border-white/5', 'bg-transparent');
+            }
+        }
+
+        window.addEventListener('scroll', handleScroll);
+        
+        // Обработка ресайза
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 1024 && isMenuOpen) {
+                toggleMenu(); // Закрыть мобильное меню при переходе на десктоп
             }
         });
 
