@@ -1,0 +1,130 @@
+---
+---
+<div id="preloader" data-astro-transition-persist="preloader">
+    <div class="curtain-panel curtain-left"></div>
+    <div class="curtain-panel curtain-right"></div>
+    <canvas id="dust-canvas"></canvas>
+</div>
+
+<script>
+    function initPreloader() {
+        const preloader = document.getElementById('preloader');
+        if (!preloader) return;
+
+        // Проверяем, запускался ли прелоадер в этой сессии
+        if (sessionStorage.getItem('preloader-played')) {
+            preloader.style.display = 'none';
+            return;
+        }
+
+        const cvs = document.getElementById('dust-canvas') as HTMLCanvasElement;
+        if (!cvs) return;
+        
+        const ctx = cvs.getContext('2d');
+        if (!ctx) return;
+
+        let particles: Array<{x: number, y: number, r: number, vy: number, vx: number, a: number, tx?: number, ty?: number}> = [];
+        let t = 0;
+        let running = true;
+        let scattering = false;
+        let animationFrameId: number;
+
+        function resize() {
+            cvs.width = window.innerWidth;
+            cvs.height = window.innerHeight;
+            if (!particles.length) initParticles();
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < 50; i++) {
+                particles.push({
+                    x: Math.random() * cvs.width,
+                    y: Math.random() * cvs.height,
+                    r: Math.random() * 2 + 0.5,
+                    vy: -(Math.random() * 0.4 + 0.1),
+                    vx: (Math.random() - 0.5) * 0.2,
+                    a: Math.random() * 0.5 + 0.15
+                });
+            }
+        }
+
+        function draw() {
+            if (!running || !ctx) return;
+            const W = cvs.width, H = cvs.height;
+            ctx.clearRect(0, 0, W, H);
+            
+            particles.forEach(p => {
+                const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
+                glow.addColorStop(0, `rgba(212,168,83,${p.a})`);
+                glow.addColorStop(1, 'rgba(212,168,83,0)');
+                ctx.fillStyle = glow;
+                ctx.fillRect(p.x - p.r*4, p.y - p.r*4, p.r*8, p.r*8);
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(240,220,160,${p.a * 1.5})`;
+                ctx.fill();
+                
+                if (scattering) {
+                    p.vx += ((p.tx || 0) - p.vx) * 0.08;
+                    p.vy += ((p.ty || 0) - p.vy) * 0.08;
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.a *= 0.96;
+                } else {
+                    p.x += p.vx + Math.sin(t * 0.7 + p.y * 0.008) * 0.15;
+                    p.y += p.vy;
+                    if (p.y < -10) { p.y = H + 10; p.x = Math.random() * W; }
+                }
+            });
+            t += 0.016;
+            animationFrameId = requestAnimationFrame(draw);
+        }
+
+        resize();
+        window.addEventListener('resize', resize);
+        animationFrameId = requestAnimationFrame(draw);
+
+        // Финал анимации загрузки
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                preloader.classList.add('hide');
+                
+                particles.forEach(p => {
+                    const dx = p.x - cvs.width / 2;
+                    const dy = p.y - cvs.height / 2;
+                    const dist = Math.sqrt(dx*dx + dy*dy) || 1;
+                    p.tx = (dx / dist) * (Math.random() * 2 + 1);
+                    p.ty = (dy / dist) * (Math.random() * 2 + 1);
+                    p.vx = 0;
+                    p.vy = 0;
+                });
+                scattering = true;
+                
+                const curtainLeft = preloader.querySelector('.curtain-left');
+                if (curtainLeft) {
+                    curtainLeft.addEventListener('transitionend', () => {
+                        stopCanvas();
+                    }, { once: true });
+                } else {
+                    setTimeout(stopCanvas, 3000);
+                }
+            }, 400);
+        });
+
+        function stopCanvas() {
+            running = false;
+            cancelAnimationFrame(animationFrameId);
+            window.removeEventListener('resize', resize);
+            preloader.style.display = 'none';
+            // Запоминаем, что прелоадер успешно показан
+            sessionStorage.setItem('preloader-played', 'true');
+        }
+
+        // Очищаем Canvas перед переходом на другую страницу
+        document.addEventListener('astro:before-swap', stopCanvas, { once: true });
+    }
+
+    // Запускаем строго при первой загрузке документа
+    initPreloader();
+</script>

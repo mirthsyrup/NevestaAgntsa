@@ -1,0 +1,208 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #F9F7F2; /* Цвет paper */
+    color: #161616; /* Цвет dark */
+    overflow-x: hidden;
+}
+
+body.menu-open {
+    overflow: hidden;
+}
+
+h1, h2, h3, h4 {
+    font-family: 'Cormorant Garamond', serif;
+}
+
+/* --- ПРЕЛОАДЕР --- */
+#preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    overflow: hidden;
+    transition: opacity 1s ease 2s, visibility 1s ease 2s;
+}
+#preloader.hide {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.curtain-panel {
+    width: 50%;
+    height: 100%;
+    position: relative;
+    background: linear-gradient(135deg, #fff9f0 0%, #ffe8c2 50%, #ffd494 100%);
+    transition: transform 3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.curtain-panel::before {
+    content: '';
+    position: absolute;
+    top: -20%; left: -20%; right: -20%; bottom: -20%;
+    background: 
+        radial-gradient(circle at 50% 20%, #ffffff 0%, transparent 40%),
+        radial-gradient(circle at 80% 60%, #ffffff 0%, transparent 50%),
+        radial-gradient(circle at 20% 80%, #ffffff 0%, transparent 40%),
+        radial-gradient(circle at 0% 40%, #ffffff 0%, transparent 50%);
+    filter: blur(40px);
+    opacity: 0.9;
+}
+.curtain-left { z-index: 2; border: none; }
+.curtain-right { z-index: 1; border: none; }
+
+.curtain-left::after, .curtain-right::after {
+    content: '';
+    position: absolute;
+    top: -10%; bottom: -10%;
+    width: 200px;
+    background: inherit;
+    filter: blur(40px);
+    z-index: 3;
+}
+.curtain-left::after { right: -100px; }
+.curtain-right::after { left: -100px; }
+
+#preloader.hide .curtain-left { transform: translateX(-100%); }
+#preloader.hide .curtain-right { transform: translateX(100%); }
+
+#dust-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    pointer-events: none;
+}
+
+/* --- ДЕКОР И ЭФФЕКТЫ --- */
+
+.fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 1.0s ease-out, transform 1.0s ease-out;
+}
+.fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.floating-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    z-index: 0;
+    animation: float 20s infinite alternate;
+    pointer-events: none;
+}
+@keyframes float {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    100% { transform: translate(30px, 50px) rotate(10deg); }
+}
+
+/* Скроллбар */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d1d1d1; border-radius: 10px; border: 2px solid #F9F7F2; }
+::-webkit-scrollbar-thumb:hover { background: #A67B5B; }
+
+.title-decoration {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+.title-decoration::before, .title-decoration::after {
+    content: '';
+    height: 1px;
+    width: 40px;
+    background-color: #A67B5B;
+    opacity: 0.5;
+}
+
+.nav-link {
+    position: relative;
+}
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: -2px;
+    left: 0; 
+    background-color: #A67B5B;
+    transition: width 0.3s ease-out;
+}
+@media (hover: hover) {
+    .nav-link:hover::after { width: 100%; }
+}
+
+.glass-panel {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+}
+
+#mobile-menu.menu-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+#mobile-menu.menu-visible { opacity: 1; visibility: visible; pointer-events: auto; }
+
+.hamburger-icon { transition: transform 0.3s ease, opacity 0.3s ease; }
+.close-icon {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0) rotate(-90deg);
+    opacity: 0;
+}
+
+button.is-active .hamburger-icon { transform: scale(0) rotate(90deg); opacity: 0; }
+button.is-active .close-icon { transform: translate(-50%, -50%) scale(1) rotate(0); opacity: 1; }
+
+.pattern-grid {
+    background-image: radial-gradient(#A67B5B 0.5px, transparent 0.5px);
+    background-size: 20px 20px;
+}
+
+.skew-bg {
+    position: absolute;
+    background: linear-gradient(135deg, rgba(166, 123, 91, 0.03), rgba(166, 123, 91, 0));
+    transform: skewY(-6deg);
+    width: 100%; height: 100%;
+    z-index: 0; pointer-events: none;
+}
+
+/* --- НЕБЕСНЫЕ ЭФФЕКТЫ --- */
+.heavenly-ring {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 32px; height: 32px;
+    margin-top: -16px; margin-left: -16px;
+    border: 2px solid #C29D7F;
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    transform: scale(0.8);
+    filter: blur(3px);
+}
+
+.heavenly-sparkle {
+    position: absolute;
+    width: 4px; height: 4px;
+    background-color: #C29D7F;
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    box-shadow: 0 0 8px #C29D7F;
+}
+
+

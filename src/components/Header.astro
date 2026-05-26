@@ -1,0 +1,194 @@
+---
+const { pathname } = Astro.url;
+const currentPath = pathname.replace(/\/$/, "");
+const isHome = currentPath === "" || currentPath === "/";
+---
+<nav id="navbar" class={`fixed w-full z-[100] top-0 text-white transition-all duration-500 border-b h-[64px] flex items-center ${isHome ? 'bg-transparent border-white/5' : 'bg-dark/80 backdrop-blur-sm shadow-md border-white/10'}`}>
+    <div class="w-full container mx-auto flex items-center justify-between px-6">
+        
+        <a id="logo-cross" class="text-white no-underline flex items-center group relative z-[101]" href="/" data-astro-transition-persist="logo-cross">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 group-hover:text-gold-light transition-colors" viewBox="0 0 24 24">
+                <path d="M12 2v20M5 10h14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="fill-current"/> 
+            </svg>
+        </a>
+
+        <div class="block lg:hidden relative z-[101]">
+            <button id="nav-toggle" type="button" class="relative w-10 h-10 flex items-center justify-center text-white focus:outline-none" aria-label="Меню">
+                <div class="hamburger-icon">
+                    <i data-feather="menu" class="w-6 h-6"></i>
+                </div>
+                <div class="close-icon text-gold">
+                    <i data-feather="x" class="w-7 h-7"></i>
+                </div>
+            </button>
+        </div>
+
+        <div class="hidden lg:flex items-center gap-10">
+            <ul class="flex items-center gap-8">
+                <li><a class={`nav-link text-xs uppercase tracking-[0.2em] font-medium transition ${currentPath === '/about' ? 'text-gold' : 'text-white/80 hover:text-white'}`} href="/about">О нас</a></li>
+                <li><a class={`nav-link text-xs uppercase tracking-[0.2em] font-medium transition ${currentPath.startsWith('/sermons') ? 'text-gold' : 'text-white/80 hover:text-white'}`} href="/sermons">Проповеди</a></li>
+                <li><a class={`nav-link text-xs uppercase tracking-[0.2em] font-medium transition ${currentPath.startsWith('/events') ? 'text-gold' : 'text-white/80 hover:text-white'}`} href="/events">События</a></li>
+                <li><a class="nav-link text-xs uppercase tracking-[0.2em] font-medium text-white/80 hover:text-white transition" href="#contact">Контакты</a></li>
+            </ul>
+            <a class={`inline-flex items-center justify-center py-2 px-6 rounded-full transition-all duration-300 text-[11px] font-bold uppercase tracking-[0.2em] ${currentPath === '/donate' ? 'bg-gold text-white border border-gold' : 'text-gold border border-gold/40 hover:border-gold hover:bg-gold hover:text-white'}`} href="/donate">
+                Пожертвовать
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div id="mobile-menu" class="fixed inset-0 z-[90] bg-dark/95 backdrop-blur-sm flex flex-col justify-center items-center menu-hidden lg:hidden">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] bg-gold/5 rounded-full blur-[80px] pointer-events-none"></div>
+    <ul class="flex flex-col items-center gap-8 relative z-10 text-center">
+        <li><a class={`text-2xl font-serif italic transition-colors duration-300 ${currentPath === '/about' ? 'text-gold' : 'text-white hover:text-gold'}`} href="/about">О нас</a></li>
+        <li><a class={`text-2xl font-serif italic transition-colors duration-300 ${currentPath.startsWith('/sermons') ? 'text-gold' : 'text-white hover:text-gold'}`} href="/sermons">Проповеди</a></li>
+        <li><a class={`text-2xl font-serif italic transition-colors duration-300 ${currentPath.startsWith('/events') ? 'text-gold' : 'text-white hover:text-gold'}`} href="/events">События</a></li>
+        <li><a class="text-2xl font-serif italic text-white hover:text-gold transition-colors duration-300" href="#contact">Контакты</a></li>
+        <li class="mt-8 transform scale-110">
+            <a class={`inline-flex items-center justify-center py-4 px-10 rounded-full shadow-lg transition-all duration-300 text-xs font-bold uppercase tracking-[0.25em] ${currentPath === '/donate' ? 'bg-gold-dark text-white shadow-gold/40' : 'bg-gold text-white shadow-gold/20 hover:shadow-gold/40'}`} href="/donate">
+                Пожертвовать
+            </a>
+        </li>
+    </ul>
+    <div class="absolute bottom-10 text-white/20 text-[10px] uppercase tracking-[0.3em]">
+        Невеста Агнца
+    </div>
+</div>
+
+<script>
+    import { playAscensionSound } from '../scripts/audio';
+    import { navigate } from 'astro:transitions/client';
+
+    function createHeavenlyEffect() {
+        const logo = document.getElementById('logo-cross');
+        if (!logo) return;
+
+        const ring = document.createElement('div');
+        ring.className = 'heavenly-ring';
+        logo.appendChild(ring);
+        
+        const ringAnim = ring.animate([
+            { opacity: 0.8, transform: 'scale(0.8)', borderColor: '#C29D7F' },
+            { opacity: 0.5, borderColor: '#e5d4c3', offset: 0.5 },
+            { opacity: 0, transform: 'scale(2.3)', borderColor: '#ffffff' }
+        ], {
+            duration: 1800,
+            easing: 'cubic-bezier(0.1, 0.8, 0.3, 1)',
+            fill: 'forwards'
+        });
+        ringAnim.onfinish = () => ring.remove();
+
+        for (let i = 0; i < 12; i++) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'heavenly-sparkle';
+            const angle = Math.random() * Math.PI * 2;
+            const distance = Math.random() * 50 + 25;
+            const tx = Math.cos(angle) * distance;
+            const ty = Math.sin(angle) * distance;
+            
+            sparkle.style.left = '50%';
+            sparkle.style.top = '50%';
+            logo.appendChild(sparkle);
+            
+            const sparkleAnim = sparkle.animate([
+                { opacity: 1, transform: 'translate(0, 0) scale(1)' },
+                { opacity: 0, transform: `translate(${tx}px, ${ty}px) scale(0.2)` }
+            ], {
+                duration: 1000,
+                easing: 'cubic-bezier(0.1, 0.8, 0.3, 1)',
+                fill: 'forwards'
+            });
+            sparkleAnim.onfinish = () => sparkle.remove();
+        }
+    }
+
+    // Инициализация логики меню и эффектов при каждой загрузке через Astro ViewTransitions
+    document.addEventListener('astro:page-load', () => {
+        const navToggle = document.getElementById('nav-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navbar = document.getElementById('navbar');
+        const mobileLinks = document.querySelectorAll('#mobile-menu a');
+        const logoCross = document.getElementById('logo-cross');
+        let isMenuOpen = false;
+
+        function toggleMenu() {
+            isMenuOpen = !isMenuOpen;
+            if (isMenuOpen) {
+                mobileMenu?.classList.remove('menu-hidden');
+                mobileMenu?.classList.add('menu-visible');
+                navToggle?.classList.add('is-active');
+                navbar?.classList.add('bg-dark/95', 'backdrop-blur-sm', 'border-transparent');
+                document.body.classList.add('menu-open');
+            } else {
+                mobileMenu?.classList.remove('menu-visible');
+                mobileMenu?.classList.add('menu-hidden');
+                navToggle?.classList.remove('is-active');
+                handleScroll();
+                document.body.classList.remove('menu-open');
+            }
+        }
+
+        const isHomePage = () => {
+            const path = window.location.pathname.replace(/\/$/, '');
+            return path === '' || path === '/';
+        };
+
+        function handleScroll() {
+            if (isMenuOpen || !navbar) return;
+            if (window.scrollY > 20 || !isHomePage()) {
+                navbar.classList.add('bg-dark/80', 'backdrop-blur-sm', 'shadow-md', 'border-white/10');
+                navbar.classList.remove('border-white/5', 'bg-transparent');
+            } else {
+                navbar.classList.remove('bg-dark/80', 'backdrop-blur-sm', 'shadow-md', 'border-white/10', 'bg-dark/95');
+                navbar.classList.add('border-white/5', 'bg-transparent');
+            }
+        }
+
+        function handleResize() {
+            if (window.innerWidth >= 1024 && isMenuOpen) {
+                toggleMenu();
+            }
+        }
+
+        navToggle?.addEventListener('click', toggleMenu);
+        mobileLinks.forEach(link => link.addEventListener('click', () => isMenuOpen && toggleMenu()));
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        window.addEventListener('resize', handleResize);
+        handleScroll();
+
+        let lastPlay = 0;
+        function handleLogoClick(e: Event) {
+            const now = Date.now();
+            if (now - lastPlay >= 1000) {
+                playAscensionSound();
+                createHeavenlyEffect();
+                lastPlay = now;
+            }
+            
+            e.preventDefault();
+            
+            const path = window.location.pathname.replace(/\/$/, '');
+            const isHome = path === '' || path === '/';
+            
+            if (isHome) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                // Небольшая задержка перед переходом, анимация WAAPI продолжится бесшовно на новой странице без перезапуска
+                setTimeout(() => {
+                    navigate('/');
+                }, 200);
+            }
+        }
+        if (logoCross && !logoCross.dataset.hasLogoListener) {
+            logoCross.addEventListener('click', handleLogoClick);
+            logoCross.dataset.hasLogoListener = 'true';
+        }
+
+        // Очистка слушателей перед переходом на другую страницу для избежания утечек памяти
+        document.addEventListener('astro:before-swap', () => {
+            window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('resize', handleResize);
+            document.body.classList.remove('menu-open');
+        }, { once: true });
+    });
+</script>

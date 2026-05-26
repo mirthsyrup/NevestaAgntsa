@@ -1,0 +1,38 @@
+---
+import defaultOgImage from '../assets/images/hero-bg.jpg';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  canonicalURL?: string;
+}
+
+const {
+  title = "Церковь \"Невеста Агнца\"",
+  description = "Церковь 'Невеста Агнца' в Чебоксарах.",
+  image = defaultOgImage.src,
+  canonicalURL = Astro.url.href
+} = Astro.props;
+---
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content={description} />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={new URL(image, Astro.url.origin)} />
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content={canonicalURL} />
+<meta property="twitter:title" content={title} />
+<meta property="twitter:description" content={description} />
+<meta property="twitter:image" content={new URL(image, Astro.url.origin)} />
+
+<!-- Canonical URL -->
+<link rel="canonical" href={canonicalURL} />

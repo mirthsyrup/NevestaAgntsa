@@ -1,0 +1,44 @@
+---
+interface Props {
+  day: string;
+  month: string;
+  title: string;
+  timeOrDate: string;
+  location: string;
+  link?: string;
+  icon?: string; // feather icon name, e.g. "clock", "calendar"
+  delay?: number;
+}
+
+const { day, month, title, timeOrDate, location, link = "#", icon = "calendar", delay = 0 } = Astro.props;
+---
+
+<div class="glass-card rounded-[2rem] p-8 flex flex-col items-start hover:-translate-y-2 transition duration-500 fade-up group relative overflow-hidden" style={delay ? `transition-delay: ${delay}ms` : undefined}>
+  <div class="absolute top-0 right-0 w-24 h-24 bg-gold/10 rounded-bl-[4rem] -mr-4 -mt-4 transition-transform group-hover:scale-125 duration-700"></div>
+  
+  <div class="flex items-baseline gap-2 mb-6 text-gold-dark">
+      <span class="text-6xl font-serif leading-none">{day}</span>
+      <span class="text-sm uppercase tracking-widest font-semibold">{month}</span>
+  </div>
+  
+  <h3 class="text-2xl font-serif text-dark mb-4 group-hover:text-gold transition-colors">{title}</h3>
+  
+  <div class="space-y-3 mb-8 w-full">
+      <div class="flex items-center gap-3 text-sm text-gray-500">
+          <div class="w-8 h-8 rounded-full bg-paper flex items-center justify-center text-gold">
+              <i data-feather={icon} class="w-4 h-4"></i>
+          </div>
+          <span>{timeOrDate}</span>
+      </div>
+      <div class="flex items-center gap-3 text-sm text-gray-500">
+          <div class="w-8 h-8 rounded-full bg-paper flex items-center justify-center text-gold">
+              <i data-feather="map-pin" class="w-4 h-4"></i>
+          </div>
+          <span>{location}</span>
+      </div>
+  </div>
+
+  <a href={link} class="mt-auto w-full py-3 rounded-xl border border-gold/30 text-gold text-xs font-bold uppercase tracking-widest text-center hover:bg-gold hover:text-white transition-all duration-300">
+      Подробнее
+  </a>
+</div>
