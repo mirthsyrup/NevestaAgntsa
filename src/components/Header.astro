@@ -179,15 +179,13 @@ const isHome = currentPath === "" || currentPath === "/";
                 }, 200);
             }
         }
-        if (logoCross && !logoCross.dataset.hasLogoListener) {
-            logoCross.addEventListener('click', handleLogoClick);
-            logoCross.dataset.hasLogoListener = 'true';
-        }
+        logoCross?.addEventListener('click', handleLogoClick);
 
         // Очистка слушателей перед переходом на другую страницу для избежания утечек памяти
         document.addEventListener('astro:before-swap', () => {
             window.removeEventListener('scroll', handleScroll);
             window.removeEventListener('resize', handleResize);
+            logoCross?.removeEventListener('click', handleLogoClick);
             document.body.classList.remove('menu-open');
         }, { once: true });
     });

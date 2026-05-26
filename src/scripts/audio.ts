@@ -1,4 +1,6 @@
 let sharedAudioCtx: AudioContext | null = null;
+let cachedAscensionImpulse: AudioBuffer | null = null;
+let cachedNobleImpulse: AudioBuffer | null = null;
 
 export function getAudioContext(): AudioContext | null {
     if (typeof window === 'undefined') return null;
@@ -24,16 +26,19 @@ export function playAscensionSound() {
         const reverbTime = 4.0;
         const sampleRate = ctx.sampleRate;
         const length = sampleRate * reverbTime;
-        const impulse = ctx.createBuffer(2, length, sampleRate);
-        const left = impulse.getChannelData(0);
-        const right = impulse.getChannelData(1);
-        for (let i = 0; i < length; i++) {
-            const decay = Math.pow(1 - i / length, 3);
-            left[i] = (Math.random() * 2 - 1) * decay;
-            right[i] = (Math.random() * 2 - 1) * decay;
+        
+        if (!cachedAscensionImpulse || cachedAscensionImpulse.sampleRate !== sampleRate) {
+            cachedAscensionImpulse = ctx.createBuffer(2, length, sampleRate);
+            const left = cachedAscensionImpulse.getChannelData(0);
+            const right = cachedAscensionImpulse.getChannelData(1);
+            for (let i = 0; i < length; i++) {
+                const decay = Math.pow(1 - i / length, 3);
+                left[i] = (Math.random() * 2 - 1) * decay;
+                right[i] = (Math.random() * 2 - 1) * decay;
+            }
         }
         const convolver = ctx.createConvolver();
-        convolver.buffer = impulse;
+        convolver.buffer = cachedAscensionImpulse;
         
         const reverbGain = ctx.createGain();
         reverbGain.gain.value = 0.8;
@@ -41,7 +46,7 @@ export function playAscensionSound() {
         reverbGain.connect(masterGain);
 
         function playDeepPad(freq: number, vol: number, attack: number, duration: number) {
-            const filter = ctx!.createBiquadFilter();
+            const filter = ctx.createBiquadFilter();
             filter.type = 'lowpass';
             filter.Q.value = 1.0;
             
@@ -49,7 +54,7 @@ export function playAscensionSound() {
             filter.frequency.exponentialRampToValueAtTime(freq * 3, now + attack);
             filter.frequency.exponentialRampToValueAtTime(freq * 0.8, now + duration);
             
-            const envGain = ctx!.createGain();
+            const envGain = ctx.createGain();
             envGain.gain.setValueAtTime(0, now);
             envGain.gain.linearRampToValueAtTime(vol, now + attack);
             envGain.gain.setValueAtTime(vol * 0.9, now + attack + 0.3);
@@ -58,7 +63,7 @@ export function playAscensionSound() {
             filter.connect(envGain);
             envGain.connect(convolver);
             
-            const dryGain = ctx!.createGain();
+            const dryGain = ctx.createGain();
             dryGain.gain.value = 0.4;
             envGain.connect(dryGain);
             dryGain.connect(masterGain);
@@ -67,15 +72,15 @@ export function playAscensionSound() {
             const types: OscillatorType[] = ['sawtooth', 'triangle', 'sawtooth'];
             
             detunes.forEach((detune, i) => {
-                const osc = ctx!.createOscillator();
+                const osc = ctx.createOscillator();
                 osc.type = types[i];
                 osc.frequency.value = freq;
                 osc.detune.value = detune;
                 
-                const lfo = ctx!.createOscillator();
+                const lfo = ctx.createOscillator();
                 lfo.type = 'sine';
                 lfo.frequency.value = 0.2 + Math.random() * 0.3; 
-                const lfoGain = ctx!.createGain();
+                const lfoGain = ctx.createGain();
                 lfoGain.gain.value = 8;
                 
                 lfo.connect(lfoGain);
@@ -110,16 +115,19 @@ export function playNobleSound() {
         const reverbTime = 3.5;
         const sampleRate = ctx.sampleRate;
         const length = sampleRate * reverbTime;
-        const impulse = ctx.createBuffer(2, length, sampleRate);
-        const left = impulse.getChannelData(0);
-        const right = impulse.getChannelData(1);
-        for (let i = 0; i < length; i++) {
-            const decay = Math.pow(1 - i / length, 2.5);
-            left[i] = (Math.random() * 2 - 1) * decay;
-            right[i] = (Math.random() * 2 - 1) * decay;
+        
+        if (!cachedNobleImpulse || cachedNobleImpulse.sampleRate !== sampleRate) {
+            cachedNobleImpulse = ctx.createBuffer(2, length, sampleRate);
+            const left = cachedNobleImpulse.getChannelData(0);
+            const right = cachedNobleImpulse.getChannelData(1);
+            for (let i = 0; i < length; i++) {
+                const decay = Math.pow(1 - i / length, 2.5);
+                left[i] = (Math.random() * 2 - 1) * decay;
+                right[i] = (Math.random() * 2 - 1) * decay;
+            }
         }
         const convolver = ctx.createConvolver();
-        convolver.buffer = impulse;
+        convolver.buffer = cachedNobleImpulse;
         
         const reverbGain = ctx.createGain();
         reverbGain.gain.value = 0.75;
@@ -127,7 +135,7 @@ export function playNobleSound() {
         reverbGain.connect(masterGain);
 
         function playWarmVoice(freq: number, vol: number, attack: number, duration: number) {
-            const filter = ctx!.createBiquadFilter();
+            const filter = ctx.createBiquadFilter();
             filter.type = 'lowpass';
             filter.Q.value = 1.0;
             
@@ -135,7 +143,7 @@ export function playNobleSound() {
             filter.frequency.exponentialRampToValueAtTime(freq * 3.5, now + attack);
             filter.frequency.exponentialRampToValueAtTime(freq * 1.0, now + duration);
             
-            const envGain = ctx!.createGain();
+            const envGain = ctx.createGain();
             envGain.gain.setValueAtTime(0, now);
             envGain.gain.linearRampToValueAtTime(vol, now + attack);
             envGain.gain.setValueAtTime(vol * 0.85, now + attack + 0.2);
@@ -144,7 +152,7 @@ export function playNobleSound() {
             filter.connect(envGain);
             envGain.connect(convolver);
             
-            const dryGain = ctx!.createGain();
+            const dryGain = ctx.createGain();
             dryGain.gain.value = 0.35;
             envGain.connect(dryGain);
             dryGain.connect(masterGain);
@@ -153,15 +161,15 @@ export function playNobleSound() {
             const types: OscillatorType[] = ['triangle', 'sine', 'triangle'];
             
             detunes.forEach((detune, i) => {
-                const osc = ctx!.createOscillator();
+                const osc = ctx.createOscillator();
                 osc.type = types[i];
                 osc.frequency.value = freq;
                 osc.detune.value = detune;
                 
-                const lfo = ctx!.createOscillator();
+                const lfo = ctx.createOscillator();
                 lfo.type = 'sine';
                 lfo.frequency.value = 0.25 + Math.random() * 0.25; 
-                const lfoGain = ctx!.createGain();
+                const lfoGain = ctx.createGain();
                 lfoGain.gain.value = 6;
                 
                 lfo.connect(lfoGain);

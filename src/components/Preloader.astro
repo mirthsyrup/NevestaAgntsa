@@ -86,7 +86,7 @@
         animationFrameId = requestAnimationFrame(draw);
 
         // Финал анимации загрузки
-        window.addEventListener('load', () => {
+        function hidePreloader() {
             setTimeout(() => {
                 preloader.classList.add('hide');
                 
@@ -110,7 +110,13 @@
                     setTimeout(stopCanvas, 3000);
                 }
             }, 400);
-        });
+        }
+
+        if (document.readyState === 'complete') {
+            hidePreloader();
+        } else {
+            window.addEventListener('load', hidePreloader, { once: true });
+        }
 
         function stopCanvas() {
             running = false;

@@ -27,20 +27,14 @@ const { title, description, image } = Astro.props;
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
     
-    <script src="https://unpkg.com/feather-icons" is:inline></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.2/feather.min.js" integrity="sha512-zMm7+ZQ8AZr1r3W8Z8lDATkH05QG5Gm2xc6MlsCdBz9l6oE8Y7IXByMgSm/rdRQrhuHt99HAYfMljBOEZ68q5A==" crossorigin="anonymous" referrerpolicy="no-referrer" is:inline></script>
     <ViewTransitions />
     <script is:inline>
         if (history.scrollRestoration) {
             history.scrollRestoration = 'manual';
         }
         window.scrollTo(0, 0);
-        document.addEventListener('DOMContentLoaded', () => {
-            window.scrollTo(0, 0);
-        });
         window.addEventListener('load', () => {
-            window.scrollTo(0, 0);
-        });
-        window.addEventListener('beforeunload', () => {
             window.scrollTo(0, 0);
         });
     </script>

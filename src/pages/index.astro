@@ -155,7 +155,7 @@ const recentEvents = events.slice(0, 3);
                         <span class="text-gold-dark font-medium text-xs uppercase tracking-[0.2em] mb-2 block">Служение слова</span>
                         <h2 class="text-5xl text-dark">Проповеди</h2>
                     </div>
-                    <a href="https://rutube.ru/channel/42730775/" target="_blank" class="group flex items-center gap-3 text-sm font-medium uppercase tracking-widest hover:text-gold transition">
+                    <a href="https://rutube.ru/channel/42730775/" target="_blank" rel="noopener noreferrer" class="group flex items-center gap-3 text-sm font-medium uppercase tracking-widest hover:text-gold transition">
                         Все видео <i data-feather="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition"></i>
                     </a>
                 </div>
@@ -223,6 +223,8 @@ const recentEvents = events.slice(0, 3);
         const isMobile = () => window.innerWidth <= 768;
         let lastPlay = 0;
 
+        let ticking = false;
+
         function updateParallax() {
             if (isMobile()) return;
             const scrollY = window.scrollY;
@@ -234,10 +236,18 @@ const recentEvents = events.slice(0, 3);
                 const offset = (rect.top + rect.height / 2 - window.innerHeight / 2) * 0.3;
                 parallaxEl.style.backgroundPositionY = `calc(50% + ${offset}px)`;
             }
+            ticking = false;
+        }
+
+        function onScroll() {
+            if (!ticking) {
+                window.requestAnimationFrame(updateParallax);
+                ticking = true;
+            }
         }
 
         if (heroEl || parallaxEl) {
-            window.addEventListener('scroll', updateParallax, { passive: true });
+            window.addEventListener('scroll', onScroll, { passive: true });
             updateParallax();
         }
 
@@ -252,7 +262,7 @@ const recentEvents = events.slice(0, 3);
 
         // Очищаем слушатели перед переходом на другую страницу
         document.addEventListener('astro:before-swap', () => {
-            window.removeEventListener('scroll', updateParallax);
+            window.removeEventListener('scroll', onScroll);
             btnJoin?.removeEventListener('click', handleJoinClick);
         }, { once: true });
     });
