@@ -134,6 +134,7 @@ const recentEvents = events.slice(0, 3);
             <div class="absolute inset-0 bg-black/40"></div>
             <div class="container mx-auto px-6 relative z-10 text-center text-white fade-up">
                 <div class="h-[1.5em] md:h-[2.5em] pointer-events-none"></div>
+                <div class="h-[1.5em] md:h-[2.5em] pointer-events-none"></div>
                 <h2 class="text-2xl md:text-5xl font-serif italic mb-8 leading-tight drop-shadow-lg">"…пойди, я покажу тебе жену,<br>невесту Агнца"</h2>
                 <span class="inline-block border-t border-white/40 pt-4 text-sm uppercase tracking-[0.3em] font-medium">Откровение 21:9</span>
             </div>
@@ -262,7 +263,7 @@ const recentEvents = events.slice(0, 3);
             if (target) {
                 if (window.innerWidth <= 768) {
                     const targetY = target.getBoundingClientRect().top + window.pageYOffset;
-                    mobileSmoothScroll(targetY, 2400);
+                    mobileSmoothScroll(targetY, 1800);
                 } else {
                     target.scrollIntoView({ behavior: 'smooth' });
                 }

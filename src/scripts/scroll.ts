@@ -1,4 +1,4 @@
-export function mobileSmoothScroll(targetY: number, duration: number = 2400) {
+export function mobileSmoothScroll(targetY: number, duration: number = 1800) {
     const startY = window.pageYOffset;
     const distance = targetY - startY;
     let startTime: number | null = null;
