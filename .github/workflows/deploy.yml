@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ master ] # Сюда пишем ветку, из которой деплоим. Обычно это main или master.
+    branches: [ main ] # Сюда пишем ветку, из которой деплоим. Обычно это main или master.
   workflow_dispatch:
 
 permissions:
