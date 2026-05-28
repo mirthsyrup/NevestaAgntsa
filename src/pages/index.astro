@@ -3,9 +3,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import SermonCard from '../components/SermonCard.astro';
 import EventCard from '../components/EventCard.astro';
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 
 import heroBg from '../assets/images/hero-bg.jpg';
 import quoteBg from '../assets/images/quote-parallax.png';
+import aboutImage from '../assets/images/about-community.jpg';
 
 const sermons = await getCollection('sermons');
 const events = await getCollection('events');
@@ -98,7 +100,7 @@ const blurTransition = {
                     <div class="w-full lg:w-1/2 fade-up">
                         <div class="relative group">
                             <div class="absolute -inset-4 border border-gold/20 rounded-t-full rounded-b-[10rem] z-0 transform rotate-2 transition duration-700 group-hover:rotate-0"></div>
-                            <img src="/src/assets/images/about-community.jpg" alt="Community" class="relative z-10 w-full h-[500px] object-cover rounded-t-full rounded-b-[10rem] shadow-2xl transition duration-700">
+                            <Image src={aboutImage} alt="Community" class="relative z-10 w-full h-[500px] object-cover rounded-t-full rounded-b-[10rem] shadow-2xl transition duration-700" />
                         </div>
                     </div>
                     <div class="w-full lg:w-1/2 fade-up lg:pl-10">
