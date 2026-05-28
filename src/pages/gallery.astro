@@ -141,12 +141,10 @@ const filters = [
                     <div
                         class="gallery-item group relative break-inside-avoid mb-6 overflow-hidden rounded-3xl bg-white border border-gray-100 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-500 cursor-pointer"
                         data-categories={item.categories.join(",")}
-                        data-title={item.title}
-                        data-description={item.description}
                     >
                         <Image
                             src={item.url}
-                            alt={item.title}
+                            alt=""
                             class="w-full h-auto object-cover transform group-hover:scale-105 transition duration-700 block"
                         />
                         <!-- Эффект затемнения при наведении (без текста) -->
@@ -167,7 +165,6 @@ const filters = [
         <div class="relative max-w-[90vw] max-h-[80vh] flex items-center justify-center">
             <img id="lightbox-img" src="" alt="" class="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl transition-transform duration-300">
         </div>
-        <div id="lightbox-caption" class="text-white/80 font-sans text-sm mt-4 tracking-wide text-center px-4 max-w-xl"></div>
     </div>
 </BaseLayout>
 
@@ -211,26 +208,14 @@ const filters = [
         // Логика лайтбокса
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
-        const lightboxCaption = document.getElementById('lightbox-caption');
         const lightboxClose = document.getElementById('lightbox-close');
 
         items.forEach(item => {
             item.addEventListener('click', () => {
                 const img = item.querySelector('img');
-                const title = item.getAttribute('data-title');
-                const desc = item.getAttribute('data-description');
 
-                if (img && lightbox && lightboxImg && lightboxCaption) {
+                if (img && lightbox && lightboxImg) {
                     lightboxImg.src = img.src;
-                    
-                    // Если заголовков/описания нет, скрываем подпись в лайтбоксе
-                    if (title || desc) {
-                        lightboxCaption.innerHTML = `<strong class="text-white block font-serif text-lg mb-1">${title || ''}</strong>${desc || ''}`;
-                        lightboxCaption.style.display = 'block';
-                    } else {
-                        lightboxCaption.innerHTML = '';
-                        lightboxCaption.style.display = 'none';
-                    }
                     
                     lightbox.classList.remove('hidden');
                     lightbox.classList.add('flex');
