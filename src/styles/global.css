@@ -4,7 +4,7 @@
 
 body {
     font-family: 'Montserrat', sans-serif;
-    background-color: #F9F7F2; /* Цвет paper */
+    background-color: #F4F3F6; /* Цвет paper */
     color: #161616; /* Цвет dark */
     overflow-x: hidden;
 }
@@ -13,8 +13,17 @@ body.menu-open {
     overflow: hidden;
 }
 
-h1, h2, h3, h4 {
-    font-family: 'Cormorant Garamond', serif;
+h1, h2, .font-serif {
+    font-family: 'Lora', serif;
+}
+
+h3, h4, .font-googlesans {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 450;
+}
+
+.font-logo {
+    font-family: 'Rubik Bubbles', sans-serif;
 }
 
 /* --- ПРЕЛОАДЕР --- */
@@ -102,11 +111,14 @@ h1, h2, h3, h4 {
     100% { transform: translate(30px, 50px) rotate(10deg); }
 }
 
-/* Скроллбар */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #d1d1d1; border-radius: 10px; border: 2px solid #F9F7F2; }
-::-webkit-scrollbar-thumb:hover { background: #A67B5B; }
+/* Полное скрытие скроллбара */
+html, body {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+::-webkit-scrollbar {
+    display: none;
+}
 
 .title-decoration {
     display: flex;
@@ -153,6 +165,9 @@ h1, h2, h3, h4 {
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
 }
 
+#mobile-menu {
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
 #mobile-menu.menu-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 #mobile-menu.menu-visible { opacity: 1; visibility: visible; pointer-events: auto; }
 
@@ -193,6 +208,7 @@ button.is-active .close-icon { transform: translate(-50%, -50%) scale(1) rotate(
     opacity: 0;
     transform: scale(0.8);
     filter: blur(3px);
+    will-change: transform, opacity;
 }
 
 .heavenly-sparkle {
@@ -203,6 +219,42 @@ button.is-active .close-icon { transform: translate(-50%, -50%) scale(1) rotate(
     pointer-events: none;
     opacity: 0;
     box-shadow: 0 0 8px #C29D7F;
+    will-change: transform, opacity;
 }
 
+/* Анимации для переходов страниц (View Transitions) */
+@keyframes blurInHero {
+    from {
+        opacity: 0;
+        filter: blur(8px);
+    }
+    to {
+        opacity: 1;
+        filter: blur(0px);
+    }
+}
 
+@keyframes fadeOutHero {
+    from {
+        opacity: 1;
+        filter: blur(0px);
+    }
+    to {
+        opacity: 0;
+        filter: blur(8px);
+    }
+}
+
+/* Скрытие скроллбара для горизонтального скролла */
+.scrollbar-none::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-none {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.parallax-section {
+    mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+}

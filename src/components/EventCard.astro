@@ -8,12 +8,13 @@ interface Props {
   link?: string;
   icon?: string; // feather icon name, e.g. "clock", "calendar"
   delay?: number;
+  description?: string;
 }
 
-const { day, month, title, timeOrDate, location, link = "#", icon = "calendar", delay = 0 } = Astro.props;
+const { day, month, title, timeOrDate, location, link = "#", icon = "calendar", delay = 0, description = "" } = Astro.props;
 ---
 
-<div class="glass-card rounded-[2rem] p-8 flex flex-col items-start hover:-translate-y-2 transition duration-500 fade-up group relative overflow-hidden" style={delay ? `transition-delay: ${delay}ms` : undefined}>
+<div class="glass-card rounded-[2rem] p-8 flex flex-col items-start hover:-translate-y-2 transition duration-500 fade-up group relative overflow-hidden w-[85vw] sm:w-[350px] md:w-auto shrink-0 snap-start" style={delay ? `transition-delay: ${delay}ms` : undefined}>
   <div class="absolute top-0 right-0 w-24 h-24 bg-gold/10 rounded-bl-[4rem] -mr-4 -mt-4 transition-transform group-hover:scale-125 duration-700"></div>
   
   <div class="flex items-baseline gap-2 mb-6 text-gold-dark">
@@ -21,7 +22,7 @@ const { day, month, title, timeOrDate, location, link = "#", icon = "calendar", 
       <span class="text-sm uppercase tracking-widest font-semibold">{month}</span>
   </div>
   
-  <h3 class="text-2xl font-serif text-dark mb-4 group-hover:text-gold transition-colors">{title}</h3>
+  <h3 class="text-2xl font-googlesans text-dark mb-4 group-hover:text-gold transition-colors">{title}</h3>
   
   <div class="space-y-3 mb-8 w-full">
       <div class="flex items-center gap-3 text-sm text-gray-500">
@@ -38,7 +39,15 @@ const { day, month, title, timeOrDate, location, link = "#", icon = "calendar", 
       </div>
   </div>
 
-  <a href={link} class="mt-auto w-full py-3 rounded-xl border border-gold/30 text-gold text-xs font-bold uppercase tracking-widest text-center hover:bg-gold hover:text-white transition-all duration-300">
+  <button 
+      class="event-details-btn mt-auto w-full py-3 rounded-xl border border-gold/30 text-gold text-xs font-bold uppercase tracking-widest text-center hover:bg-gold hover:text-white transition-all duration-300 cursor-pointer"
+      data-day={day}
+      data-month={month}
+      data-title={title}
+      data-time={timeOrDate}
+      data-location={location}
+      data-description={description}
+  >
       Подробнее
-  </a>
+  </button>
 </div>

@@ -8,14 +8,31 @@ interface Props {
   embedId: string;
   coverImage: string | ImageMetadata;
   delay?: number;
+  description?: string;
 }
 
-const { title, date, speaker, embedId, coverImage, delay = 0 } = Astro.props;
+const { title, date, speaker, embedId, coverImage, delay = 0, description = "" } = Astro.props;
 ---
 
-<div class="group fade-up" style={delay ? `transition-delay: ${delay}ms` : undefined}>
+<div class="group fade-up w-[85vw] sm:w-[350px] md:w-auto shrink-0 snap-start" style={delay ? `transition-delay: ${delay}ms` : undefined}>
   <RutubePlayer embedId={embedId} coverImage={coverImage} title={title} />
-  <h3 class="text-2xl font-serif mb-2 mt-6 group-hover:text-gold transition-colors duration-300">{title}</h3>
-  <p class="text-xs font-medium uppercase tracking-wider text-gray-400 mb-1">{date}</p>
-  <p class="text-sm text-gray-600 font-medium">{speaker}</p>
+  <div class="relative flex justify-between items-start mt-6 pr-8">
+    <div>
+      <h3 class="text-2xl font-googlesans mb-2 group-hover:text-gold transition-colors duration-300">{title}</h3>
+      <p class="text-xs font-medium uppercase tracking-wider text-gray-400 mb-1">{date}</p>
+      {speaker && <p class="text-sm text-gray-600 font-medium">{speaker}</p>}
+    </div>
+    <button 
+      class="sermon-info-btn text-gray-400 hover:text-gold transition p-2 focus:outline-none cursor-pointer absolute right-0 top-0" 
+      data-description={description}
+      data-title={title}
+      title="Описание проповеди"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+        <circle cx="12" cy="17" r="1" fill="currentColor" stroke="none"></circle>
+      </svg>
+    </button>
+  </div>
 </div>

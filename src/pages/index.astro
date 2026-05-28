@@ -13,25 +13,56 @@ const events = await getCollection('events');
 // Take first 3 for home page
 const recentSermons = sermons.slice(0, 3);
 const recentEvents = events.slice(0, 3);
+
+const blurTransition = {
+  forwards: {
+    old: {
+      name: 'fadeOutHero',
+      duration: '0.3s',
+      easing: 'ease-out',
+      fillMode: 'both',
+    },
+    new: {
+      name: 'blurInHero',
+      duration: '0.3s',
+      easing: 'ease-out',
+      fillMode: 'both',
+    }
+  },
+  backwards: {
+    old: {
+      name: 'fadeOutHero',
+      duration: '0.3s',
+      easing: 'ease-out',
+      fillMode: 'both',
+    },
+    new: {
+      name: 'blurInHero',
+      duration: '0.3s',
+      easing: 'ease-out',
+      fillMode: 'both',
+    }
+  }
+};
 ---
 
 <BaseLayout title="Церковь «Невеста Агнца»">
     <!-- Hero Section -->
-    <div class="hero-bg relative h-screen min-h-[700px] flex items-center justify-center overflow-hidden bg-cover bg-center" style={`background-image: url('${heroBg.src}');`}>
+    <div class="hero-bg relative h-screen min-h-[700px] flex items-center justify-center overflow-hidden bg-cover bg-center" style={`background-image: url('${heroBg.src}');`} transition:animate={blurTransition}>
         <div class="absolute inset-0 bg-dark/40 mix-blend-multiply"></div>
-        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#F9F7F2]"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-paper"></div>
         
         <div class="relative z-10 text-center px-4 max-w-5xl mx-auto mt-10 fade-up">
             <div class="mb-6 flex justify-center">
                 <span class="py-1.5 px-5 border border-white/30 rounded-full text-white/90 text-[11px] font-medium uppercase tracking-[0.25em] backdrop-blur-sm bg-white/5">Христианская церковь</span>
             </div>
-            <h1 class="text-white font-medium leading-[1.1] mb-8 drop-shadow-xl" style="font-size: clamp(3.5rem, 6vw, 7rem);">
-                Невеста <br><span class="italic font-light text-gold-light">Агнца</span>
+            <h1 class="text-white font-logo leading-[1.1] mb-8 drop-shadow-xl" style="font-size: clamp(6.3rem, 9vw, 8.4rem);">
+                Невеста <br><span>Агнца</span>
             </h1>
             <p class="text-white/90 text-lg md:text-xl font-normal mb-12 max-w-xl mx-auto leading-relaxed tracking-wide antialiased">
                 ㅤ
             </p>
-            <div class="flex flex-col sm:flex-row gap-5 justify-center items-center">
+            <div class="flex flex-col md:flex-row gap-5 justify-center items-center">
                 <a href="#contact" id="btn-join" class="bg-paper text-dark hover:bg-white py-4 px-10 rounded-full text-sm font-medium uppercase tracking-widest transition duration-300 shadow-glow hover:shadow-[0_0_40px_rgba(255,255,255,0.6)]">
                     Присоединиться
                 </a>
@@ -71,20 +102,14 @@ const recentEvents = events.slice(0, 3);
                         </div>
                     </div>
                     <div class="w-full lg:w-1/2 fade-up lg:pl-10">
-                        <h3 class="text-4xl mb-8 italic text-dark">Свет миру и соль земли</h3>
+                        <h3 class="text-4xl mb-8 text-dark">Свет миру и соль земли</h3>
                         <div class="space-y-6 text-[#4a4a4a] font-normal text-lg leading-relaxed">
                             <p>
-                                *вставить текст*
+                                Мы верим, что церковь призвана делиться с миром радостной вестью об Иисусе Христе. Наша цель — помочь каждому человеку узнать Бога лично, обрести надежду и опору в жизни. Мы стараемся поддерживать тех, кто оказался в трудной ситуации.
                             </p>
                             <p>
-                                *вставить текст*
+                                Для нас очень важны семейные ценности. Мы верим, что крепкие семьи строятся на любви, взаимном уважении и библейских принципах. Общаясь в домашних группах и воспитывая детей в доверии Богу, мы стремимся приносить свет и добро в жизнь нашего города.
                             </p>
-                        </div>
-                        <div class="mt-10 flex items-center gap-4">
-                            <img src="https://ui-avatars.com/api/?name=P+C&background=A67B5B&color=fff" alt="Pastor" class="w-14 h-14 rounded-full border-2 border-white shadow-md">
-                            <div>
-                                <p class="font-serif text-xl italic text-dark">*вставить текст*</p>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -103,9 +128,9 @@ const recentEvents = events.slice(0, 3);
                         <div class="mb-6 p-4 rounded-full bg-white/50 text-gold group-hover:bg-gold group-hover:text-white transition duration-500 shadow-sm">
                             <i data-feather="book-open" class="w-8 h-8"></i>
                         </div>
-                        <h3 class="text-2xl mb-4 font-serif text-dark">Библия</h3>
+                          <h3 class="text-2xl mb-4 font-googlesans text-dark">Библия</h3>
                         <p class="text-gray-600 font-normal leading-relaxed text-sm">
-                            *вставить текст*
+                            Мы верим, что Священное Писание богодухновенно и дано Самим Господом. Оно является для нас единственным непогрешимым источником познания Бога, Его воли и нашего спасения.
                         </p>
                     </div>
                     <!-- Item 2 -->
@@ -113,9 +138,9 @@ const recentEvents = events.slice(0, 3);
                         <div class="mb-6 p-4 rounded-full bg-white/50 text-gold group-hover:bg-gold group-hover:text-white transition duration-500 shadow-sm">
                             <i data-feather="heart" class="w-8 h-8"></i>
                         </div>
-                        <h3 class="text-2xl mb-4 font-serif text-dark">Бог</h3>
+                          <h3 class="text-2xl mb-4 font-googlesans text-dark">Бог</h3>
                         <p class="text-gray-600 font-normal leading-relaxed text-sm">
-                            *вставить текст*
+                            Мы исповедуем веру в единого истинного Бога, открывающегося в трех лицах: Отца, Сына и Святого Духа. Он — Творец Вселенной, Вечный Дух, источник совершенной любви, святости и всемогущества.
                         </p>
                     </div>
                     <!-- Item 3 -->
@@ -123,9 +148,9 @@ const recentEvents = events.slice(0, 3);
                         <div class="mb-6 p-4 rounded-full bg-white/50 text-gold group-hover:bg-gold group-hover:text-white transition duration-500 shadow-sm">
                             <i data-feather="users" class="w-8 h-8"></i>
                         </div>
-                        <h3 class="text-2xl mb-4 font-serif text-dark">Церковь</h3>
+                          <h3 class="text-2xl mb-4 font-googlesans text-dark">Церковь</h3>
                         <p class="text-gray-600 font-normal leading-relaxed text-sm">
-                            *вставить текст*
+                            Мы верим в Церковь как духовное тело Христово, утвержденное на основании Апостолов и пророков. Ее великое призвание — прославлять Бога, возвещать Евангелие миру, нести дела милосердия и свято хранить истину.
                         </p>
                     </div>
                 </div>
@@ -133,7 +158,7 @@ const recentEvents = events.slice(0, 3);
         </section>
 
         <!-- Цитата Параллакс -->
-        <div class="parallax-section relative h-[60vh] flex items-center justify-center bg-fixed bg-cover bg-center overflow-hidden" style={`background-image: url('${quoteBg.src}');`}>
+        <div class="parallax-section relative h-[80vh] flex items-center justify-center bg-fixed bg-cover bg-center overflow-hidden" style={`background-image: url('${quoteBg.src}');`}>
             <div class="absolute inset-0 bg-black/40"></div>
             <div class="container mx-auto px-6 relative z-10 text-center text-white fade-up">
                 <div class="w-16 h-16 mx-auto mb-8 rounded-full border border-white/20 flex items-center justify-center bg-white/5 backdrop-blur-md">
@@ -160,7 +185,7 @@ const recentEvents = events.slice(0, 3);
                     </a>
                 </div>
 
-                <div class="grid md:grid-cols-3 gap-10">
+                <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 scrollbar-none md:grid md:grid-cols-3 md:gap-10 md:pb-0">
                     {recentSermons.map((sermon, i) => (
                         <SermonCard
                             title={sermon.data.title}
@@ -168,6 +193,7 @@ const recentEvents = events.slice(0, 3);
                             speaker={sermon.data.speaker}
                             embedId={sermon.data.embedId}
                             coverImage={sermon.data.coverImage}
+                            description={sermon.body}
                             delay={i * 100}
                         />
                     ))}
@@ -188,7 +214,7 @@ const recentEvents = events.slice(0, 3);
                     <h2 class="text-5xl text-dark">Ближайшие события</h2>
                 </div>
 
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 scrollbar-none md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-8 md:pb-0">
                     {recentEvents.map((event, i) => (
                         <EventCard
                             day={event.data.day}
@@ -197,6 +223,7 @@ const recentEvents = events.slice(0, 3);
                             timeOrDate={event.data.timeOrDate}
                             location={event.data.location}
                             icon={event.data.icon}
+                            description={event.body}
                             delay={i * 100}
                         />
                     ))}
@@ -248,7 +275,7 @@ const recentEvents = events.slice(0, 3);
 
         if (heroEl || parallaxEl) {
             window.addEventListener('scroll', onScroll, { passive: true });
-            updateParallax();
+            window.requestAnimationFrame(updateParallax);
         }
 
         function handleJoinClick() {

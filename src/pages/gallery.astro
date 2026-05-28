@@ -1,0 +1,263 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
+
+// Импорт локальных изображений-заглушек от пользователя
+import placeholder1 from '../assets/gallery/placeholder1.jpg';
+import placeholder2 from '../assets/gallery/placeholder2.jpg';
+import placeholder3 from '../assets/gallery/placeholder3.jpg';
+
+// Изображения для галереи
+const galleryItems = [
+  {
+    id: 1,
+    title: "Воскресное поклонение",
+    description: "Прославление и молитва воскресного служения общины",
+    categories: ["ministries", "selah"],
+    url: placeholder1
+  },
+  {
+    id: 2,
+    title: "Рождественское служение",
+    description: "Празднование Рождества Господня в кругу общины",
+    categories: ["holidays"],
+    url: placeholder2
+  },
+  {
+    id: 3,
+    title: "Изучение Слова Божьего",
+    description: "Глубокий разбор Писания и обсуждение в малых группах",
+    categories: ["biblestudy", "homegroups"],
+    url: placeholder3
+  },
+  {
+    id: 4,
+    title: "Молодежная встреча",
+    description: "Обсуждение важных вопросов веры и дружеское общение",
+    categories: ["ministries", "homegroups"],
+    url: placeholder1
+  },
+  {
+    id: 5,
+    title: "Альфа-курс: Введение",
+    description: "Первая встреча курса для ищущих ответы на главные вопросы жизни",
+    categories: ["alphacourse"],
+    url: placeholder2
+  },
+  {
+    id: 6,
+    title: "Атмосфера Селахи",
+    description: "Минуты тишины, размышлений и глубокого безмолвного поклонения",
+    categories: ["selah"],
+    url: placeholder3
+  },
+  {
+    id: 7,
+    title: "Пасхальное торжество",
+    description: "Светлое Воскресение Христово — праздничный декор и служба",
+    categories: ["holidays"],
+    url: placeholder1
+  },
+  {
+    id: 8,
+    title: "Домашняя встреча в кругу семьи",
+    description: "Разделённая трапеза, поддержка и молитва друг за друга",
+    categories: ["homegroups"],
+    url: placeholder2
+  },
+  {
+    id: 9,
+    title: "Исследование Писания",
+    description: "Открытые блокноты, искренний поиск Божьей воли",
+    categories: ["biblestudy"],
+    url: placeholder3
+  },
+  {
+    id: 10,
+    title: "Пастырская проповедь",
+    description: "Служение Слова с кафедры церкви",
+    categories: ["ministries"],
+    url: placeholder1
+  },
+  {
+    id: 11,
+    title: "Рождественские свечи",
+    description: "Символ пришедшего в мир Света — Иисуса Христа",
+    categories: ["holidays", "selah"],
+    url: placeholder2
+  },
+  {
+    id: 12,
+    title: "Альфа-курс: Дискуссия за чаем",
+    description: "Разговор на равных в непринужденной и открытой атмосфере",
+    categories: ["alphacourse"],
+    url: placeholder3
+  }
+];
+
+const filters = [
+  { label: "Все", value: "all" },
+  { label: "Служения", value: "ministries" },
+  { label: "Праздники", value: "holidays" },
+  { label: "Домашние группы", value: "homegroups" },
+  { label: "Альфа-курс", value: "alphacourse" },
+  { label: "Изучение Библии", value: "biblestudy" },
+  { label: "Селахи", value: "selah" }
+];
+---
+
+<BaseLayout title="Галерея — Церковь «Невеста Агнца»">
+    <div class="pt-32 pb-24 px-6 relative overflow-hidden bg-paper">
+        <div class="absolute inset-0 pattern-grid opacity-10 pointer-events-none"></div>
+        
+        <div class="container mx-auto relative z-10">
+            <!-- Заголовок -->
+            <div class="text-center mb-16 fade-up">
+                <span class="text-gold-dark font-medium text-xs uppercase tracking-[0.2em] mb-2 block">мы</span>
+                <h1 class="text-5xl md:text-6xl text-dark mb-4">Галерея</h1>
+                <div class="title-decoration mb-6"></div>
+            </div>
+
+            <!-- Панель фильтров -->
+            <div class="flex flex-wrap justify-center gap-3 mb-12 fade-up">
+                {filters.map((filter, index) => (
+                    <button
+                        class={`filter-btn py-2.5 px-6 border rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-300 cursor-pointer ${
+                            index === 0
+                                ? "bg-gold text-white border-gold shadow-glow"
+                                : "border-gold/40 text-gold hover:border-gold hover:bg-gold/5"
+                        }`}
+                        data-filter={filter.value}
+                    >
+                        {filter.label}
+                    </button>
+                ))}
+            </div>
+
+            <!-- Сетка галереи -->
+            <!-- Сетка галереи в стиле Pinterest (Masonry) -->
+            <div class="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-6 [column-fill:_balance] mx-auto fade-up">
+                {galleryItems.map((item) => (
+                    <div
+                        class="gallery-item group relative break-inside-avoid mb-6 overflow-hidden rounded-3xl bg-white border border-gray-100 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-500 cursor-pointer"
+                        data-categories={item.categories.join(",")}
+                        data-title={item.title}
+                        data-description={item.description}
+                    >
+                        <Image
+                            src={item.url}
+                            alt={item.title}
+                            class="w-full h-auto object-cover transform group-hover:scale-105 transition duration-700 block"
+                        />
+                        <!-- Эффект затемнения при наведении (без текста) -->
+                        <div class="absolute inset-0 bg-dark/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    </div>
+
+    <!-- Лайтбокс -->
+    <div id="lightbox" class="fixed inset-0 z-[200] bg-dark/98 backdrop-blur-md hidden flex-col items-center justify-center">
+        <button id="lightbox-close" class="absolute top-6 right-6 text-white/70 hover:text-white p-2 focus:outline-none transition cursor-pointer" aria-label="Закрыть">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+        <div class="relative max-w-[90vw] max-h-[80vh] flex items-center justify-center">
+            <img id="lightbox-img" src="" alt="" class="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl transition-transform duration-300">
+        </div>
+        <div id="lightbox-caption" class="text-white/80 font-sans text-sm mt-4 tracking-wide text-center px-4 max-w-xl"></div>
+    </div>
+</BaseLayout>
+
+<script>
+    document.addEventListener('astro:page-load', () => {
+        const buttons = document.querySelectorAll('.filter-btn');
+        const items = document.querySelectorAll('.gallery-item');
+        
+        // Логика фильтрации
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const filter = button.getAttribute('data-filter');
+                
+                buttons.forEach(btn => {
+                    btn.classList.remove('bg-gold', 'text-white', 'border-gold', 'shadow-glow');
+                    btn.classList.add('border-gold/40', 'text-gold');
+                });
+                
+                button.classList.remove('border-gold/40', 'text-gold');
+                button.classList.add('bg-gold', 'text-white', 'border-gold', 'shadow-glow');
+                
+                items.forEach(item => {
+                    const categories = item.getAttribute('data-categories')?.split(',') || [];
+                    if (filter === 'all' || categories.includes(filter || '')) {
+                        item.classList.remove('hidden');
+                        setTimeout(() => {
+                            item.classList.remove('opacity-0', 'scale-95');
+                            item.classList.add('opacity-100', 'scale-100');
+                        }, 10);
+                    } else {
+                        item.classList.add('opacity-0', 'scale-95');
+                        item.classList.remove('opacity-100', 'scale-100');
+                        setTimeout(() => {
+                            item.classList.add('hidden');
+                        }, 300);
+                    }
+                });
+            });
+        });
+
+        // Логика лайтбокса
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img') as HTMLImageElement;
+        const lightboxCaption = document.getElementById('lightbox-caption');
+        const lightboxClose = document.getElementById('lightbox-close');
+
+        items.forEach(item => {
+            item.addEventListener('click', () => {
+                const img = item.querySelector('img');
+                const title = item.getAttribute('data-title');
+                const desc = item.getAttribute('data-description');
+
+                if (img && lightbox && lightboxImg && lightboxCaption) {
+                    lightboxImg.src = img.src;
+                    
+                    // Если заголовков/описания нет, скрываем подпись в лайтбоксе
+                    if (title || desc) {
+                        lightboxCaption.innerHTML = `<strong class="text-white block font-serif text-lg mb-1">${title || ''}</strong>${desc || ''}`;
+                        lightboxCaption.style.display = 'block';
+                    } else {
+                        lightboxCaption.innerHTML = '';
+                        lightboxCaption.style.display = 'none';
+                    }
+                    
+                    lightbox.classList.remove('hidden');
+                    lightbox.classList.add('flex');
+                    document.body.classList.add('menu-open'); // Блокировка скролла
+                }
+            });
+        });
+
+        function closeLightbox() {
+            if (lightbox) {
+                lightbox.classList.add('hidden');
+                lightbox.classList.remove('flex');
+                document.body.classList.remove('menu-open');
+            }
+        }
+
+        lightboxClose?.addEventListener('click', closeLightbox);
+        lightbox?.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                closeLightbox();
+            }
+        });
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            }
+        });
+    });
+</script>

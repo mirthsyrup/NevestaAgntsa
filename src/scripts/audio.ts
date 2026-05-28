@@ -20,25 +20,23 @@ export function playAscensionSound() {
     try {
         const now = ctx.currentTime;
         const masterGain = ctx.createGain();
-        masterGain.gain.setValueAtTime(0.4, now);
+        masterGain.gain.setValueAtTime(0.27, now);
         masterGain.connect(ctx.destination);
 
         const reverbTime = 4.0;
         const sampleRate = ctx.sampleRate;
         const length = sampleRate * reverbTime;
         
-        if (!cachedAscensionImpulse || cachedAscensionImpulse.sampleRate !== sampleRate) {
-            cachedAscensionImpulse = ctx.createBuffer(2, length, sampleRate);
-            const left = cachedAscensionImpulse.getChannelData(0);
-            const right = cachedAscensionImpulse.getChannelData(1);
-            for (let i = 0; i < length; i++) {
-                const decay = Math.pow(1 - i / length, 3);
-                left[i] = (Math.random() * 2 - 1) * decay;
-                right[i] = (Math.random() * 2 - 1) * decay;
-            }
-        }
         const convolver = ctx.createConvolver();
-        convolver.buffer = cachedAscensionImpulse;
+        const impulse = ctx.createBuffer(2, length, sampleRate);
+        const left = impulse.getChannelData(0);
+        const right = impulse.getChannelData(1);
+        for (let i = 0; i < length; i++) {
+            const decay = Math.pow(1 - i / length, 3);
+            left[i] = (Math.random() * 2 - 1) * decay;
+            right[i] = (Math.random() * 2 - 1) * decay;
+        }
+        convolver.buffer = impulse;
         
         const reverbGain = ctx.createGain();
         reverbGain.gain.value = 0.8;
@@ -98,6 +96,10 @@ export function playAscensionSound() {
         playDeepPad(175.5, 0.2, 0.7, 3.2); // F3
         playDeepPad(220.0, 0.2, 0.6, 3.0); // A3
         playDeepPad(262.5, 0.3, 0.5, 3.0); // C4
+        playDeepPad(329.5, 0.2, 0.5, 2.8); // E4
+        playDeepPad(392.0, 0.2, 0.6, 2.8); // G4
+        playDeepPad(493.0, 0.1, 0.7, 2.5); // B4
+        playDeepPad(523.0, 0.05, 0.8, 2.0); // C5
     } catch (e) {
         console.warn("Audio Context block active", e);
     }
@@ -109,25 +111,23 @@ export function playNobleSound() {
     try {
         const now = ctx.currentTime;
         const masterGain = ctx.createGain();
-        masterGain.gain.setValueAtTime(0.35, now);
+        masterGain.gain.setValueAtTime(0.23, now);
         masterGain.connect(ctx.destination);
 
         const reverbTime = 3.5;
         const sampleRate = ctx.sampleRate;
         const length = sampleRate * reverbTime;
         
-        if (!cachedNobleImpulse || cachedNobleImpulse.sampleRate !== sampleRate) {
-            cachedNobleImpulse = ctx.createBuffer(2, length, sampleRate);
-            const left = cachedNobleImpulse.getChannelData(0);
-            const right = cachedNobleImpulse.getChannelData(1);
-            for (let i = 0; i < length; i++) {
-                const decay = Math.pow(1 - i / length, 2.5);
-                left[i] = (Math.random() * 2 - 1) * decay;
-                right[i] = (Math.random() * 2 - 1) * decay;
-            }
-        }
         const convolver = ctx.createConvolver();
-        convolver.buffer = cachedNobleImpulse;
+        const impulse = ctx.createBuffer(2, length, sampleRate);
+        const left = impulse.getChannelData(0);
+        const right = impulse.getChannelData(1);
+        for (let i = 0; i < length; i++) {
+            const decay = Math.pow(1 - i / length, 2.5);
+            left[i] = (Math.random() * 2 - 1) * decay;
+            right[i] = (Math.random() * 2 - 1) * decay;
+        }
+        convolver.buffer = impulse;
         
         const reverbGain = ctx.createGain();
         reverbGain.gain.value = 0.75;

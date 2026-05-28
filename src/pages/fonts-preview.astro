@@ -1,0 +1,377 @@
+---
+import heroBg from '../assets/images/hero-bg.jpg';
+---
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Сравнение шрифтов — Невеста Агнца</title>
+    
+    <!-- Подключаем все шрифты для сравнения -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&family=Prata&family=Outfit:wght@300;400;500;600&family=Instrument+Serif:ital,wght@0,400;0,500;0,600;1,400&family=Geologica:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+
+    <style>
+        body {
+            background-color: #F4F3F6;
+            color: #161616;
+            margin: 0;
+            padding: 40px 20px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        .header h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3rem;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 60px;
+        }
+        .option-card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .option-info {
+            padding: 24px 30px;
+            border-bottom: 1px solid #f0f0f0;
+            background: #fafafa;
+        }
+        .option-badge {
+            background: #A67B5B;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .option-title-meta {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0 0 4px 0;
+        }
+        .option-desc {
+            margin: 0;
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        /* Имитация первого экрана сайта */
+        .preview-hero {
+            position: relative;
+            height: 480px;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 30px;
+            color: white;
+            overflow: hidden;
+        }
+        .preview-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(22, 22, 22, 0.45);
+            z-index: 1;
+        }
+        .preview-hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 50%, #F4F3F6 100%);
+            z-index: 2;
+        }
+        .hero-content-wrapper {
+            position: relative;
+            z-index: 3;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        /* Имитация навигации */
+        .nav-mock {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        .logo-mock {
+            font-size: 1.5rem;
+            font-weight: 300;
+        }
+        .menu-mock {
+            display: none;
+            gap: 25px;
+            align-items: center;
+        }
+        @media (min-width: 768px) {
+            .menu-mock {
+                display: flex;
+            }
+        }
+        .menu-item {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+        .btn-donate-mock {
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 20px;
+            border-radius: 99px;
+            color: white;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            text-decoration: none;
+        }
+        
+        /* Имитация центрального текста */
+        .hero-center {
+            text-align: center;
+            margin: auto 0;
+        }
+        .tag-mock {
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 4px 14px;
+            border-radius: 99px;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        .hero-title {
+            font-size: 3.5rem;
+            line-height: 1.1;
+            margin: 0 0 20px 0;
+            font-weight: 400;
+        }
+        .hero-title span.italic {
+            font-style: italic;
+            font-weight: 300;
+            color: #C29D7F;
+        }
+        .hero-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+        }
+        @media (min-width: 768px) {
+            .hero-buttons {
+                flex-direction: row;
+                gap: 20px;
+            }
+        }
+        .btn-primary-mock {
+            background: #F4F3F6;
+            color: #161616;
+            padding: 12px 30px;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            text-decoration: none;
+            box-shadow: 0 0 20px rgba(166, 123, 91, 0.2);
+        }
+        .btn-secondary-mock {
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* --- Стили для Варианта 1 (Prata + Outfit) --- */
+        .opt-1 .title-font { font-family: 'Prata', serif; }
+        .opt-1 .ui-font { font-family: 'Outfit', sans-serif; }
+
+        /* --- Стили для Варианта 2 (Instrument Serif + Geologica) --- */
+        .opt-2 .title-font { font-family: 'Instrument Serif', serif; }
+        .opt-2 .ui-font { font-family: 'Geologica', sans-serif; }
+
+        /* --- Стили для Варианта 3 (Lora + Montserrat) --- */
+        .opt-3 .title-font { font-family: 'Lora', serif; }
+        .opt-3 .ui-font { font-family: 'Montserrat', sans-serif; font-weight: 300; letter-spacing: 0.2em; }
+
+        /* --- Стили для Варианта 4 (Текущий: Cormorant + Montserrat) --- */
+        .opt-4 .title-font { font-family: 'Cormorant Garamond', serif; }
+        .opt-4 .ui-font { font-family: 'Montserrat', sans-serif; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Интерактивное сравнение шрифтов</h1>
+            <p>Ниже представлены 4 варианта комбинаций шрифтов. Вы можете увидеть, как они будут смотреться вживую на главном экране.</p>
+        </div>
+
+        <div class="grid">
+            <!-- ВАРИАНТ 1 -->
+            <div class="option-card opt-1">
+                <div class="option-info">
+                    <span class="option-badge">Вариант 1 (Рекомендуемый)</span>
+                    <h3 class="option-title-meta">Prata + Outfit</h3>
+                    <p class="option-desc">Элегантные округлые капли в заголовках (Prata) сочетаются с чистым, вытянутым и современным геометрическим шрифтом в меню и кнопках (Outfit).</p>
+                </div>
+                <div class="preview-hero" style={`background-image: url('${heroBg.src}');`}>
+                    <div class="hero-content-wrapper">
+                        <div class="nav-mock ui-font">
+                            <div class="logo-mock title-font">+</div>
+                            <div class="menu-mock">
+                                <a href="#" class="menu-item">О нас</a>
+                                <a href="#" class="menu-item">Проповеди</a>
+                                <a href="#" class="menu-item">События</a>
+                                <a href="#" class="menu-item">Контакты</a>
+                                <a href="#" class="btn-donate-mock">Пожертвовать</a>
+                            </div>
+                        </div>
+                        <div class="hero-center">
+                            <span class="tag-mock ui-font">Христианская церковь</span>
+                            <h2 class="hero-title title-font">Невеста <br/><span class="italic">Агнца</span></h2>
+                            <div class="hero-buttons ui-font">
+                                <a href="#" class="btn-primary-mock">Присоединиться</a>
+                                <a href="#" class="btn-secondary-mock">Смотреть проповеди</a>
+                            </div>
+                        </div>
+                        <div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ВАРИАНТ 2 -->
+            <div class="option-card opt-2">
+                <div class="option-info">
+                    <span class="option-badge">Вариант 2</span>
+                    <h3 class="option-title-meta">Instrument Serif + Geologica</h3>
+                    <p class="option-desc">Высокий, стройный и утонченный шрифт в духе современных модных журналов (Instrument Serif) с аккуратным и строгим гротеском (Geologica).</p>
+                </div>
+                <div class="preview-hero" style={`background-image: url('${heroBg.src}');`}>
+                    <div class="hero-content-wrapper">
+                        <div class="nav-mock ui-font">
+                            <div class="logo-mock title-font">+</div>
+                            <div class="menu-mock">
+                                <a href="#" class="menu-item">О нас</a>
+                                <a href="#" class="menu-item">Проповеди</a>
+                                <a href="#" class="menu-item">События</a>
+                                <a href="#" class="menu-item">Контакты</a>
+                                <a href="#" class="btn-donate-mock">Пожертвовать</a>
+                            </div>
+                        </div>
+                        <div class="hero-center">
+                            <span class="tag-mock ui-font">Христианская церковь</span>
+                            <h2 class="hero-title title-font">Невеста <br/><span class="italic">Агнца</span></h2>
+                            <div class="hero-buttons ui-font">
+                                <a href="#" class="btn-primary-mock">Присоединиться</a>
+                                <a href="#" class="btn-secondary-mock">Смотреть проповеди</a>
+                            </div>
+                        </div>
+                        <div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ВАРИАНТ 3 -->
+            <div class="option-card opt-3">
+                <div class="option-info">
+                    <span class="option-badge">Вариант 3</span>
+                    <h3 class="option-title-meta">Lora + Montserrat (Облегченный)</h3>
+                    <p class="option-desc">Мягкая, округлая каллиграфическая антиква (Lora) в паре с более воздушной версией текущего Montserrat (меньше жирность, больше расстояние между буквами).</p>
+                </div>
+                <div class="preview-hero" style={`background-image: url('${heroBg.src}');`}>
+                    <div class="hero-content-wrapper">
+                        <div class="nav-mock ui-font">
+                            <div class="logo-mock title-font">+</div>
+                            <div class="menu-mock">
+                                <a href="#" class="menu-item">О нас</a>
+                                <a href="#" class="menu-item">Проповеди</a>
+                                <a href="#" class="menu-item">События</a>
+                                <a href="#" class="menu-item">Контакты</a>
+                                <a href="#" class="btn-donate-mock">Пожертвовать</a>
+                            </div>
+                        </div>
+                        <div class="hero-center">
+                            <span class="tag-mock ui-font">Христианская церковь</span>
+                            <h2 class="hero-title title-font">Невеста <br/><span class="italic">Агнца</span></h2>
+                            <div class="hero-buttons ui-font">
+                                <a href="#" class="btn-primary-mock">Присоединиться</a>
+                                <a href="#" class="btn-secondary-mock">Смотреть проповеди</a>
+                            </div>
+                        </div>
+                        <div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ВАРИАНТ 4 -->
+            <div class="option-card opt-4">
+                <div class="option-info">
+                    <span class="option-badge" style="background-color: #666;">Текущий вариант</span>
+                    <h3 class="option-title-meta">Cormorant Garamond + Montserrat</h3>
+                    <p class="option-desc">Исторический, острый шрифт для заголовков (Cormorant) и стандартный широкий Montserrat для интерфейса.</p>
+                </div>
+                <div class="preview-hero" style={`background-image: url('${heroBg.src}');`}>
+                    <div class="hero-content-wrapper">
+                        <div class="nav-mock ui-font">
+                            <div class="logo-mock title-font">+</div>
+                            <div class="menu-mock">
+                                <a href="#" class="menu-item">О нас</a>
+                                <a href="#" class="menu-item">Проповеди</a>
+                                <a href="#" class="menu-item">События</a>
+                                <a href="#" class="menu-item">Контакты</a>
+                                <a href="#" class="btn-donate-mock">Пожертвовать</a>
+                            </div>
+                        </div>
+                        <div class="hero-center">
+                            <span class="tag-mock ui-font">Христианская церковь</span>
+                            <h2 class="hero-title title-font">Невеста <br/><span class="italic">Агнца</span></h2>
+                            <div class="hero-buttons ui-font">
+                                <a href="#" class="btn-primary-mock">Присоединиться</a>
+                                <a href="#" class="btn-secondary-mock">Смотреть проповеди</a>
+                            </div>
+                        </div>
+                        <div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

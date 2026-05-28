@@ -3,10 +3,10 @@ const { pathname } = Astro.url;
 const currentPath = pathname.replace(/\/$/, "");
 const isHome = currentPath === "" || currentPath === "/";
 ---
-<nav id="navbar" class={`fixed w-full z-[100] top-0 text-white transition-all duration-500 border-b h-[64px] flex items-center ${isHome ? 'bg-transparent border-white/5' : 'bg-dark/80 backdrop-blur-sm shadow-md border-white/10'}`}>
+<nav id="navbar" class={`fixed w-full z-[100] top-0 text-white transition-all duration-300 border-b h-[64px] flex items-center ${isHome ? 'bg-transparent border-white/5' : 'bg-dark/80 backdrop-blur-sm shadow-md border-white/10'}`} transition:animate="none">
     <div class="w-full container mx-auto flex items-center justify-between px-6">
         
-        <a id="logo-cross" class="text-white no-underline flex items-center group relative z-[101]" href="/" data-astro-transition-persist="logo-cross">
+        <a id="logo-cross" class="text-white no-underline flex items-center group relative z-[101]" href="/" transition:persist="logo-cross" aria-label="Главная страница">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 group-hover:text-gold-light transition-colors" viewBox="0 0 24 24">
                 <path d="M12 2v20M5 10h14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="fill-current"/> 
             </svg>
@@ -28,7 +28,8 @@ const isHome = currentPath === "" || currentPath === "/";
                 <li><a class={`nav-link text-xs uppercase tracking-[0.2em] font-medium transition ${currentPath === '/about' ? 'text-gold' : 'text-white/80 hover:text-white'}`} href="/about">О нас</a></li>
                 <li><a class={`nav-link text-xs uppercase tracking-[0.2em] font-medium transition ${currentPath.startsWith('/sermons') ? 'text-gold' : 'text-white/80 hover:text-white'}`} href="/sermons">Проповеди</a></li>
                 <li><a class={`nav-link text-xs uppercase tracking-[0.2em] font-medium transition ${currentPath.startsWith('/events') ? 'text-gold' : 'text-white/80 hover:text-white'}`} href="/events">События</a></li>
-                <li><a class="nav-link text-xs uppercase tracking-[0.2em] font-medium text-white/80 hover:text-white transition" href="#contact">Контакты</a></li>
+                <li><a class={`nav-link text-xs uppercase tracking-[0.2em] font-medium transition ${currentPath === '/gallery' ? 'text-gold' : 'text-white/80 hover:text-white'}`} href="/gallery">Галерея</a></li>
+                <li><a class="nav-link text-xs uppercase tracking-[0.2em] font-medium text-white/80 hover:text-white transition" href="/#contact">Контакты</a></li>
             </ul>
             <a class={`inline-flex items-center justify-center py-2 px-6 rounded-full transition-all duration-300 text-[11px] font-bold uppercase tracking-[0.2em] ${currentPath === '/donate' ? 'bg-gold text-white border border-gold' : 'text-gold border border-gold/40 hover:border-gold hover:bg-gold hover:text-white'}`} href="/donate">
                 Пожертвовать
@@ -40,10 +41,11 @@ const isHome = currentPath === "" || currentPath === "/";
 <div id="mobile-menu" class="fixed inset-0 z-[90] bg-dark/95 backdrop-blur-sm flex flex-col justify-center items-center menu-hidden lg:hidden">
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] bg-gold/5 rounded-full blur-[80px] pointer-events-none"></div>
     <ul class="flex flex-col items-center gap-8 relative z-10 text-center">
-        <li><a class={`text-2xl font-serif italic transition-colors duration-300 ${currentPath === '/about' ? 'text-gold' : 'text-white hover:text-gold'}`} href="/about">О нас</a></li>
-        <li><a class={`text-2xl font-serif italic transition-colors duration-300 ${currentPath.startsWith('/sermons') ? 'text-gold' : 'text-white hover:text-gold'}`} href="/sermons">Проповеди</a></li>
-        <li><a class={`text-2xl font-serif italic transition-colors duration-300 ${currentPath.startsWith('/events') ? 'text-gold' : 'text-white hover:text-gold'}`} href="/events">События</a></li>
-        <li><a class="text-2xl font-serif italic text-white hover:text-gold transition-colors duration-300" href="#contact">Контакты</a></li>
+        <li><a class={`text-xl font-sans uppercase tracking-[0.2em] font-medium transition-colors duration-300 ${currentPath === '/about' ? 'text-gold' : 'text-white hover:text-gold'}`} href="/about">О нас</a></li>
+        <li><a class={`text-xl font-sans uppercase tracking-[0.2em] font-medium transition-colors duration-300 ${currentPath.startsWith('/sermons') ? 'text-gold' : 'text-white hover:text-gold'}`} href="/sermons">Проповеди</a></li>
+        <li><a class={`text-xl font-sans uppercase tracking-[0.2em] font-medium transition-colors duration-300 ${currentPath.startsWith('/events') ? 'text-gold' : 'text-white hover:text-gold'}`} href="/events">События</a></li>
+        <li><a class={`text-xl font-sans uppercase tracking-[0.2em] font-medium transition-colors duration-300 ${currentPath === '/gallery' ? 'text-gold' : 'text-white hover:text-gold'}`} href="/gallery">Галерея</a></li>
+        <li><a class="text-xl font-sans uppercase tracking-[0.2em] font-medium text-white hover:text-gold transition-colors duration-300" href="/#contact">Контакты</a></li>
         <li class="mt-8 transform scale-110">
             <a class={`inline-flex items-center justify-center py-4 px-10 rounded-full shadow-lg transition-all duration-300 text-xs font-bold uppercase tracking-[0.25em] ${currentPath === '/donate' ? 'bg-gold-dark text-white shadow-gold/40' : 'bg-gold text-white shadow-gold/20 hover:shadow-gold/40'}`} href="/donate">
                 Пожертвовать
@@ -173,10 +175,7 @@ const isHome = currentPath === "" || currentPath === "/";
             if (isHome) {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
-                // Небольшая задержка перед переходом, анимация WAAPI продолжится бесшовно на новой странице без перезапуска
-                setTimeout(() => {
-                    navigate('/');
-                }, 200);
+                navigate('/');
             }
         }
         logoCross?.addEventListener('click', handleLogoClick);

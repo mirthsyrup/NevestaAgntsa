@@ -13,19 +13,60 @@ interface Props {
 }
 
 const { title, description, image } = Astro.props;
+
+const displayTitle = (title || "NevestaAgntsa")
+  .replace(/— Церковь «Невеста Агнца»/g, "— NevestaAgntsa")
+  .replace(/— Церковь "Невеста Агнца"/g, "— NevestaAgntsa")
+  .replace(/Церковь "Невеста Агнца"/g, "NevestaAgntsa")
+  .replace(/Церковь «Невеста Агнца»/g, "NevestaAgntsa");
+
+const { pathname } = Astro.url;
+const currentPath = pathname.replace(/\/$/, "");
+const isHome = currentPath === "" || currentPath === "/" || currentPath === "/index.html";
+
+const pageTransition = {
+  forwards: {
+    old: {
+      name: 'fadeOutHero',
+      duration: '0.3s',
+      easing: 'ease-out',
+      fillMode: 'both',
+    },
+    new: {
+      name: 'blurInHero',
+      duration: '0.3s',
+      easing: 'ease-out',
+      fillMode: 'both',
+    }
+  },
+  backwards: {
+    old: {
+      name: 'fadeOutHero',
+      duration: '0.3s',
+      easing: 'ease-out',
+      fillMode: 'both',
+    },
+    new: {
+      name: 'blurInHero',
+      duration: '0.3s',
+      easing: 'ease-out',
+      fillMode: 'both',
+    }
+  }
+};
 ---
 
 <!DOCTYPE html>
 <html lang="ru" class="scroll-smooth">
 <head>
-    <SEO title={title} description={description} image={image} />
-    <title>{title || "Церковь \"Невеста Агнца\""}</title>
+    <SEO title={displayTitle} description={description} image={image} />
+    <title>{displayTitle}</title>
     
     <link rel="icon" type="image/png" href="/favicon.png" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Rubik+Bubbles&family=Lora:ital,wght@0,400..700;1,400..700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.2/feather.min.js" integrity="sha512-zMm7+ZQ8AZr1r3W8Z8lDATkH05QG5Gm2xc6MlsCdBz9l6oE8Y7IXByMgSm/rdRQrhuHt99HAYfMljBOEZ68q5A==" crossorigin="anonymous" referrerpolicy="no-referrer" is:inline></script>
     <ViewTransitions />
@@ -39,16 +80,49 @@ const { title, description, image } = Astro.props;
         });
     </script>
 </head>
-<body class="antialiased selection:bg-gold selection:text-white relative bg-[#F9F7F2] text-[#161616]">
+<body class="antialiased selection:bg-gold selection:text-white relative bg-paper text-[#161616]">
 
     <Preloader />
     <Header />
 
-    <main>
+    <main transition:animate={pageTransition}>
         <slot />
     </main>
 
-    <Footer />
+    {isHome && <Footer />}
+
+    <!-- Модальное окно событий -->
+    <div id="event-modal" class="fixed inset-0 z-[200] bg-dark/80 backdrop-blur-md hidden items-center justify-center p-4">
+        <div class="bg-paper border border-white/20 rounded-[2.5rem] p-8 md:p-10 max-w-xl w-full relative shadow-2xl transition-all duration-300 transform scale-95 opacity-0" id="event-modal-card">
+            <!-- Кнопка закрытия -->
+            <button id="event-modal-close" class="absolute top-6 right-6 text-gray-400 hover:text-dark p-2 focus:outline-none transition cursor-pointer" aria-label="Закрыть">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            <!-- 3 текстовых поля разного размера -->
+            <p class="text-dark text-2xl font-googlesans leading-relaxed mb-6" id="modal-title">...</p>
+            <p class="text-gray-600 text-base leading-relaxed mb-6" id="modal-description">...</p>
+            <p class="text-gray-400 text-sm leading-relaxed" id="modal-info">...</p>
+        </div>
+    </div>
+
+    <!-- Модальное окно описания проповеди -->
+    <div id="sermon-modal" class="fixed inset-0 z-[200] bg-dark/80 backdrop-blur-md hidden items-center justify-center p-4">
+        <div class="bg-paper border border-white/20 rounded-[2.5rem] p-8 md:p-10 max-w-xl w-full relative shadow-2xl transition-all duration-300 transform scale-95 opacity-0" id="sermon-modal-card">
+            <!-- Кнопка закрытия -->
+            <button id="sermon-modal-close" class="absolute top-6 right-6 text-gray-400 hover:text-dark p-2 focus:outline-none transition cursor-pointer" aria-label="Закрыть">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            <!-- Содержимое -->
+            <h3 class="text-dark text-2xl font-googlesans mb-4" id="sermon-modal-title">...</h3>
+            <p class="text-gray-600 text-base leading-relaxed" id="sermon-modal-description">...</p>
+        </div>
+    </div>
 
     <script>
         // Инициализация после загрузки страниц через ViewTransitions
@@ -67,6 +141,122 @@ const { title, description, image } = Astro.props;
                 });
             }, { threshold: 0.1 });
             document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+            // Логика модального окна событий
+            const eventModal = document.getElementById('event-modal');
+            const eventModalCard = document.getElementById('event-modal-card');
+            const modalClose = document.getElementById('event-modal-close');
+
+            const modalTitle = document.getElementById('modal-title');
+            const modalDescription = document.getElementById('modal-description');
+            const modalInfo = document.getElementById('modal-info');
+
+            function openEventModal(button: HTMLElement) {
+                if (eventModal && eventModalCard) {
+                    const title = button.getAttribute('data-title') || '';
+                    const description = button.getAttribute('data-description') || '';
+                    const time = button.getAttribute('data-time') || '';
+                    const location = button.getAttribute('data-location') || '';
+
+                    if (modalTitle) modalTitle.textContent = title;
+                    if (modalDescription) modalDescription.textContent = description;
+                    if (modalInfo) {
+                        modalInfo.textContent = `${time} • ${location}`;
+                    }
+
+                    eventModal.classList.remove('hidden');
+                    eventModal.classList.add('flex');
+                    document.body.classList.add('menu-open'); // Блокировка скролла
+                    
+                    // Анимация всплытия
+                    setTimeout(() => {
+                        eventModalCard.classList.remove('scale-95', 'opacity-0');
+                        eventModalCard.classList.add('scale-100', 'opacity-100');
+                    }, 10);
+                }
+            }
+
+            function closeEventModal() {
+                if (eventModal && eventModalCard) {
+                    eventModalCard.classList.remove('scale-100', 'opacity-100');
+                    eventModalCard.classList.add('scale-95', 'opacity-0');
+                    
+                    setTimeout(() => {
+                        eventModal.classList.add('hidden');
+                        eventModal.classList.remove('flex');
+                        document.body.classList.remove('menu-open');
+                    }, 300);
+                }
+            }
+
+            // Навешиваем слушатели на кнопки «Подробнее»
+            document.querySelectorAll('.event-details-btn').forEach(button => {
+                button.addEventListener('click', () => openEventModal(button as HTMLElement));
+            });
+
+            modalClose?.addEventListener('click', closeEventModal);
+            eventModal?.addEventListener('click', (e) => {
+                if (e.target === eventModal) {
+                    closeEventModal();
+                }
+            });
+
+            // Логика модального окна проповедей
+            const sermonModal = document.getElementById('sermon-modal');
+            const sermonModalCard = document.getElementById('sermon-modal-card');
+            const sermonModalClose = document.getElementById('sermon-modal-close');
+            const sermonModalTitle = document.getElementById('sermon-modal-title');
+            const sermonModalDescription = document.getElementById('sermon-modal-description');
+
+            function openSermonModal(button: HTMLElement) {
+                if (sermonModal && sermonModalCard) {
+                    const title = button.getAttribute('data-title') || '';
+                    const description = button.getAttribute('data-description') || '';
+
+                    if (sermonModalTitle) sermonModalTitle.textContent = title;
+                    if (sermonModalDescription) sermonModalDescription.textContent = description;
+
+                    sermonModal.classList.remove('hidden');
+                    sermonModal.classList.add('flex');
+                    document.body.classList.add('menu-open');
+                    
+                    setTimeout(() => {
+                        sermonModalCard.classList.remove('scale-95', 'opacity-0');
+                        sermonModalCard.classList.add('scale-100', 'opacity-100');
+                    }, 10);
+                }
+            }
+
+            function closeSermonModal() {
+                if (sermonModal && sermonModalCard) {
+                    sermonModalCard.classList.remove('scale-100', 'opacity-100');
+                    sermonModalCard.classList.add('scale-95', 'opacity-0');
+                    
+                    setTimeout(() => {
+                        sermonModal.classList.add('hidden');
+                        sermonModal.classList.remove('flex');
+                        document.body.classList.remove('menu-open');
+                    }, 300);
+                }
+            }
+
+            document.querySelectorAll('.sermon-info-btn').forEach(button => {
+                button.addEventListener('click', () => openSermonModal(button as HTMLElement));
+            });
+
+            sermonModalClose?.addEventListener('click', closeSermonModal);
+            sermonModal?.addEventListener('click', (e) => {
+                if (e.target === sermonModal) {
+                    closeSermonModal();
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeEventModal();
+                    closeSermonModal();
+                }
+            });
         });
     </script>
 </body>

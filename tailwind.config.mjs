@@ -8,11 +8,13 @@ export default {
         'gold-dark': '#8C6242', 
         'gold-light': '#C29D7F',
         dark: '#161616',
-        paper: '#F9F7F2',
+        paper: '#F4F3F6',
       },
       fontFamily: {
-        serif: ['Cormorant Garamond', 'serif'],
+        serif: ['Lora', 'serif'],
         sans: ['Montserrat', 'sans-serif'],
+        googlesans: ['Montserrat', 'sans-serif'],
+        logo: ['Rubik Bubbles', 'sans-serif'],
       },
       boxShadow: {
         'soft': '0 20px 40px -10px rgba(166, 123, 91, 0.10)',

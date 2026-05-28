@@ -5,7 +5,7 @@ import { Image } from 'astro:assets';
 ---
 
 <BaseLayout title="Пожертвовать — Церковь «Невеста Агнца»">
-    <div class="pt-32 pb-24 px-6 relative overflow-hidden bg-[#F9F7F2]">
+    <div class="pt-32 pb-24 px-6 relative overflow-hidden bg-paper">
         <div class="absolute top-0 right-0 w-1/2 h-full bg-gold/5 -skew-x-12 transform translate-x-1/4 z-0"></div>
         <div class="absolute bottom-0 left-0 w-96 h-96 bg-gold/10 rounded-full blur-[100px] z-0"></div>
 
@@ -13,7 +13,7 @@ import { Image } from 'astro:assets';
             <div class="max-w-6xl mx-auto glass-panel bg-white/60 rounded-[3rem] p-8 md:p-16 shadow-soft border border-white/50 backdrop-blur-xl">
                 
                 <div class="text-center mb-12">
-                    <span class="text-gold-dark font-medium text-xs uppercase tracking-[0.25em] mb-3 block font-sans">Доброхотно дающего любит Бог</span>
+                    <span class="text-gold-dark font-medium text-xs uppercase tracking-[0.25em] mb-3 block font-sans">Материальная помощь</span>
                     <h1 class="text-4xl md:text-5xl font-serif text-dark mb-6">Пожертвование</h1>
                     <div class="w-24 h-1 bg-gold mx-auto rounded-full opacity-50"></div>
                 </div>
@@ -23,18 +23,18 @@ import { Image } from 'astro:assets';
                     <!-- Левая колонка: Текст и Кнопка -->
                     <div class="text-center lg:text-left">
                         <p class="text-xl italic text-gray-600 font-serif mb-8 leading-relaxed">
-                            "Каждый уделяй по расположению сердца, не с огорчением и не с принуждением; ибо доброхотно дающего любит Бог."
+                            «Каждый уделяй по расположению сердца, не с огорчением и не с принуждением; ибо доброхотно дающего любит Бог»
                             <br><span class="text-sm font-sans font-medium not-italic text-gold mt-2 block tracking-wider uppercase">2 Коринфянам 9:7</span>
                         </p>
                         <p class="text-gray-500 mb-10 font-light leading-relaxed">
-                            Ваша поддержка помогает нам распространять Благую Весть, заботиться о нуждающихся и развивать служения церкви. Спасибо за ваше открытое сердце!
+                            Мы благодарны каждому за добровольные пожертвования и десятины. Ваши средства направляются на поддержку церковного служения, содействия нуждающимся и содержание здания.
                         </p>
                         
-                        <button id="btn-noble-sound" class="inline-flex items-center justify-center gap-3 bg-gold hover:bg-gold-dark text-white px-10 py-5 rounded-full shadow-lg shadow-gold/30 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 font-medium tracking-wide uppercase text-sm group mx-auto lg:mx-0">
+                        <a href="https://sberbank.ru/qr/uuid=1000297551" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-3 bg-gold hover:bg-gold-dark text-white px-10 py-5 rounded-full shadow-lg shadow-gold/30 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 font-medium tracking-wide uppercase text-sm group mx-auto lg:mx-0">
                             <i data-feather="credit-card" class="w-5 h-5"></i>
                             <span>Пожертвовать онлайн</span>
                             <i data-feather="arrow-right" class="w-4 h-4 ml-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all"></i>
-                        </button>
+                        </a>
                     </div>
 
                     <!-- Правая колонка: QR и Банковские детали -->
@@ -47,7 +47,7 @@ import { Image } from 'astro:assets';
                                     <Image src={qrImage} alt="QR Code" class="w-full h-full object-contain" />
                                 </div>
                                 <div class="text-center md:text-left">
-                                    <h4 class="text-xl font-serif text-dark mb-2">Быстрый перевод</h4>
+                                    <h4 class="text-xl font-googlesans text-dark mb-2">Быстрый перевод</h4>
                                     <p class="text-sm text-gray-500 mb-4">Наведите камеру телефона на QR-код для перевода через СБП</p>
                                     <div class="inline-flex items-center gap-2 text-gold font-medium text-sm bg-gold/5 px-4 py-2 rounded-lg">
                                         <i data-feather="smartphone" class="w-4 h-4"></i>
@@ -64,18 +64,3 @@ import { Image } from 'astro:assets';
     </div>
 </BaseLayout>
 
-<script>
-    import { playNobleSound } from '../scripts/audio';
-
-    document.addEventListener('astro:page-load', () => {
-        const btnNoble = document.getElementById('btn-noble-sound');
-        let lastPlay = 0;
-        btnNoble?.addEventListener('click', () => {
-            const now = Date.now();
-            if (now - lastPlay >= 1000) {
-                playNobleSound();
-                lastPlay = now;
-            }
-        });
-    });
-</script>

@@ -7,17 +7,22 @@ const sermons = await getCollection('sermons');
 ---
 
 <BaseLayout title="Проповеди — Церковь «Невеста Агнца»">
-    <div class="pt-32 pb-24 px-6 bg-[#F9F7F2]">
+    <div class="pt-32 pb-24 px-6 bg-paper">
         <div class="container mx-auto">
-            <div class="text-center mb-16 fade-up">
-                <span class="text-gold-dark font-medium text-xs uppercase tracking-[0.2em] mb-2 block">Служение слова</span>
-                <h1 class="text-5xl md:text-6xl text-dark mb-4">Архив проповедей</h1>
-                <p class="text-gray-500 max-w-lg mx-auto text-lg leading-relaxed">
-                    *вставить текст*
-                </p>
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6 fade-up">
+                <div>
+                    <span class="text-gold-dark font-medium text-xs uppercase tracking-[0.2em] mb-2 block">Служение слова</span>
+                    <h1 class="text-5xl md:text-6xl text-dark mb-4">Архив проповедей</h1>
+                    <p class="text-gray-500 text-lg leading-relaxed">
+                        Записи воскресных, будничных и праздничных трансляций.
+                    </p>
+                </div>
+                <a href="https://rutube.ru/channel/42730775/" target="_blank" rel="noopener noreferrer" class="group flex items-center gap-3 text-sm font-medium uppercase tracking-widest hover:text-gold transition">
+                    Все видео <i data-feather="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition"></i>
+                </a>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-10">
+            <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 scrollbar-none md:grid md:grid-cols-3 md:gap-10 md:pb-0">
                 {sermons.map((sermon, i) => (
                     <SermonCard
                         title={sermon.data.title}
@@ -25,6 +30,7 @@ const sermons = await getCollection('sermons');
                         speaker={sermon.data.speaker}
                         embedId={sermon.data.embedId}
                         coverImage={sermon.data.coverImage}
+                        description={sermon.body}
                         delay={i * 100}
                     />
                 ))}
