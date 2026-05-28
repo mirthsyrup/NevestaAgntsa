@@ -14,7 +14,7 @@ interface Props {
 const { title, date, speaker, embedId, coverImage, delay = 0, description = "" } = Astro.props;
 ---
 
-<div class="group fade-up w-[75vw] sm:w-[350px] md:w-auto shrink-0 snap-start" style={delay ? `transition-delay: ${delay}ms` : undefined}>
+<div class="group w-[75vw] sm:w-[350px] md:w-auto shrink-0 snap-start" style={delay ? `transition-delay: ${delay}ms` : undefined}>
   <RutubePlayer embedId={embedId} coverImage={coverImage} title={title} />
   <div class="relative flex justify-between items-start mt-6 pr-8">
     <div>

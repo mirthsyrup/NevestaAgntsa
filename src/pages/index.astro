@@ -20,13 +20,13 @@ const blurTransition = {
   forwards: {
     old: {
       name: 'fadeOutHero',
-      duration: '0.3s',
+      duration: '0.15s',
       easing: 'ease-out',
       fillMode: 'both',
     },
     new: {
       name: 'blurInHero',
-      duration: '0.3s',
+      duration: '0.15s',
       easing: 'ease-out',
       fillMode: 'both',
     }
@@ -34,13 +34,13 @@ const blurTransition = {
   backwards: {
     old: {
       name: 'fadeOutHero',
-      duration: '0.3s',
+      duration: '0.15s',
       easing: 'ease-out',
       fillMode: 'both',
     },
     new: {
       name: 'blurInHero',
-      duration: '0.3s',
+      duration: '0.15s',
       easing: 'ease-out',
       fillMode: 'both',
     }
@@ -58,7 +58,7 @@ const blurTransition = {
             <div class="mb-6 flex justify-center">
                 <span class="py-1.5 px-5 border border-white/30 rounded-full text-white/90 text-[11px] font-medium uppercase tracking-[0.25em] backdrop-blur-sm bg-white/5">Христианская церковь</span>
             </div>
-            <h1 class="text-white font-logo leading-[1.1] mb-8 drop-shadow-xl" style="font-size: clamp(3.8rem, 12vw, 8.4rem);">
+            <h1 class="text-white font-logo leading-[1.1] mb-8 drop-shadow-xl" style="font-size: clamp(4.2rem, 13vw, 9.2rem);">
                 Невеста <br><span>Агнца</span>
             </h1>
             <p class="text-white/90 text-lg md:text-xl font-normal mb-12 max-w-xl mx-auto leading-relaxed tracking-wide antialiased">
@@ -124,9 +124,9 @@ const blurTransition = {
             <div class="floating-orb w-[600px] h-[600px] bg-gold-light bottom-[-200px] right-[-200px] opacity-5"></div>
 
             <div class="container mx-auto relative z-10">
-                <div class="grid md:grid-cols-3 gap-6 lg:gap-8">
+                <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 scrollbar-none md:grid md:grid-cols-3 lg:gap-8 md:pb-0 fade-up">
                     <!-- Item 1 -->
-                    <div class="glass-card rounded-[2.5rem] p-10 hover:-translate-y-2 transition duration-500 group flex flex-col items-center text-center fade-up">
+                    <div class="glass-card rounded-[2.5rem] p-10 hover:-translate-y-2 transition duration-500 group flex flex-col items-center text-center w-[75vw] sm:w-[350px] md:w-auto shrink-0 snap-start">
                         <div class="mb-6 p-4 rounded-full bg-white/50 text-gold group-hover:bg-gold group-hover:text-white transition duration-500 shadow-sm">
                             <i data-feather="book-open" class="w-8 h-8"></i>
                         </div>
@@ -136,7 +136,7 @@ const blurTransition = {
                         </p>
                     </div>
                     <!-- Item 2 -->
-                    <div class="glass-card rounded-[2.5rem] p-10 hover:-translate-y-2 transition duration-500 group flex flex-col items-center text-center fade-up" style="transition-delay: 100ms;">
+                    <div class="glass-card rounded-[2.5rem] p-10 hover:-translate-y-2 transition duration-500 group flex flex-col items-center text-center w-[75vw] sm:w-[350px] md:w-auto shrink-0 snap-start" style="transition-delay: 100ms;">
                         <div class="mb-6 p-4 rounded-full bg-white/50 text-gold group-hover:bg-gold group-hover:text-white transition duration-500 shadow-sm">
                             <i data-feather="heart" class="w-8 h-8"></i>
                         </div>
@@ -146,7 +146,7 @@ const blurTransition = {
                         </p>
                     </div>
                     <!-- Item 3 -->
-                    <div class="glass-card rounded-[2.5rem] p-10 hover:-translate-y-2 transition duration-500 group flex flex-col items-center text-center fade-up" style="transition-delay: 200ms;">
+                    <div class="glass-card rounded-[2.5rem] p-10 hover:-translate-y-2 transition duration-500 group flex flex-col items-center text-center w-[75vw] sm:w-[350px] md:w-auto shrink-0 snap-start" style="transition-delay: 200ms;">
                         <div class="mb-6 p-4 rounded-full bg-white/50 text-gold group-hover:bg-gold group-hover:text-white transition duration-500 shadow-sm">
                             <i data-feather="users" class="w-8 h-8"></i>
                         </div>
@@ -160,12 +160,10 @@ const blurTransition = {
         </section>
 
         <!-- Цитата Параллакс -->
-        <div class="parallax-section relative h-[80vh] flex items-center justify-center md:bg-fixed bg-cover bg-center overflow-hidden" style={`background-image: url('${quoteBg.src}');`}>
+        <div class="parallax-section relative min-h-[40vh] md:min-h-[80vh] flex items-center justify-center md:bg-fixed bg-cover bg-center overflow-hidden" style={`background-image: url('${quoteBg.src}');`}>
             <div class="absolute inset-0 bg-black/40"></div>
             <div class="container mx-auto px-6 relative z-10 text-center text-white fade-up">
-                <div class="w-16 h-16 mx-auto mb-8 rounded-full border border-white/20 flex items-center justify-center bg-white/5 backdrop-blur-md">
-                    <i data-feather="message-circle" class="w-8 h-8 text-white/80"></i>
-                </div>
+
                 <h2 class="text-4xl md:text-7xl font-serif italic mb-8 leading-tight drop-shadow-lg">"…пойди, я покажу тебе жену,<br>невесту Агнца"</h2>
                 <span class="inline-block border-t border-white/40 pt-4 text-sm uppercase tracking-[0.3em] font-medium">Откровение 21:9</span>
             </div>
@@ -187,7 +185,7 @@ const blurTransition = {
                     </a>
                 </div>
 
-                <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 scrollbar-none md:grid md:grid-cols-3 md:gap-10 md:pb-0">
+                <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 scrollbar-none md:grid md:grid-cols-3 md:gap-10 md:pb-0 fade-up">
                     {recentSermons.map((sermon, i) => (
                         <SermonCard
                             title={sermon.data.title}
@@ -216,7 +214,7 @@ const blurTransition = {
                     <h2 class="text-5xl text-dark">Ближайшие события</h2>
                 </div>
 
-                <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 scrollbar-none md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-8 md:pb-0">
+                <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 scrollbar-none md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-8 md:pb-0 fade-up">
                     {recentEvents.map((event, i) => (
                         <EventCard
                             day={event.data.day}
@@ -280,11 +278,39 @@ const blurTransition = {
             window.requestAnimationFrame(updateParallax);
         }
 
-        function handleJoinClick() {
+        function handleJoinClick(e: Event) {
+            e.preventDefault();
             const now = Date.now();
             if (now - lastPlay >= 1000) {
                 playNobleSound();
                 lastPlay = now;
+            }
+            
+            // Плавная прокрутка к контактам
+            const target = document.getElementById('contact');
+            if (target) {
+                const startPosition = window.pageYOffset;
+                const targetPosition = target.getBoundingClientRect().top + startPosition;
+                const distance = targetPosition - startPosition;
+                let startTime: number | null = null;
+                const duration = 1200; // 1.2 секунды
+
+                function animation(currentTime: number) {
+                    if (startTime === null) startTime = currentTime;
+                    const timeElapsed = currentTime - startTime;
+                    const run = easeInOutCubic(timeElapsed, startPosition, distance, duration);
+                    window.scrollTo(0, run);
+                    if (timeElapsed < duration) requestAnimationFrame(animation);
+                }
+
+                function easeInOutCubic(t: number, b: number, c: number, d: number) {
+                    t /= d / 2;
+                    if (t < 1) return c / 2 * t * t * t + b;
+                    t -= 2;
+                    return c / 2 * (t * t * t + 2) + b;
+                }
+
+                requestAnimationFrame(animation);
             }
         }
         btnJoin?.addEventListener('click', handleJoinClick);
