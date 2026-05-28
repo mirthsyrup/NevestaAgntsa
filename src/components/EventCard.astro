@@ -14,7 +14,7 @@ interface Props {
 const { day, month, title, timeOrDate, location, link = "#", icon = "calendar", delay = 0, description = "" } = Astro.props;
 ---
 
-<div class="glass-card rounded-[2rem] p-8 flex flex-col items-start hover:-translate-y-2 transition duration-500 fade-up group relative overflow-hidden w-[85vw] sm:w-[350px] md:w-auto shrink-0 snap-start" style={delay ? `transition-delay: ${delay}ms` : undefined}>
+<div class="glass-card rounded-[2rem] p-8 flex flex-col items-start hover:-translate-y-2 transition duration-500 fade-up group relative overflow-hidden w-[75vw] sm:w-[350px] md:w-auto shrink-0 snap-start" style={delay ? `transition-delay: ${delay}ms` : undefined}>
   <div class="absolute top-0 right-0 w-24 h-24 bg-gold/10 rounded-bl-[4rem] -mr-4 -mt-4 transition-transform group-hover:scale-125 duration-700"></div>
   
   <div class="flex items-baseline gap-2 mb-6 text-gold-dark">
