@@ -212,7 +212,6 @@ const recentEvents = events.slice(0, 3);
 
 <script>
     import { playNobleSound } from '../scripts/audio';
-    import { mobileSmoothScroll } from '../scripts/scroll';
 
     // Параллакс-эффект на скролл для Hero и цитаты + привязка звука
     document.addEventListener('astro:page-load', () => {
@@ -261,12 +260,7 @@ const recentEvents = events.slice(0, 3);
             // Плавная прокрутка к контактам
             const target = document.getElementById('contact');
             if (target) {
-                if (window.innerWidth <= 768) {
-                    const targetY = target.getBoundingClientRect().top + window.pageYOffset;
-                    mobileSmoothScroll(targetY, 1800);
-                } else {
-                    target.scrollIntoView({ behavior: 'smooth' });
-                }
+                target.scrollIntoView({ behavior: 'smooth' });
             }
         }
         btnJoin?.addEventListener('click', handleJoinClick);
