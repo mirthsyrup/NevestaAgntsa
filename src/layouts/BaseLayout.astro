@@ -58,7 +58,7 @@ const pageTransition = {
 ---
 
 <!DOCTYPE html>
-<html lang="ru" class="scroll-smooth">
+<html lang="ru">
 <head>
     <SEO title={displayTitle} description={description} image={image} />
     <title>{displayTitle}</title>
@@ -78,6 +78,13 @@ const pageTransition = {
         window.scrollTo(0, 0);
         window.addEventListener('load', () => {
             window.scrollTo(0, 0);
+        });
+        window.addEventListener('pageshow', () => {
+            if (window.innerWidth <= 768) {
+                setTimeout(() => {
+                    window.scrollTo(0, 0);
+                }, 50);
+            }
         });
     </script>
 </head>
@@ -132,6 +139,33 @@ const pageTransition = {
             if (window.feather) {
                 window.feather.replace();
             }
+
+            // Плавная прокрутка для якорных ссылок на той же странице
+            document.addEventListener('click', (e) => {
+                const target = e.target as HTMLElement;
+                const anchor = target.closest('a');
+                if (!anchor) return;
+                
+                const href = anchor.getAttribute('href');
+                if (!href) return;
+                
+                const hashIndex = href.indexOf('#');
+                if (hashIndex !== -1) {
+                    const hash = href.substring(hashIndex);
+                    
+                    // Проверяем, ведет ли ссылка на ту же страницу
+                    const currentPath = window.location.pathname.replace(/\/$/, '');
+                    const targetPath = new URL(anchor.href).pathname.replace(/\/$/, '');
+                    
+                    if (currentPath === targetPath) {
+                        const element = document.querySelector(hash);
+                        if (element) {
+                            e.preventDefault();
+                            element.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                }
+            });
 
             // Intersection Observer для анимаций появления (.fade-up)
             const observer = new IntersectionObserver((entries) => {

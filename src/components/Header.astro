@@ -61,6 +61,7 @@ const isHome = currentPath === basePath || currentPath === "" || currentPath ===
 <script>
     import { playAscensionSound } from '../scripts/audio';
     import { navigate } from 'astro:transitions/client';
+    import { mobileSmoothScroll } from '../scripts/scroll';
 
     function createHeavenlyEffect() {
         const logo = document.getElementById('logo-cross');
@@ -176,7 +177,11 @@ const isHome = currentPath === basePath || currentPath === "" || currentPath ===
             const isHome = path === baseUrl || path === '' || path === '/';
             
             if (isHome) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                if (window.innerWidth <= 768) {
+                    mobileSmoothScroll(0, 2400);
+                } else {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
             } else {
                 navigate(import.meta.env.BASE_URL);
             }
