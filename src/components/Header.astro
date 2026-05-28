@@ -176,27 +176,7 @@ const isHome = currentPath === basePath || currentPath === "" || currentPath ===
             const isHome = path === baseUrl || path === '' || path === '/';
             
             if (isHome) {
-                // Плавная прокрутка наверх
-                const startPosition = window.pageYOffset;
-                let startTime: number | null = null;
-                const duration = 1200; // 1.2 секунды
-
-                function animation(currentTime: number) {
-                    if (startTime === null) startTime = currentTime;
-                    const timeElapsed = currentTime - startTime;
-                    const run = easeInOutCubic(timeElapsed, startPosition, -startPosition, duration);
-                    window.scrollTo(0, run);
-                    if (timeElapsed < duration) requestAnimationFrame(animation);
-                }
-
-                function easeInOutCubic(t: number, b: number, c: number, d: number) {
-                    t /= d / 2;
-                    if (t < 1) return c / 2 * t * t * t + b;
-                    t -= 2;
-                    return c / 2 * (t * t * t + 2) + b;
-                }
-
-                requestAnimationFrame(animation);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
                 navigate(import.meta.env.BASE_URL);
             }

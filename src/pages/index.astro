@@ -16,41 +16,11 @@ const events = await getCollection('events');
 const recentSermons = sermons.slice(0, 3);
 const recentEvents = events.slice(0, 3);
 
-const blurTransition = {
-  forwards: {
-    old: {
-      name: 'fadeOutHero',
-      duration: '0.15s',
-      easing: 'ease-out',
-      fillMode: 'both',
-    },
-    new: {
-      name: 'blurInHero',
-      duration: '0.15s',
-      easing: 'ease-out',
-      fillMode: 'both',
-    }
-  },
-  backwards: {
-    old: {
-      name: 'fadeOutHero',
-      duration: '0.15s',
-      easing: 'ease-out',
-      fillMode: 'both',
-    },
-    new: {
-      name: 'blurInHero',
-      duration: '0.15s',
-      easing: 'ease-out',
-      fillMode: 'both',
-    }
-  }
-};
 ---
 
 <BaseLayout title="Церковь «Невеста Агнца»">
     <!-- Hero Section -->
-    <div class="hero-bg relative h-screen min-h-[700px] flex items-center justify-center overflow-hidden bg-cover bg-center" style={`background-image: url('${heroBg.src}');`} transition:animate={blurTransition}>
+    <div class="hero-bg relative h-screen min-h-[700px] flex items-center justify-center overflow-hidden bg-cover bg-center" style={`background-image: url('${heroBg.src}');`}>
         <div class="absolute inset-0 bg-dark/40 mix-blend-multiply"></div>
         <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-paper"></div>
         
@@ -126,31 +96,31 @@ const blurTransition = {
             <div class="container mx-auto relative z-10">
                 <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 scrollbar-none md:grid md:grid-cols-3 lg:gap-8 md:pb-0 fade-up">
                     <!-- Item 1 -->
-                    <div class="glass-card rounded-[2.5rem] p-10 hover:-translate-y-2 transition duration-500 group flex flex-col items-center text-center w-[75vw] sm:w-[350px] md:w-auto shrink-0 snap-start">
-                        <div class="mb-6 p-4 rounded-full bg-white/50 text-gold group-hover:bg-gold group-hover:text-white transition duration-500 shadow-sm">
+                    <div class="glass-card rounded-[2.5rem] px-5 py-8 md:p-10 hover:-translate-y-2 transition duration-500 group flex flex-col items-center text-center w-[75vw] sm:w-[350px] md:w-auto shrink-0 snap-start">
+                        <div class="mb-4 md:mb-6 p-4 rounded-full bg-white/50 text-gold group-hover:bg-gold group-hover:text-white transition duration-500 shadow-sm">
                             <i data-feather="book-open" class="w-8 h-8"></i>
                         </div>
-                          <h3 class="text-2xl mb-4 font-googlesans text-dark">Библия</h3>
+                          <h3 class="text-2xl mb-2 md:mb-4 font-googlesans text-dark">Библия</h3>
                         <p class="text-gray-600 font-normal leading-relaxed text-sm">
                             Мы верим, что Священное Писание богодухновенно и дано Самим Господом. Оно является для нас единственным непогрешимым источником познания Бога, Его воли и нашего спасения.
                         </p>
                     </div>
                     <!-- Item 2 -->
-                    <div class="glass-card rounded-[2.5rem] p-10 hover:-translate-y-2 transition duration-500 group flex flex-col items-center text-center w-[75vw] sm:w-[350px] md:w-auto shrink-0 snap-start" style="transition-delay: 100ms;">
-                        <div class="mb-6 p-4 rounded-full bg-white/50 text-gold group-hover:bg-gold group-hover:text-white transition duration-500 shadow-sm">
+                    <div class="glass-card rounded-[2.5rem] px-5 py-8 md:p-10 hover:-translate-y-2 transition duration-500 group flex flex-col items-center text-center w-[75vw] sm:w-[350px] md:w-auto shrink-0 snap-start" style="transition-delay: 100ms;">
+                        <div class="mb-4 md:mb-6 p-4 rounded-full bg-white/50 text-gold group-hover:bg-gold group-hover:text-white transition duration-500 shadow-sm">
                             <i data-feather="heart" class="w-8 h-8"></i>
                         </div>
-                          <h3 class="text-2xl mb-4 font-googlesans text-dark">Бог</h3>
+                          <h3 class="text-2xl mb-2 md:mb-4 font-googlesans text-dark">Бог</h3>
                         <p class="text-gray-600 font-normal leading-relaxed text-sm">
                             Мы исповедуем веру в единого истинного Бога, открывающегося в трех лицах: Отца, Сына и Святого Духа. Он — Творец Вселенной, Вечный Дух, источник совершенной любви, святости и всемогущества.
                         </p>
                     </div>
                     <!-- Item 3 -->
-                    <div class="glass-card rounded-[2.5rem] p-10 hover:-translate-y-2 transition duration-500 group flex flex-col items-center text-center w-[75vw] sm:w-[350px] md:w-auto shrink-0 snap-start" style="transition-delay: 200ms;">
-                        <div class="mb-6 p-4 rounded-full bg-white/50 text-gold group-hover:bg-gold group-hover:text-white transition duration-500 shadow-sm">
+                    <div class="glass-card rounded-[2.5rem] px-5 py-8 md:p-10 hover:-translate-y-2 transition duration-500 group flex flex-col items-center text-center w-[75vw] sm:w-[350px] md:w-auto shrink-0 snap-start" style="transition-delay: 200ms;">
+                        <div class="mb-4 md:mb-6 p-4 rounded-full bg-white/50 text-gold group-hover:bg-gold group-hover:text-white transition duration-500 shadow-sm">
                             <i data-feather="users" class="w-8 h-8"></i>
                         </div>
-                          <h3 class="text-2xl mb-4 font-googlesans text-dark">Церковь</h3>
+                          <h3 class="text-2xl mb-2 md:mb-4 font-googlesans text-dark">Церковь</h3>
                         <p class="text-gray-600 font-normal leading-relaxed text-sm">
                             Мы верим в Церковь как духовное тело Христово, утвержденное на основании Апостолов и пророков. Ее великое призвание — прославлять Бога, возвещать Евангелие миру, нести дела милосердия и свято хранить истину.
                         </p>
@@ -164,7 +134,7 @@ const blurTransition = {
             <div class="absolute inset-0 bg-black/40"></div>
             <div class="container mx-auto px-6 relative z-10 text-center text-white fade-up">
 
-                <h2 class="text-4xl md:text-7xl font-serif italic mb-8 leading-tight drop-shadow-lg">"…пойди, я покажу тебе жену,<br>невесту Агнца"</h2>
+                <h2 class="text-2xl md:text-5xl font-serif italic mb-8 leading-tight drop-shadow-lg">"…пойди, я покажу тебе жену,<br>невесту Агнца"</h2>
                 <span class="inline-block border-t border-white/40 pt-4 text-sm uppercase tracking-[0.3em] font-medium">Откровение 21:9</span>
             </div>
         </div>
@@ -289,28 +259,7 @@ const blurTransition = {
             // Плавная прокрутка к контактам
             const target = document.getElementById('contact');
             if (target) {
-                const startPosition = window.pageYOffset;
-                const targetPosition = target.getBoundingClientRect().top + startPosition;
-                const distance = targetPosition - startPosition;
-                let startTime: number | null = null;
-                const duration = 1200; // 1.2 секунды
-
-                function animation(currentTime: number) {
-                    if (startTime === null) startTime = currentTime;
-                    const timeElapsed = currentTime - startTime;
-                    const run = easeInOutCubic(timeElapsed, startPosition, distance, duration);
-                    window.scrollTo(0, run);
-                    if (timeElapsed < duration) requestAnimationFrame(animation);
-                }
-
-                function easeInOutCubic(t: number, b: number, c: number, d: number) {
-                    t /= d / 2;
-                    if (t < 1) return c / 2 * t * t * t + b;
-                    t -= 2;
-                    return c / 2 * (t * t * t + 2) + b;
-                }
-
-                requestAnimationFrame(animation);
+                target.scrollIntoView({ behavior: 'smooth' });
             }
         }
         btnJoin?.addEventListener('click', handleJoinClick);
