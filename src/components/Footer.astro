@@ -2,8 +2,8 @@
 import { Image } from 'astro:assets';
 import footerBg from '../assets/images/footer-bg.jpg';
 ---
-<footer id="contact" class="relative pt-24 pb-8 text-white overflow-hidden">
-    <div class="absolute inset-0 z-0">
+<footer id="contact" class="relative pt-24 pb-8 text-white">
+    <div class="absolute -top-16 inset-x-0 bottom-0 z-0" style="mask-image: linear-gradient(to bottom, transparent 0%, black 64px, black 100%); -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 64px, black 100%);">
         <Image src={footerBg} alt="" class="w-full h-full object-cover" />
         <div class="absolute inset-0 bg-[#2b221b]/85 mix-blend-multiply"></div>
     </div>
