@@ -68,7 +68,7 @@ const blurTransition = {
                 <a href="#contact" id="btn-join" class="bg-paper text-dark hover:bg-white py-4 px-10 rounded-full text-sm font-medium uppercase tracking-widest transition duration-300 shadow-glow hover:shadow-[0_0_40px_rgba(255,255,255,0.6)]">
                     Присоединиться
                 </a>
-                <a href="/sermons" class="group flex items-center gap-2 text-white hover:text-gold-light transition duration-300 text-sm font-medium uppercase tracking-widest border-b border-transparent hover:border-gold-light pb-1">
+                <a href={`${import.meta.env.BASE_URL}sermons`} class="group flex items-center gap-2 text-white hover:text-gold-light transition duration-300 text-sm font-medium uppercase tracking-widest border-b border-transparent hover:border-gold-light pb-1">
                     <i data-feather="play-circle" class="w-5 h-5 transition-transform group-hover:scale-110"></i>
                     Смотреть проповеди
                 </a>
@@ -232,7 +232,7 @@ const blurTransition = {
                 </div>
                 
                 <div class="flex justify-center mt-16 fade-up">
-                    <a href="/events" class="inline-flex items-center justify-center py-4 px-10 border border-gold/40 hover:border-gold hover:bg-gold hover:text-white rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-300">
+                    <a href={`${import.meta.env.BASE_URL}events`} class="inline-flex items-center justify-center py-4 px-10 border border-gold/40 hover:border-gold hover:bg-gold hover:text-white rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-300">
                         Посмотреть весь календарь
                     </a>
                 </div>
