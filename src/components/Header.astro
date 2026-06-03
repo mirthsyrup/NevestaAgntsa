@@ -4,7 +4,7 @@ const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
 const currentPath = pathname.replace(/\/$/, "");
 const isHome = currentPath === basePath || currentPath === "" || currentPath === "/";
 ---
-<nav id="navbar" class={`fixed w-full z-[100] top-0 text-white transition-all duration-300 border-b min-h-safe-header pt-safe flex items-center ${isHome ? 'bg-transparent border-white/5' : 'bg-dark/80 backdrop-blur-sm shadow-md border-white/10'}`} transition:animate="none">
+<nav id="navbar" class={`fixed w-full z-[100] top-0 text-white transition-all duration-300 border-b h-[64px] flex items-center ${isHome ? 'bg-transparent border-white/5' : 'bg-dark/80 backdrop-blur-sm shadow-md border-white/10'}`} transition:animate="none">
     <div class="w-full container mx-auto flex items-center justify-between px-6">
         
         <a id="logo-cross" class="text-white no-underline flex items-center group relative z-[101]" href={import.meta.env.BASE_URL} transition:persist="logo-cross" aria-label="Главная страница">
@@ -39,7 +39,7 @@ const isHome = currentPath === basePath || currentPath === "" || currentPath ===
     </div>
 </nav>
 
-<div id="mobile-menu" class="fixed inset-0 z-[90] bg-dark/95 backdrop-blur-sm flex flex-col justify-center items-center pt-safe pb-safe menu-hidden lg:hidden">
+<div id="mobile-menu" class="fixed inset-0 z-[90] bg-dark/95 backdrop-blur-sm flex flex-col justify-center items-center menu-hidden lg:hidden">
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] bg-gold/5 rounded-full blur-[80px] pointer-events-none"></div>
     <ul class="flex flex-col items-center gap-8 relative z-10 text-center">
         <li><a class={`text-xl font-sans uppercase tracking-[0.2em] font-medium transition-colors duration-300 ${currentPath === `${basePath}/about` ? 'text-gold' : 'text-white hover:text-gold'}`} href={`${import.meta.env.BASE_URL}about`}>О нас</a></li>
@@ -53,7 +53,7 @@ const isHome = currentPath === basePath || currentPath === "" || currentPath ===
             </a>
         </li>
     </ul>
-    <div class="absolute bottom-safe-menu text-white/20 text-[10px] uppercase tracking-[0.3em]">
+    <div class="absolute bottom-10 text-white/20 text-[10px] uppercase tracking-[0.3em]">
         Невеста Агнца
     </div>
 </div>

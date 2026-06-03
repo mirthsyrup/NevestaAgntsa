@@ -70,17 +70,6 @@ const pageTransition = {
     <link href="https://fonts.googleapis.com/css2?family=Rubik+Bubbles&family=Lora:ital,wght@0,400..700;1,400..700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.2/feather.min.js" integrity="sha512-zMm7+ZQ8AZr1r3W8Z8lDATkH05QG5Gm2xc6MlsCdBz9l6oE8Y7IXByMgSm/rdRQrhuHt99HAYfMljBOEZ68q5A==" crossorigin="anonymous" referrerpolicy="no-referrer" is:inline></script>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script is:inline>
-        if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.ready();
-            window.Telegram.WebApp.expand();
-            try {
-                window.Telegram.WebApp.setHeaderColor('#161616');
-                window.Telegram.WebApp.setBackgroundColor('#161616');
-            } catch (e) {}
-        }
-    </script>
     <ViewTransitions />
     <script is:inline>
         if (history.scrollRestoration) {
