@@ -2,14 +2,15 @@
   "name": "Церковь Невеста Агнца",
   "short_name": "Невеста Агнца",
   "description": "Церковь \"Невеста Агнца\" в Чебоксарах.",
-  "start_url": "/",
+  "start_url": "/NevestaAgntsa/",
+  "scope": "/NevestaAgntsa/",
   "display": "standalone",
   "background_color": "#161616",
   "theme-color": "#161616",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/favicon.png",
+      "src": "/NevestaAgntsa/favicon.png",
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "any maskable"
