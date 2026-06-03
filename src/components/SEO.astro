@@ -17,10 +17,13 @@ const {
 ---
 
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="description" content={description} />
 <meta name="theme-color" content="#161616" />
 <meta name="generator" content={Astro.generator} />
+<link rel="manifest" href={`${import.meta.env.BASE_URL}manifest.json`} />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
