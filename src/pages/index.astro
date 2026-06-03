@@ -23,9 +23,10 @@ const recentEvents = events.slice(0, 3);
     <div class="hero-bg relative h-screen min-h-[700px] flex items-center justify-center overflow-hidden bg-cover bg-center" style={`background-image: url('${heroBg.src}');`}>
         <div class="absolute inset-0 bg-dark/40 mix-blend-multiply"></div>
         <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-paper"></div>
+        <canvas id="hero-dust" class="absolute inset-0 w-full h-full pointer-events-none z-0 opacity-80"></canvas>
         
         <div class="relative z-10 text-center px-4 max-w-5xl mx-auto mt-10 fade-up">
-            <div class="mb-6 flex justify-center">
+            <div class="mb-6 flex justify-center relative z-10">
                 <span class="py-1.5 px-5 border border-white/30 rounded-full text-white/90 text-[11px] font-medium uppercase tracking-[0.25em] backdrop-blur-sm bg-white/5">Христианская церковь</span>
             </div>
             <h1 class="text-white font-logo leading-[1.1] mb-8 drop-shadow-xl" style="font-size: clamp(4.2rem, 13vw, 9.2rem);">
@@ -265,10 +266,130 @@ const recentEvents = events.slice(0, 3);
         }
         btnJoin?.addEventListener('click', handleJoinClick);
 
+        // Анимация золотой пыли на главном экране
+        const heroDust = document.getElementById('hero-dust') as HTMLCanvasElement;
+        let dustCleanup = () => {};
+        
+        if (heroDust) {
+            const ctx = heroDust.getContext('2d');
+            if (ctx) {
+                let particles: Array<{x: number, y: number, r: number, vy: number, vx: number, a: number, baseOpacity: number}> = [];
+                let animationFrameId: number;
+                let mouseX = -1000;
+                let mouseY = -1000;
+
+                const resize = () => {
+                    if (!heroDust) return;
+                    heroDust.width = heroDust.offsetWidth;
+                    heroDust.height = heroDust.offsetHeight;
+                    initParticles();
+                };
+
+                const initParticles = () => {
+                    particles = [];
+                    const count = window.innerWidth <= 768 ? 20 : 60;
+                    for (let i = 0; i < count; i++) {
+                        const a = Math.random() * 0.4 + 0.1;
+                        particles.push({
+                            x: Math.random() * heroDust.width,
+                            y: Math.random() * heroDust.height,
+                            r: Math.random() * 1.5 + 0.5,
+                            vy: -(Math.random() * 0.3 + 0.1),
+                            vx: (Math.random() - 0.5) * 0.15,
+                            a: a,
+                            baseOpacity: a
+                        });
+                    }
+                };
+
+                const draw = () => {
+                    if (!ctx || !heroDust) return;
+                    ctx.clearRect(0, 0, heroDust.width, heroDust.height);
+
+                    particles.forEach(p => {
+                        p.y += p.vy;
+                        p.x += p.vx;
+
+                        if (mouseX !== -1000 && mouseY !== -1000) {
+                            const dx = p.x - mouseX;
+                            const dy = p.y - mouseY;
+                            const dist = Math.sqrt(dx*dx + dy*dy);
+                            if (dist < 120) {
+                                const force = (120 - dist) / 120;
+                                p.x += (dx / dist) * force * 1.2;
+                                p.y += (dy / dist) * force * 1.2;
+                            }
+                        }
+
+                        if (p.y < -10) {
+                            p.y = heroDust.height + 10;
+                            p.x = Math.random() * heroDust.width;
+                        }
+                        if (p.x < -10) p.x = heroDust.width + 10;
+                        if (p.x > heroDust.width + 10) p.x = -10;
+
+                        const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 3);
+                        glow.addColorStop(0, `rgba(212,168,83,${p.a})`);
+                        glow.addColorStop(1, 'rgba(212,168,83,0)');
+                        ctx.fillStyle = glow;
+                        ctx.fillRect(p.x - p.r*3, p.y - p.r*3, p.r*6, p.r*6);
+
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(240,220,160,${p.a * 1.5})`;
+                        ctx.fill();
+                    });
+
+                    animationFrameId = requestAnimationFrame(draw);
+                };
+
+                window.addEventListener('resize', resize);
+                
+                const handleMouseMove = (e: MouseEvent) => {
+                    const rect = heroDust.getBoundingClientRect();
+                    mouseX = e.clientX - rect.left;
+                    mouseY = e.clientY - rect.top;
+                };
+                
+                const handleMouseLeave = () => {
+                    mouseX = -1000;
+                    mouseY = -1000;
+                };
+
+                const heroSection = document.querySelector('.hero-bg');
+                heroSection?.addEventListener('mousemove', handleMouseMove as EventListener);
+                heroSection?.addEventListener('mouseleave', handleMouseLeave);
+
+                resize();
+                draw();
+
+                dustCleanup = () => {
+                    cancelAnimationFrame(animationFrameId);
+                    window.removeEventListener('resize', resize);
+                    heroSection?.removeEventListener('mousemove', handleMouseMove as EventListener);
+                    heroSection?.removeEventListener('mouseleave', handleMouseLeave);
+                };
+            }
+        }
+
+        // Интерактивный параллакс для плавающих сфер
+        const orbs = document.querySelectorAll('.floating-orb') as NodeListOf<HTMLElement>;
+        const handleOrbParallax = (e: MouseEvent) => {
+            if (window.innerWidth <= 768) return;
+            const x = (window.innerWidth / 2 - e.clientX) * 0.02;
+            const y = (window.innerHeight / 2 - e.clientY) * 0.02;
+            orbs.forEach(orb => {
+                orb.style.transform = `translate(${x}px, ${y}px)`;
+            });
+        };
+        window.addEventListener('mousemove', handleOrbParallax);
+
         // Очищаем слушатели перед переходом на другую страницу
         document.addEventListener('astro:before-swap', () => {
             window.removeEventListener('scroll', onScroll);
             btnJoin?.removeEventListener('click', handleJoinClick);
+            window.removeEventListener('mousemove', handleOrbParallax);
+            dustCleanup();
         }, { once: true });
     });
 </script>

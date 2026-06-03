@@ -7,8 +7,11 @@ const events = await getCollection('events');
 ---
 
 <BaseLayout title="Календарь событий — Церковь «Невеста Агнца»">
-    <div class="pt-32 pb-24 px-6 bg-paper">
-        <div class="container mx-auto">
+    <div class="pt-32 pb-24 px-6 bg-paper relative overflow-hidden">
+        <!-- Интерактивная сеть созвездий на заднем фоне -->
+        <canvas id="events-network" class="absolute inset-0 w-full h-full pointer-events-none z-0 opacity-85"></canvas>
+        
+        <div class="container mx-auto relative z-10">
             <div class="text-center mb-16 fade-up">
                 <span class="text-gold-dark font-medium text-xs uppercase tracking-[0.2em] mb-2 block">Календарь</span>
                 <h1 class="text-5xl md:text-6xl text-dark mb-4">Ближайшие события</h1>
@@ -34,3 +37,120 @@ const events = await getCollection('events');
         </div>
     </div>
 </BaseLayout>
+
+<script>
+    document.addEventListener('astro:page-load', () => {
+        const canvas = document.getElementById('events-network') as HTMLCanvasElement;
+        if (!canvas) return;
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        let particles: Array<{x: number, y: number, vx: number, vy: number, r: number}> = [];
+        let animationFrameId: number;
+        let mouseX = -1000;
+        let mouseY = -1000;
+
+        const resize = () => {
+            if (!canvas) return;
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            initParticles();
+        };
+
+        const initParticles = () => {
+            particles = [];
+            const count = window.innerWidth <= 768 ? 15 : 45;
+            for (let i = 0; i < count; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 0.25,
+                    vy: (Math.random() - 0.5) * 0.25,
+                    r: Math.random() * 2 + 1.2
+                });
+            }
+        };
+
+        const draw = () => {
+            if (!ctx || !canvas) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(166, 123, 91, 0.65)';
+                ctx.fill();
+            });
+
+            ctx.strokeStyle = 'rgba(166, 123, 91, 0.22)';
+            ctx.lineWidth = 0.8;
+
+            for (let i = 0; i < particles.length; i++) {
+                const p1 = particles[i];
+                for (let j = i + 1; j < particles.length; j++) {
+                    const p2 = particles[j];
+                    const dx = p1.x - p2.x;
+                    const dy = p1.y - p2.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < 100) {
+                        ctx.beginPath();
+                        ctx.moveTo(p1.x, p1.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                }
+
+                if (mouseX !== -1000 && mouseY !== -1000) {
+                    const dx = p1.x - mouseX;
+                    const dy = p1.y - mouseY;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 120) {
+                        ctx.strokeStyle = `rgba(166, 123, 91, ${(120 - dist) * 0.0055})`;
+                        ctx.beginPath();
+                        ctx.moveTo(p1.x, p1.y);
+                        ctx.lineTo(mouseX, mouseY);
+                        ctx.stroke();
+                        ctx.strokeStyle = 'rgba(166, 123, 91, 0.22)';
+                    }
+                }
+            }
+
+            animationFrameId = requestAnimationFrame(draw);
+        };
+
+        const handleMouseMove = (e: MouseEvent) => {
+            const rect = canvas.getBoundingClientRect();
+            mouseX = e.clientX - rect.left;
+            mouseY = e.clientY - rect.top;
+        };
+
+        const handleMouseLeave = () => {
+            mouseX = -1000;
+            mouseY = -1000;
+        };
+
+        window.addEventListener('resize', resize);
+        
+        const outerDiv = canvas.parentElement;
+        outerDiv?.addEventListener('mousemove', handleMouseMove);
+        outerDiv?.addEventListener('mouseleave', handleMouseLeave);
+
+        resize();
+        draw();
+
+        document.addEventListener('astro:before-swap', () => {
+            cancelAnimationFrame(animationFrameId);
+            window.removeEventListener('resize', resize);
+            outerDiv?.removeEventListener('mousemove', handleMouseMove);
+            outerDiv?.removeEventListener('mouseleave', handleMouseLeave);
+        }, { once: true });
+    });
+</script>

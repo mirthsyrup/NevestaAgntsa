@@ -258,3 +258,71 @@ button.is-active .close-icon { transform: translate(-50%, -50%) scale(1) rotate(
     mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
     -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
 }
+
+/* --- КУСТОМНЫЕ АНИМАЦИИ ДЛЯ ФОНОВЫХ ЭФФЕКТОВ --- */
+
+/* Пульсирующий нимб/ореол */
+@keyframes aura-pulse {
+    0%, 100% {
+        opacity: 0.35;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        opacity: 0.65;
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+}
+.aura-glow {
+    animation: aura-pulse 12s infinite ease-in-out;
+}
+
+/* Медленно перетекающие жидкие сферы */
+@keyframes float-blob {
+    0% {
+        transform: translate(0px, 0px) scale(1) rotate(0deg);
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    }
+    33% {
+        transform: translate(40px, -60px) scale(1.15) rotate(120deg);
+        border-radius: 50% 60% 70% 30% / 50% 60% 30% 70%;
+    }
+    66% {
+        transform: translate(-30px, 30px) scale(0.85) rotate(240deg);
+        border-radius: 70% 30% 50% 60% / 30% 50% 60% 70%;
+    }
+    100% {
+        transform: translate(0px, 0px) scale(1) rotate(360deg);
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    }
+}
+.animate-blob {
+    animation: float-blob 25s infinite alternate ease-in-out;
+}
+
+/* Мерцание огоньков свечи */
+@keyframes shimer-sparkle {
+    0%, 100% {
+        opacity: 0;
+        transform: translateY(0px) scale(0.8);
+    }
+    50% {
+        opacity: 0.95;
+        transform: translateY(-20px) scale(1.3);
+    }
+}
+.animate-sparkle {
+    animation: shimer-sparkle 6s infinite ease-in-out;
+}
+
+/* Колебание световых лучей */
+@keyframes sway-beams {
+    0%, 100% {
+        transform: rotate(-12deg) skewX(2deg) scaleX(1);
+    }
+    50% {
+        transform: rotate(-10deg) skewX(-2deg) scaleX(1.05);
+    }
+}
+.animate-beams {
+    animation: sway-beams 16s infinite ease-in-out;
+}
