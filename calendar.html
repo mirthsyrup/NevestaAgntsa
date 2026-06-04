@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Концепты баннерного календаря — Невеста Агнца</title>
+    
+    <!-- Подключение шрифтов и иконок -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Lora:ital,wght@0,400..700;1,400..700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            DEFAULT: '#A67B5B',
+                            light: '#C29B7C',
+                            dark: '#8C6042',
+                        },
+                        burgundy: {
+                            DEFAULT: '#8A333A',
+                            light: '#A34850',
+                            dark: '#6E2026',
+                        },
+                        dark: '#1E1915',
+                        paper: '#FDFBF7',
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'Montserrat', 'sans-serif'],
+                        serif: ['Lora', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            transition: background-color 0.5s ease, color 0.3s ease;
+        }
+
+        /* Темная тема */
+        body.theme-dark {
+            background-color: #120E0B;
+            background-image: radial-gradient(circle at 50% 0%, #2B1E16 0%, #120E0B 70%);
+            color: #FDFBF7;
+        }
+        .theme-dark .glass-panel {
+            background: rgba(43, 30, 22, 0.45);
+            border: 1px solid rgba(166, 123, 91, 0.15);
+            backdrop-filter: blur(16px);
+        }
+        .theme-dark .card-subtext { color: rgba(255, 255, 255, 0.6); }
+        .theme-dark .card-title-text { color: #FDFBF7; }
+        .theme-dark .cell-border { border-color: rgba(166, 123, 91, 0.15); }
+        .theme-dark .inactive-day { opacity: 0.3; }
+        .theme-dark .theme-toggle-btn { background: #2B1E16; border-color: rgba(166, 123, 91, 0.3); color: #FDFBF7; }
+        .theme-dark .tab-bg { background-color: rgba(43, 30, 22, 0.8); border-color: rgba(166, 123, 91, 0.2); }
+        .theme-dark .bg-nav-block { background-color: rgba(43, 30, 22, 0.5); border-color: rgba(166, 123, 91, 0.15); }
+        .theme-dark .cal-event-block { background-color: #2B1E16; border-color: rgba(166, 123, 91, 0.2); color: #C29B7C; }
+
+        /* Светлая тема */
+        body.theme-light {
+            background-color: #FDFBF7;
+            background-image: radial-gradient(circle at 50% 0%, #F5EFE6 0%, #FDFBF7 100%);
+            color: #2B1E16;
+        }
+        .theme-light .glass-panel {
+            background: rgba(255, 255, 255, 0.75);
+            border: 1px solid rgba(166, 123, 91, 0.25);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 10px 30px rgba(166, 123, 91, 0.08);
+        }
+        .theme-light .card-subtext { color: rgba(43, 30, 22, 0.65); }
+        .theme-light .card-title-text { color: #2B1E16; }
+        .theme-light .cell-border { border-color: rgba(166, 123, 91, 0.2); }
+        .theme-light .inactive-day { opacity: 0.4; background-color: rgba(166, 123, 91, 0.05); }
+        .theme-light .theme-toggle-btn { background: #FFFFFF; border-color: rgba(166, 123, 91, 0.3); color: #2B1E16; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .theme-light .tab-bg { background-color: rgba(255, 255, 255, 0.9); border-color: rgba(166, 123, 91, 0.25); box-shadow: 0 4px 20px rgba(166, 123, 91, 0.05); }
+        .theme-light .bg-nav-block { background-color: rgba(255, 255, 255, 0.8); border-color: rgba(166, 123, 91, 0.2); }
+        .theme-light .cal-event-block { background-color: #F5EFE6; border-color: rgba(166, 123, 91, 0.3); color: #8C6042; }
+
+        .gold-glow {
+            box-shadow: 0 0 20px rgba(166, 123, 91, 0.2);
+        }
+        .burgundy-glow {
+            box-shadow: 0 0 25px rgba(138, 51, 58, 0.25);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(18, 14, 11, 0.1);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #A67B5B;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="min-h-screen py-12 px-4 sm:px-6 lg:px-8 font-sans overflow-x-hidden theme-light">
+
+    <!-- Кнопка переключения ТЕМЫ -->
+    <div class="max-w-6xl mx-auto flex justify-end mb-4 relative z-20">
+        <button id="theme-toggle" class="theme-toggle-btn px-4 py-2 rounded-full border text-xs font-semibold tracking-wider uppercase flex items-center gap-2 transition-all duration-300">
+            <span id="theme-icon"><i data-feather="moon" class="w-4 h-4"></i></span>
+            <span id="theme-text">Темная тема</span>
+        </button>
+    </div>
+
+    <!-- Хедер -->
+    <header class="max-w-6xl mx-auto text-center mb-12">
+        <span class="text-gold uppercase tracking-[0.3em] text-xs font-semibold mb-2 block">Вариации концепта №3</span>
+        <h1 class="text-4xl md:text-5xl font-serif card-title-text mb-4 transition-colors">Интерактивный Инфо-Баннер</h1>
+        <p class="card-subtext max-w-2xl mx-auto text-sm md:text-base transition-colors">
+            Вам понравилась идея «Крупный баннер дня + навигационная сетка дней». Ниже представлены три разные дизайн-верстки этого решения.
+        </p>
+
+        <!-- Меню выбора под-вариантов -->
+        <div class="tab-bg flex flex-wrap justify-center gap-2 p-2 rounded-2xl border mt-8 max-w-4xl mx-auto relative z-10 transition-colors">
+            <button id="btn-layout-1" class="px-5 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-300 bg-gold text-white font-semibold shadow-lg">
+                Дизайн 1: Вертикальный Стек (Сверху вниз)
+            </button>
+            <button id="btn-layout-2" class="px-5 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-300 card-subtext hover:text-gold">
+                Дизайн 2: Двухколоночный Сплит (Рядом)
+            </button>
+            <button id="btn-layout-3" class="px-5 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-300 card-subtext hover:text-gold">
+                Дизайн 3: Минималистичная Лента-Панель
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto">
+
+        <!-- ДИЗАЙН 1: ВЕРТИКАЛЬНЫЙ СТЕК -->
+        <section id="layout-1" class="fade-in">
+            <div class="mb-6">
+                <h3 class="text-xl font-serif text-gold-dark font-semibold">Дизайн 1: Классический вертикальный стек</h3>
+                <p class="text-xs card-subtext">Большой акцентный баннер сверху на всю ширину страницы, под ним — просторная сетка календаря.</p>
+            </div>
+
+            <!-- Баннер -->
+            <div id="banner-1" class="glass-panel rounded-3xl p-6 md:p-8 border-2 border-gold/30 mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 gold-glow transition-all duration-300">
+                <div class="space-y-3">
+                    <span id="badge-1" class="text-[10px] uppercase font-bold tracking-widest bg-gold/20 text-gold-dark border border-gold/30 px-3 py-1 rounded">Сегодня</span>
+                    <h4 id="date-1" class="text-sm font-semibold text-gold-dark">Воскресенье, 7 Июня</h4>
+                    <h2 id="title-1" class="text-3xl font-serif font-bold text-gold-dark md:text-4xl transition-colors">Воскресное богослужение</h2>
+                    <p id="desc-1" class="text-sm card-subtext leading-relaxed max-w-xl">
+                        В летний период воскресные богослужения нашей церкви переносятся с утреннего времени на вечернее. Ждем вас!
+                    </p>
+                </div>
+                <div class="shrink-0 flex flex-col items-start md:items-end gap-2 w-full md:w-auto border-t md:border-t-0 cell-border pt-4 md:pt-0">
+                    <span id="time-1" class="text-2xl font-bold text-gold">17:00</span>
+                    <span id="loc-1" class="text-xs card-subtext flex items-center gap-1"><i data-feather="map-pin" class="w-3.5 h-3.5 text-gold"></i> Главный зал</span>
+                </div>
+            </div>
+
+            <!-- Сетка -->
+            <div>
+                <div class="glass-panel rounded-3xl overflow-hidden shadow-xl">
+                    <div class="grid grid-cols-7 gap-px bg-gold/10 text-center py-2 text-[10px] font-bold tracking-wider text-gold/80 uppercase">
+                        <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div>
+                    </div>
+                    <div class="grid grid-cols-7 auto-rows-fr text-xs bg-black/5" id="grid-layout-1">
+                        <!-- JS сгенерирует сетку для первого дизайна -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ДИЗАЙН 2: ДВУХКОЛОНОЧНЫЙ СПЛИТ -->
+        <section id="layout-2" class="fade-in hidden">
+            <div class="mb-6">
+                <h3 class="text-xl font-serif text-gold-dark font-semibold">Дизайн 2: Двухколоночный сплит-интерфейс</h3>
+                <p class="text-xs card-subtext">Слева расположена сетка календаря (40% ширины), справа — высокий детальный баннер (60% ширины). Выглядит как стильный дашборд.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+                <!-- Сетка слева (5/12 ширины) -->
+                <div class="lg:col-span-5">
+                    <div class="glass-panel rounded-3xl overflow-hidden shadow-xl h-full">
+                        <div class="grid grid-cols-7 gap-px bg-gold/10 text-center py-2 text-[9px] font-bold tracking-wider text-gold/80 uppercase">
+                            <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div>
+                        </div>
+                        <div class="grid grid-cols-7 auto-rows-fr text-xs bg-black/5" id="grid-layout-2">
+                            <!-- JS сгенерирует сетку для второго дизайна -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Высокий баннер справа (7/12 ширины) -->
+                <div class="lg:col-span-7">
+                    <div id="banner-2" class="glass-panel rounded-3xl p-8 border-2 border-gold/30 h-full flex flex-col justify-between gold-glow transition-all duration-300">
+                        <div class="space-y-6">
+                            <div class="flex justify-between items-center">
+                                <span id="badge-2" class="text-[10px] uppercase font-bold tracking-widest bg-gold/20 text-gold-dark border border-gold/30 px-3 py-1 rounded">Служение</span>
+                                <span id="date-2" class="text-sm font-semibold text-gold-dark">Воскресенье, 7 Июня</span>
+                            </div>
+                            
+                            <h2 id="title-2" class="text-3xl md:text-4xl font-serif font-bold text-gold-dark">Воскресное богослужение</h2>
+                            <p id="desc-2" class="text-sm card-subtext leading-relaxed">
+                                В летний период воскресные богослужения нашей церкви переносятся с утреннего времени на вечернее. Ждем вас!
+                            </p>
+                        </div>
+
+                        <div class="border-t cell-border pt-6 mt-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <div class="flex items-center gap-2">
+                                <div class="w-10 h-10 rounded-full bg-gold/10 text-gold flex items-center justify-center">
+                                    <i data-feather="clock" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[9px] uppercase tracking-wider card-subtext">Время проведения</p>
+                                    <p id="time-2" class="text-sm font-bold text-gold-dark">17:00</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-10 h-10 rounded-full bg-gold/10 text-gold flex items-center justify-center">
+                                    <i data-feather="map-pin" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[9px] uppercase tracking-wider card-subtext">Место</p>
+                                    <p id="loc-2" class="text-sm font-bold text-gold-dark">Главный зал</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ДИЗАЙН 3: МИНИМАЛИСТИЧНАЯ ЛЕНТА-ПАНЕЛЬ -->
+        <section id="layout-3" class="fade-in hidden">
+            <div class="mb-6">
+                <h3 class="text-xl font-serif text-gold-dark font-semibold">Дизайн 3: Минималистичная плоская инфо-полоса</h3>
+                <p class="text-xs card-subtext">Баннер сделан в виде узкой лаконичной строки с акцентом на чистые шрифты, а календарная сетка — это компактная плашка под ней. Экономит максимум вертикального места.</p>
+            </div>
+
+            <!-- Узкая инфо-полоса -->
+            <div id="banner-3" class="glass-panel rounded-2xl p-4 border border-gold/30 mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 gold-glow transition-all duration-300">
+                <div class="flex items-center gap-4">
+                    <div id="badge-box-3" class="w-12 h-12 rounded-xl bg-gold/10 text-gold flex flex-col items-center justify-center shrink-0">
+                        <span id="badge-day-3" class="text-lg font-bold font-serif leading-none">07</span>
+                        <span id="badge-month-3" class="text-[8px] uppercase tracking-wider">Июн</span>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span id="badge-3" class="text-[8px] uppercase font-bold tracking-widest bg-gold/20 text-gold-dark px-2 py-0.5 rounded">Служение</span>
+                            <span id="date-3" class="text-xs text-white/50">Воскресенье, 7 Июня</span>
+                        </div>
+                        <h2 id="title-3" class="text-lg font-bold card-title-text mt-0.5">Воскресное богослужение</h2>
+                    </div>
+                </div>
+                <div class="flex items-center gap-6 border-t md:border-t-0 cell-border pt-3 md:pt-0">
+                    <span id="desc-3" class="text-xs card-subtext hidden lg:block max-w-sm truncate">В летний период воскресные богослужения переносятся на вечернее время.</span>
+                    <span id="time-3" class="text-sm font-bold text-gold whitespace-nowrap"><i data-feather="clock" class="w-3.5 h-3.5 inline mr-1"></i>17:00</span>
+                    <span id="loc-3" class="text-xs card-subtext whitespace-nowrap"><i data-feather="map-pin" class="w-3.5 h-3.5 inline mr-1 text-gold"></i>Главный зал</span>
+                </div>
+            </div>
+
+            <!-- Сетка -->
+            <div>
+                <div class="glass-panel rounded-2xl overflow-hidden">
+                    <div class="grid grid-cols-7 gap-px bg-gold/10 text-center py-1.5 text-[9px] font-bold tracking-wider text-gold/80 uppercase">
+                        <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div>
+                    </div>
+                    <div class="grid grid-cols-7 auto-rows-fr text-xs bg-black/5" id="grid-layout-3">
+                        <!-- JS сгенерирует сетку для третьего дизайна -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Скрипт логики и рендеринга -->
+    <script>
+        // База данных событий для макета
+        const eventsData = {
+            1: { date: "Понедельник, 1 Июня", title: "Служение не запланировано", desc: "В этот день публичных собраний нет. Вы можете уделить время личной молитве или отдыху.", time: "—", loc: "—", badge: "Отдых", isSpecial: false, day: "01", month: "Июн" },
+            2: { date: "Вторник, 2 Июня", title: "Домашние группы общения", desc: "Обсуждение Слова Божьего, молитвенная поддержка и дружеское чаепитие в малых группах по домам.", time: "18:00", loc: "Домашние адреса", badge: "Дом. группы", isSpecial: false, day: "02", month: "Июн" },
+            3: { date: "Среда, 3 Июня", title: "Служение не запланировано", desc: "Публичных собраний в этот день нет.", time: "—", loc: "—", badge: "Отдых", isSpecial: false, day: "03", month: "Июн" },
+            4: { date: "Четверг, 4 Июня", title: "Изучение книги Откровения", desc: "Совместный разбор Священного Писания с пастором. Разбираем пророчества и библейские тексты.", time: "17:30", loc: "Малый зал", badge: "Разбор Слова", isSpecial: false, day: "04", month: "Июн" },
+            5: { date: "Пятница, 5 Июня", title: "Молитвенное служение", desc: "18:00 — молитва за личные нужды. 19:00 — общее молитвенное собрание за церковь и страну.", time: "С 18:00", loc: "Главный зал", badge: "Молитва", isSpecial: false, day: "05", month: "Июн" },
+            6: { date: "Суббота, 6 Июня", title: "Служение не запланировано", desc: "Событий не запланировано.", time: "—", loc: "—", badge: "Отдых", isSpecial: false, day: "06", month: "Июн" },
+            7: { date: "Воскресенье, 7 Июня", title: "Воскресное богослужение", desc: "В летний период воскресные богослужения переносятся с утреннего времени на вечернее. Ждем вас!", time: "17:00", loc: "Главный зал", badge: "Служение", isSpecial: false, day: "07", month: "Июн" },
+            8: { date: "Понедельник, 8 Июня", title: "Служение не запланировано", desc: "Публичных событий нет.", time: "—", loc: "—", badge: "Отдых", isSpecial: false, day: "08", month: "Июн" },
+            9: { date: "Вторник, 9 Июня", title: "Домашние группы общения", desc: "Встречи в домашних группах.", time: "18:00", loc: "Домашние адреса", badge: "Дом. группы", isSpecial: false, day: "09", month: "Июн" },
+            
+            // СЕЛАХИ
+            10: { date: "Среда, 10 Июня", title: "Летний Селах Чебоксары", desc: "Заезд и открытие палаточного лагеря на природе. «Селах» — прекрасное время побыть наедине с Богом.", time: "Заезд", loc: "Чебоксары (Волга)", badge: "Масштабное событие", isSpecial: true, day: "10", month: "Селах" },
+            11: { date: "Четверг, 11 Июня", title: "Летний Селах Чебоксары", desc: "Второй день лагеря. Общие молитвы, спортивные общения, духовные наставления у костра.", time: "Весь день", loc: "Чебоксары (Волга)", badge: "Масштабное событие", isSpecial: true, day: "11", month: "Селах" },
+            12: { date: "Пятница, 12 Июня", title: "Летний Селах Чебоксары", desc: "Третий день палаточного выезда. Совместные разборы и отдых на Волге.", time: "Весь день", loc: "Чебоксары (Волга)", badge: "Масштабное событие", isSpecial: true, day: "12", month: "Селах" },
+            13: { date: "Суббота, 13 Июня", title: "Летний Селах Чебоксары", desc: "Четвертый день лагеря. Вечер свидетельств, хвалы и поклонения под звездами.", time: "Весь день", loc: "Чебоксары (Волга)", badge: "Масштабное событие", isSpecial: true, day: "13", month: "Селах" },
+            14: { date: "Воскресенье, 14 Июня", title: "Летний Селах Чебоксары", desc: "Воскресная служба в лагере, сбор палаток и закрытие летнего выезда.", time: "Отъезд", loc: "Чебоксары (Волга)", badge: "Масштабное событие", isSpecial: true, day: "14", month: "Селах" },
+
+            15: { date: "Понедельник, 15 Июня", title: "Служение не запланировано", desc: "Событий нет.", time: "—", loc: "—", badge: "Отдых", isSpecial: false, day: "15", month: "Июн" },
+            16: { date: "Вторник, 16 Июня", title: "Домашние группы", desc: "Домашние группы по адресам.", time: "18:00", loc: "По домам", badge: "Дом. группы", isSpecial: false, day: "16", month: "Июн" },
+            17: { date: "Среда, 17 Июня", title: "Служение не запланировано", desc: "Событий нет.", time: "—", loc: "—", badge: "Отдых", isSpecial: false, day: "17", month: "Июн" },
+            18: { date: "Четверг, 18 Июня", title: "Книга Откровения", desc: "Библейский разбор.", time: "17:30", loc: "Малый зал", badge: "Разбор Слова", isSpecial: false, day: "18", month: "Июн" },
+            19: { date: "Пятница, 19 Июня", title: "Молитвенное собрание", desc: "Общие молитвы.", time: "19:00", loc: "Главный зал", badge: "Молитва", isSpecial: false, day: "19", month: "Июн" },
+            20: { date: "Суббота, 20 Июня", title: "Служение не запланировано", desc: "Выходной.", time: "—", loc: "—", badge: "Отдых", isSpecial: false, day: "20", month: "Июн" },
+            21: { date: "Воскресенье, 21 Июня", title: "Воскресное служение", desc: "Общее собрание церкви.", time: "17:00", loc: "Главный зал", badge: "Служение", isSpecial: false, day: "21", month: "Июн" }
+        };
+
+        // Генерация сеток для всех вариантов макетов
+        function renderGrids() {
+            const grids = [
+                document.getElementById('grid-layout-1'),
+                document.getElementById('grid-layout-2'),
+                document.getElementById('grid-layout-3')
+            ];
+
+            grids.forEach((grid, gridIdx) => {
+                if (!grid) return;
+                grid.innerHTML = '';
+
+                // Прошедшие дни
+                for (let day = 25; day <= 31; day++) {
+                    const cell = document.createElement('div');
+                    cell.className = "p-3 border-b border-r cell-border text-center inactive-day";
+                    cell.textContent = day;
+                    grid.appendChild(cell);
+                }
+
+                // Дни Июня
+                for (let day = 1; day <= 21; day++) {
+                    const data = eventsData[day] || { isSpecial: false };
+                    const cell = document.createElement('div');
+                    
+                    // Классы для ячейки
+                    let classes = "p-3 border-b border-r cell-border text-center cursor-pointer hover:bg-gold/5 transition-colors relative ";
+                    if (day === 7) {
+                        classes += "bg-gold/20 text-gold-dark border-2 border-gold font-bold ";
+                    }
+                    if (data.isSpecial) {
+                        classes += "bg-burgundy/15 text-burgundy font-bold burgundy-glow hover:bg-burgundy/25 ";
+                    }
+                    cell.className = classes;
+                    cell.innerHTML = `${day} ${data.isSpecial ? '<span class="hidden md:block text-[8px] uppercase font-semibold text-burgundy-light mt-0.5">Селах</span>' : ''}`;
+
+                    // Точки под числами
+                    if (!data.isSpecial && (day === 2 || day === 4 || day === 5 || day === 9 || day === 16 || day === 18 || day === 19)) {
+                        cell.innerHTML += `<span class="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-gold"></span>`;
+                    }
+
+                    // Обработчик клика
+                    cell.addEventListener('click', (event) => {
+                        // Подсвечиваем активный элемент во всех сетках этого концепта
+                        document.querySelectorAll(`#grid-layout-${gridIdx + 1} div`).forEach(el => {
+                            el.classList.remove('ring-2', 'ring-gold', 'z-10');
+                        });
+                        cell.classList.add('ring-2', 'ring-gold', 'z-10');
+
+                        // Обновляем нужный баннер
+                        updateBannerInfo(gridIdx + 1, day);
+                    });
+
+                    grid.appendChild(cell);
+                }
+            });
+        }
+
+        // Обновление информации на баннере
+        function updateBannerInfo(layoutNum, dayNum) {
+            const data = eventsData[dayNum];
+            if (!data) return;
+
+            const banner = document.getElementById(`banner-${layoutNum}`);
+            const badge = document.getElementById(`badge-${layoutNum}`);
+            const dateText = document.getElementById(`date-${layoutNum}`);
+            const title = document.getElementById(`title-${layoutNum}`);
+            const desc = document.getElementById(`desc-${layoutNum}`);
+            const time = document.getElementById(`time-${layoutNum}`);
+            const loc = document.getElementById(`loc-${layoutNum}`);
+
+            // Для дизайна 3 (мини-вид)
+            const badgeDay3 = document.getElementById('badge-day-3');
+            const badgeMonth3 = document.getElementById('badge-month-3');
+            const badgeBox3 = document.getElementById('badge-box-3');
+
+            dateText.textContent = data.date;
+            title.textContent = data.title;
+            desc.textContent = data.desc;
+            time.textContent = data.time;
+            
+            if (loc) {
+                loc.innerHTML = `<i data-feather="map-pin" class="w-3.5 h-3.5 text-gold inline mr-1"></i> ${data.loc}`;
+            }
+
+            if (layoutNum === 3) {
+                badgeDay3.textContent = data.day;
+                badgeMonth3.textContent = data.month;
+                if (data.isSpecial) {
+                    badgeBox3.className = 'w-12 h-12 rounded-xl bg-burgundy/10 text-burgundy flex flex-col items-center justify-center shrink-0 font-bold';
+                } else {
+                    badgeBox3.className = 'w-12 h-12 rounded-xl bg-gold/10 text-gold flex flex-col items-center justify-center shrink-0';
+                }
+            }
+
+            // Переключение стилей Баннера (Обычное служение / Селах)
+            if (data.isSpecial) {
+                badge.textContent = 'Масштабное событие';
+                
+                if (layoutNum === 1) {
+                    badge.className = 'text-[10px] uppercase font-bold tracking-widest bg-burgundy/20 text-burgundy border border-burgundy/30 px-3 py-1 rounded';
+                    banner.className = 'glass-panel rounded-3xl p-6 md:p-8 border-2 border-burgundy/50 mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 burgundy-glow transition-all duration-300';
+                    time.className = 'text-2xl font-bold text-burgundy';
+                } else if (layoutNum === 2) {
+                    badge.className = 'text-[10px] uppercase font-bold tracking-widest bg-burgundy/20 text-burgundy border border-burgundy/30 px-3 py-1 rounded';
+                    banner.className = 'glass-panel rounded-3xl p-8 border-2 border-burgundy/50 h-full flex flex-col justify-between burgundy-glow transition-all duration-300';
+                    time.className = 'text-sm font-bold text-burgundy';
+                } else if (layoutNum === 3) {
+                    badge.className = 'text-[8px] uppercase font-bold tracking-widest bg-burgundy/20 text-burgundy px-2 py-0.5 rounded';
+                    banner.className = 'glass-panel rounded-2xl p-4 border border-burgundy/40 mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 burgundy-glow transition-all duration-300';
+                    time.className = 'text-sm font-bold text-burgundy whitespace-nowrap';
+                }
+            } else {
+                badge.textContent = data.badge;
+                
+                if (layoutNum === 1) {
+                    badge.className = 'text-[10px] uppercase font-bold tracking-widest bg-gold/20 text-gold-dark border border-gold/30 px-3 py-1 rounded';
+                    banner.className = 'glass-panel rounded-3xl p-6 md:p-8 border-2 border-gold/30 mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 gold-glow transition-all duration-300';
+                    time.className = 'text-2xl font-bold text-gold';
+                } else if (layoutNum === 2) {
+                    badge.className = 'text-[10px] uppercase font-bold tracking-widest bg-gold/20 text-gold-dark border border-gold/30 px-3 py-1 rounded';
+                    banner.className = 'glass-panel rounded-3xl p-8 border-2 border-gold/30 h-full flex flex-col justify-between gold-glow transition-all duration-300';
+                    time.className = 'text-sm font-bold text-gold-dark';
+                } else if (layoutNum === 3) {
+                    badge.className = 'text-[8px] uppercase font-bold tracking-widest bg-gold/20 text-gold-dark px-2 py-0.5 rounded';
+                    banner.className = 'glass-panel rounded-2xl p-4 border border-gold/30 mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 gold-glow transition-all duration-300';
+                    time.className = 'text-sm font-bold text-gold whitespace-nowrap';
+                }
+            }
+
+            feather.replace();
+        }
+
+        // Переключение сплит-вариантов
+        const sec1 = document.getElementById('layout-1');
+        const sec2 = document.getElementById('layout-2');
+        const sec3 = document.getElementById('layout-3');
+
+        const btn1 = document.getElementById('btn-layout-1');
+        const btn2 = document.getElementById('btn-layout-2');
+        const btn3 = document.getElementById('btn-layout-3');
+
+        function switchLayout(layoutNum) {
+            [btn1, btn2, btn3].forEach(b => {
+                b.className = 'px-5 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-300 card-subtext hover:text-gold';
+            });
+            [sec1, sec2, sec3].forEach(s => s.classList.add('hidden'));
+
+            if (layoutNum === 1) {
+                btn1.className = 'px-5 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-300 bg-gold text-white font-semibold shadow-lg';
+                sec1.classList.remove('hidden');
+            } else if (layoutNum === 2) {
+                btn2.className = 'px-5 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-300 bg-gold text-white font-semibold shadow-lg';
+                sec2.classList.remove('hidden');
+            } else if (layoutNum === 3) {
+                btn3.className = 'px-5 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-300 bg-gold text-white font-semibold shadow-lg';
+                sec3.classList.remove('hidden');
+            }
+        }
+
+        btn1.addEventListener('click', () => switchLayout(1));
+        btn2.addEventListener('click', () => switchLayout(2));
+        btn3.addEventListener('click', () => switchLayout(3));
+
+        // Свитчер темного/светлого режима
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const themeText = document.getElementById('theme-text');
+        
+        themeToggle.addEventListener('click', () => {
+            const isLight = document.body.classList.contains('theme-light');
+            if (isLight) {
+                document.body.classList.remove('theme-light');
+                document.body.classList.add('theme-dark');
+                themeText.textContent = "Светлая тема";
+                themeIcon.innerHTML = `<i data-feather="sun" class="w-4 h-4"></i>`;
+            } else {
+                document.body.classList.remove('theme-dark');
+                document.body.classList.add('theme-light');
+                themeText.textContent = "Темная тема";
+                themeIcon.innerHTML = `<i data-feather="moon" class="w-4 h-4"></i>`;
+            }
+            feather.replace();
+        });
+
+        // Запуск
+        window.addEventListener('DOMContentLoaded', () => {
+            renderGrids();
+            // Подсветка текущего дня по умолчанию
+            document.querySelectorAll('#grid-layout-1 div')[13].click();
+            document.querySelectorAll('#grid-layout-2 div')[13].click();
+            document.querySelectorAll('#grid-layout-3 div')[13].click();
+            feather.replace();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,333 @@
+---
+import { contacts } from '../data/contacts';
+
+export interface Props {
+    events: any[]; // The Selahs
+}
+
+const { events } = Astro.props;
+
+// Convert the regular schedule and special events into JSON for the client script
+const scheduleJson = JSON.stringify(contacts.schedule);
+const specialEventsJson = JSON.stringify(
+    events.map(e => ({
+        title: e.data.title,
+        day: e.data.day,
+        month: e.data.month,
+        location: e.data.location,
+        time: e.data.timeOrDate
+    }))
+);
+---
+
+<div class="mt-24 mb-12 fade-up relative z-10" id="calendar-section">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <h2 class="text-3xl md:text-4xl text-dark">Календарь событий</h2>
+        <div class="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto">
+            <button id="cal-prev-btn" class="w-10 h-10 flex items-center justify-center rounded-full border border-gold text-gold hover:bg-gold hover:text-white transition-colors" aria-label="Предыдущие недели">
+                <i data-feather="chevron-left" class="w-5 h-5"></i>
+            </button>
+            <span id="cal-month-label" class="text-lg font-medium text-gray-700 min-w-[120px] text-center capitalize"></span>
+            <button id="cal-next-btn" class="w-10 h-10 flex items-center justify-center rounded-full border border-gold text-gold hover:bg-gold hover:text-white transition-colors" aria-label="Следующие недели">
+                <i data-feather="chevron-right" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Calendar Grid -->
+    <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gold/20">
+        <!-- Weekdays Header -->
+        <div class="grid grid-cols-7 border-b border-gray-100 bg-gray-50">
+            {['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'].map(day => (
+                <div class="py-3 text-center text-xs font-bold uppercase tracking-wider text-gray-400">
+                    {day}
+                </div>
+            ))}
+        </div>
+        <!-- Days Grid -->
+        <div id="cal-grid" class="grid grid-cols-7 auto-rows-fr">
+            <!-- JS will populate this -->
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Popup -->
+<div id="cal-popup" class="fixed inset-x-0 bottom-0 z-50 transform translate-y-full transition-transform duration-300 ease-in-out md:hidden w-full">
+    <div class="bg-white rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)] p-6 pb-8 relative w-full">
+        <!-- Drag Handle Indicator -->
+        <div class="absolute top-3 left-1/2 -translate-x-1/2 w-12 h-1.5 bg-gray-200 rounded-full"></div>
+        
+        <!-- Header area for Title and Close Button to prevent overlap -->
+        <div class="flex justify-between items-start mt-2 mb-4 gap-4">
+            <div id="cal-popup-title" class="text-xl text-dark capitalize font-medium"></div>
+            <button id="cal-popup-close" class="text-gray-400 hover:text-gray-700 shrink-0 p-1">
+                <i data-feather="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+        
+        <div id="cal-popup-content" class="space-y-4">
+            <!-- JS will populate events -->
+        </div>
+    </div>
+    <div id="cal-popup-overlay" class="fixed inset-0 bg-black/50 -z-10 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+</div>
+
+<script define:vars={{ scheduleJson, specialEventsJson }}>
+    document.addEventListener('astro:page-load', () => {
+        const grid = document.getElementById('cal-grid');
+        const monthLabel = document.getElementById('cal-month-label');
+        const prevBtn = document.getElementById('cal-prev-btn');
+        const nextBtn = document.getElementById('cal-next-btn');
+        const popup = document.getElementById('cal-popup');
+        const popupOverlay = document.getElementById('cal-popup-overlay');
+        const popupTitle = document.getElementById('cal-popup-title');
+        const popupContent = document.getElementById('cal-popup-content');
+        const popupClose = document.getElementById('cal-popup-close');
+
+        if (!grid) return;
+
+        const schedule = JSON.parse(scheduleJson);
+        const specialEvents = JSON.parse(specialEventsJson);
+
+        // We want a 4-week rolling view starting from current week's Monday
+        let currentStartDate = new Date();
+        currentStartDate.setHours(0,0,0,0);
+        
+        // Find Monday of the current week
+        const dayOfWeek = currentStartDate.getDay() === 0 ? 7 : currentStartDate.getDay();
+        currentStartDate.setDate(currentStartDate.getDate() - dayOfWeek + 1);
+
+        let viewOffsetWeeks = 0;
+        const WEEKS_TO_SHOW = 4;
+
+        // Parse special events (e.g. day: "10-14", month: "Июня")
+        // Very basic parser for the current format
+        const parsedSpecialEvents = [];
+        const monthNames = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
+        const monthNamesAlt = ["январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"];
+
+        specialEvents.forEach(ev => {
+            if (!ev.day || !ev.month) return;
+            const mStr = ev.month.toLowerCase().trim();
+            let mIndex = monthNames.indexOf(mStr);
+            if (mIndex === -1) mIndex = monthNamesAlt.findIndex(m => mStr.includes(m));
+            if (mIndex === -1) return; // Couldn't parse
+
+            const dayParts = ev.day.split('-').map(s => parseInt(s.trim()));
+            const startDay = dayParts[0];
+            const endDay = dayParts.length > 1 ? dayParts[1] : startDay;
+
+            if (isNaN(startDay)) return;
+
+            // Assuming current year for these events
+            const year = new Date().getFullYear();
+            const startDate = new Date(year, mIndex, startDay);
+            const endDate = new Date(year, mIndex, endDay);
+
+            parsedSpecialEvents.push({
+                ...ev,
+                startDate,
+                endDate
+            });
+        });
+
+        const isDateInRange = (date, start, end) => {
+            const d = new Date(date).setHours(0,0,0,0);
+            const s = new Date(start).setHours(0,0,0,0);
+            const e = new Date(end).setHours(0,0,0,0);
+            return d >= s && d <= e;
+        };
+
+        const getEventsForDate = (date) => {
+            const dayEvents = [];
+            
+            // 1. Check special events (Selahs)
+            parsedSpecialEvents.forEach(ev => {
+                if (isDateInRange(date, ev.startDate, ev.endDate)) {
+                    dayEvents.push({
+                        type: 'special',
+                        title: ev.title,
+                        time: ev.time,
+                        location: ev.location
+                    });
+                }
+            });
+
+            // 2. Check regular schedule
+            const jsDayOfWeek = date.getDay(); // 0 is Sunday
+            const dayNamesMap = {
+                1: 'Понедельник', 2: 'Вторник', 3: 'Среда',
+                4: 'Четверг', 5: 'Пятница', 6: 'Суббота', 0: 'Воскресенье'
+            };
+            const currentDayName = dayNamesMap[jsDayOfWeek];
+
+            // Filter schedule
+            schedule.forEach(item => {
+                if (item.day === currentDayName) {
+                    if (item.events) {
+                        item.events.forEach(e => {
+                            if (e.name) dayEvents.push({ type: 'regular', title: e.name.replace(/[()]/g, '').trim(), time: e.time });
+                        });
+                    } else if (item.isSunday) {
+                        // Dynamic Sunday time based on month
+                        const m = date.getMonth();
+                        const time = [5, 6, 7].includes(m) ? "17:00" : "10:00";
+                        dayEvents.push({ type: 'regular', title: 'Воскресное служение', time: time });
+                    } else {
+                        dayEvents.push({ type: 'regular', title: item.name ? item.name.replace(/[()]/g, '').trim() : 'Служение', time: item.time });
+                    }
+                } else if (item.events) {
+                     // Check nested events for a different day (like Tuesday home groups under Monday)
+                     item.events.forEach(e => {
+                         if (e.day === currentDayName && e.name) {
+                             dayEvents.push({ type: 'regular', title: e.name.replace(/[()]/g, '').trim(), time: e.time });
+                         }
+                     });
+                }
+            });
+
+            return dayEvents;
+        };
+
+        let currentActiveDateObj = null;
+
+        const openMobilePopup = (date, events) => {
+            if (window.innerWidth >= 768) return; // Only on mobile
+            
+            const formatter = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', weekday: 'long' });
+            
+            if (popupTitle) {
+                popupTitle.textContent = formatter.format(date);
+            }
+            
+            let html = '';
+            if (events.length === 0) {
+                html += `<p class="text-gray-500">Нет запланированных событий</p>`;
+            } else {
+                events.forEach(e => {
+                    if (e.type === 'special') {
+                        html += `
+                        <div class="bg-[#8A333A]/10 border-l-4 border-[#8A333A] p-4 rounded-r-lg">
+                            <h4 class="font-bold text-[#8A333A]">${e.title}</h4>
+                            <p class="text-sm text-gray-700 mt-1 flex items-center gap-1"><i data-feather="clock" class="w-3.5 h-3.5"></i> ${e.time}</p>
+                            <p class="text-sm text-gray-600 mt-1 flex items-center gap-1"><i data-feather="map-pin" class="w-3.5 h-3.5"></i> ${e.location}</p>
+                        </div>`;
+                    } else {
+                        html += `
+                        <div class="bg-gray-50 border border-gray-100 p-4 rounded-lg flex justify-between items-center">
+                            <span class="font-medium text-gray-800">${e.title}</span>
+                            <span class="text-sm font-bold text-gold">${e.time}</span>
+                        </div>`;
+                    }
+                });
+            }
+
+            popupContent.innerHTML = html;
+            // Re-init icons for the popup content
+            if (window.feather) window.feather.replace();
+
+            popup.classList.remove('translate-y-full');
+            popupOverlay.classList.remove('opacity-0', 'pointer-events-none');
+        };
+
+        const closeMobilePopup = () => {
+            popup.classList.add('translate-y-full');
+            popupOverlay.classList.add('opacity-0', 'pointer-events-none');
+            // Remove active state from grid
+            document.querySelectorAll('.cal-day').forEach(el => el.classList.remove('ring-2', 'ring-gold'));
+        };
+
+        popupClose?.addEventListener('click', closeMobilePopup);
+        popupOverlay?.addEventListener('click', closeMobilePopup);
+
+        const renderCalendar = () => {
+            grid.innerHTML = '';
+            
+            const renderStart = new Date(currentStartDate);
+            renderStart.setDate(renderStart.getDate() + (viewOffsetWeeks * 7));
+
+            const renderEnd = new Date(renderStart);
+            renderEnd.setDate(renderEnd.getDate() + (WEEKS_TO_SHOW * 7) - 1);
+
+            // Update Label
+            const formatMonth = new Intl.DateTimeFormat('ru-RU', { month: 'long' }).format;
+            let label = formatMonth(renderStart);
+            if (renderStart.getMonth() !== renderEnd.getMonth()) {
+                label += ' - ' + formatMonth(renderEnd);
+            }
+            monthLabel.textContent = label;
+
+            const today = new Date();
+            today.setHours(0,0,0,0);
+
+            for (let i = 0; i < WEEKS_TO_SHOW * 7; i++) {
+                const date = new Date(renderStart);
+                date.setDate(date.getDate() + i);
+                
+                const events = getEventsForDate(date);
+                const isToday = date.getTime() === today.getTime();
+                const isPast = date.getTime() < today.getTime();
+                
+                const hasSpecial = events.some(e => e.type === 'special');
+                const regularEvents = events.filter(e => e.type === 'regular');
+                const specialEventsForDay = events.filter(e => e.type === 'special');
+
+                const cell = document.createElement('div');
+                cell.className = `cal-day relative min-h-[100px] border-b border-r border-gray-100 p-2 transition-colors cursor-pointer
+                    ${isPast ? 'bg-gray-50 opacity-60' : 'hover:bg-gray-50/80'}
+                    ${hasSpecial ? 'bg-[#8A333A]/5 hover:bg-[#8A333A]/10' : ''}`;
+                
+                // For layout purposes (7 cols)
+                if (i % 7 === 6) cell.classList.remove('border-r'); // remove right border for Sunday
+
+                let html = `<div class="flex justify-between items-start mb-2">
+                    <span class="inline-flex items-center justify-center w-7 h-7 rounded-full text-sm font-medium ${isToday ? 'bg-gold text-white shadow-md' : 'text-gray-700'} ${hasSpecial ? 'text-[#8A333A] font-bold' : ''}">
+                        ${date.getDate()}
+                    </span>
+                </div>`;
+
+                html += `<div class="space-y-1 mt-1">`;
+                
+                // Desktop rendering
+                specialEventsForDay.forEach(e => {
+                    html += `<div class="hidden md:block bg-[#8A333A] text-white text-[10px] sm:text-xs px-2 py-1 rounded shadow-sm font-medium leading-tight mb-1 truncate" title="${e.title}">${e.title}</div>`;
+                    html += `<div class="md:hidden w-2 h-2 rounded-full bg-[#8A333A] mx-auto mt-0.5"></div>`;
+                });
+
+                regularEvents.forEach(e => {
+                    html += `<div class="hidden md:flex justify-between items-center text-[10px] text-gray-600 bg-gray-100/80 rounded px-1.5 py-0.5 truncate" title="${e.title}">
+                        <span class="truncate pr-1">${e.title}</span>
+                        <span class="text-gold font-bold">${e.time}</span>
+                    </div>`;
+                    html += `<div class="md:hidden w-1.5 h-1.5 rounded-full bg-gold/60 mx-auto mt-0.5"></div>`;
+                });
+
+                html += `</div>`;
+                cell.innerHTML = html;
+
+                cell.addEventListener('click', () => {
+                    // Mobile behavior
+                    if (window.innerWidth < 768) {
+                        document.querySelectorAll('.cal-day').forEach(el => el.classList.remove('ring-2', 'ring-gold', 'z-10'));
+                        cell.classList.add('ring-2', 'ring-gold', 'z-10');
+                        openMobilePopup(date, events);
+                    }
+                });
+
+                grid.appendChild(cell);
+            }
+        };
+
+        prevBtn.addEventListener('click', () => {
+            viewOffsetWeeks -= 4;
+            renderCalendar();
+        });
+
+        nextBtn.addEventListener('click', () => {
+            viewOffsetWeeks += 4;
+            renderCalendar();
+        });
+
+        renderCalendar();
+    });
+</script>
