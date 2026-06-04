@@ -113,12 +113,12 @@ const filters = [
             <!-- Блок солнца и лучей -->
             <div class="absolute top-[-800px] left-1/2 -translate-x-1/2 w-[1600px] h-[1600px] flex items-center justify-center">
                 <!-- Вращающиеся лучи (360 градусов) - Передний слой (размытый) -->
-                <div class="absolute w-[1600px] h-[1600px] rounded-full animate-spin-slow opacity-65 sun-rays-1" 
-                     style="background: repeating-conic-gradient(from 0deg, rgba(251, 191, 36, 0.28) 0deg 15deg, transparent 15deg 40deg); filter: blur(22px); -webkit-mask-image: radial-gradient(circle, black 15%, transparent 65%); mask-image: radial-gradient(circle, black 15%, transparent 65%);">
+                <div class="absolute w-[1600px] h-[1600px] rounded-full animate-spin-slow opacity-75 sun-rays-1" 
+                     style="background: repeating-conic-gradient(from 0deg, rgba(251, 191, 36, 0.28) 0deg 15deg, transparent 15deg 40deg); filter: blur(12px); -webkit-mask-image: radial-gradient(circle, black 20%, transparent 82%); mask-image: radial-gradient(circle, black 20%, transparent 82%);">
                 </div>
                 <!-- Дополнительный слой лучей для глубины (вращается в обратную сторону) - Более четкий задний слой -->
-                <div class="absolute w-[1450px] h-[1450px] rounded-full animate-spin-reverse opacity-55 sun-rays-2" 
-                     style="background: repeating-conic-gradient(from 30deg, rgba(254, 240, 138, 0.35) 0deg 10deg, transparent 10deg 50deg); filter: blur(8px); -webkit-mask-image: radial-gradient(circle, black 20%, transparent 75%); mask-image: radial-gradient(circle, black 20%, transparent 75%);">
+                <div class="absolute w-[1450px] h-[1450px] rounded-full animate-spin-reverse opacity-60 sun-rays-2" 
+                     style="background: repeating-conic-gradient(from 30deg, rgba(254, 240, 138, 0.35) 0deg 10deg, transparent 10deg 50deg); filter: blur(6px); -webkit-mask-image: radial-gradient(circle, black 25%, transparent 88%); mask-image: radial-gradient(circle, black 25%, transparent 88%);">
                 </div>
                 <!-- Яркое свечение солнца -->
                 <div class="absolute w-[450px] h-[450px] bg-amber-100/70 rounded-full blur-[50px] shadow-[0_0_150px_70px_rgba(251,191,36,0.55)]"></div>
