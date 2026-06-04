@@ -19,7 +19,10 @@ const sermons = await getCollection('sermons');
             <!-- Тень от листвы за окном -->
             <div class="absolute inset-0 window-tree-shadow">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 800" class="w-full h-full">
-                    <g fill="rgba(22, 22, 22, 0.045)">
+                    <filter id="window-tree-blur">
+                        <feGaussianBlur stdDeviation="24" />
+                    </filter>
+                    <g filter="url(#window-tree-blur)" fill="rgba(22, 22, 22, 0.065)">
                         <circle cx="200" cy="150" r="80" />
                         <circle cx="260" cy="180" r="60" />
                         <circle cx="320" cy="220" r="50" />
@@ -62,18 +65,18 @@ const sermons = await getCollection('sermons');
 
 <style>
     .gobo-window-light {
-        background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.6) 0%, transparent 100%);
+        background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.7) 0%, transparent 100%);
     }
 
     .window-overlay {
         position: absolute;
-        inset: -5%;
-        background: linear-gradient(135deg, transparent 35%, rgba(22, 22, 22, 0.05) 45%, rgba(22, 22, 22, 0.09) 50%, rgba(22, 22, 22, 0.05) 55%, transparent 65%);
+        inset: -10%;
+        background: linear-gradient(135deg, transparent 30%, rgba(22, 22, 22, 0.06) 45%, rgba(22, 22, 22, 0.1) 50%, rgba(22, 22, 22, 0.06) 55%, transparent 70%);
         background-size: 200% 200%;
-        filter: blur(14px);
-        opacity: 0.85;
+        filter: blur(16px);
+        opacity: 0.9;
         transform: rotate(-10deg);
-        animation: window-breath-page 14s ease-in-out infinite alternate;
+        animation: window-breath-page 16s ease-in-out infinite alternate;
     }
 
     .window-overlay::before {
@@ -84,28 +87,28 @@ const sermons = await getCollection('sermons');
             45deg,
             transparent,
             transparent 120px,
-            rgba(0, 0, 0, 0.04) 120px,
-            rgba(0, 0, 0, 0.04) 170px
+            rgba(0, 0, 0, 0.05) 120px,
+            rgba(0, 0, 0, 0.05) 170px
         );
     }
 
     .window-tree-shadow {
         position: absolute;
-        inset: 0;
-        filter: blur(18px);
-        opacity: 0.7;
-        animation: tree-drift-page 20s ease-in-out infinite alternate;
+        inset: -5%;
+        filter: blur(4px); /* Добавочное сглаживание к SVG фильтру */
+        opacity: 0.8;
+        animation: tree-drift-page 22s ease-in-out infinite alternate;
     }
 
     @keyframes window-breath-page {
-        0% { transform: rotate(-10deg) scale(1) translate(0, 0); opacity: 0.8; }
-        50% { transform: rotate(-9.5deg) scale(1.02) translate(10px, -5px); opacity: 0.9; }
-        100% { transform: rotate(-10.5deg) scale(0.98) translate(-5px, 8px); opacity: 0.8; }
+        0% { transform: rotate(-10deg) scale(1) translate(0, 0); opacity: 0.85; }
+        50% { transform: rotate(-9.2deg) scale(1.03) translate(18px, -10px); opacity: 0.95; }
+        100% { transform: rotate(-10.8deg) scale(0.97) translate(-10px, 15px); opacity: 0.85; }
     }
 
     @keyframes tree-drift-page {
         0% { transform: translate(0, 0) rotate(0deg) scale(1); }
-        50% { transform: translate(15px, -10px) rotate(1.5deg) scale(1.05); }
-        100% { transform: translate(-10px, 15px) rotate(-1deg) scale(0.98); }
+        50% { transform: translate(30px, -20px) rotate(3deg) scale(1.08); }
+        100% { transform: translate(-20px, 25px) rotate(-2.5deg) scale(0.95); }
     }
 </style>
