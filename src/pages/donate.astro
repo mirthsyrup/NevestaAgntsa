@@ -34,15 +34,15 @@ import { Image } from 'astro:assets';
                             Мы благодарны каждому за добровольные пожертвования и десятины. Ваши средства направляются на поддержку церковного служения, содействия нуждающимся и содержание здания.
                         </p>
                         
-                        <a href="https://sberbank.ru/qr/uuid=1000297551" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-3 bg-gold hover:bg-gold-dark text-white px-10 py-5 rounded-full shadow-lg shadow-gold/30 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 font-medium tracking-wide uppercase text-sm group mx-auto lg:mx-0">
+                        <button id="donate-btn" type="button" class="inline-flex items-center justify-center gap-3 bg-gold hover:bg-gold-dark text-white px-10 py-5 rounded-full shadow-lg shadow-gold/30 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 font-medium tracking-wide uppercase text-sm group mx-auto lg:mx-0 cursor-pointer">
                             <i data-feather="credit-card" class="w-5 h-5"></i>
                             <span>Пожертвовать онлайн</span>
                             <i data-feather="arrow-right" class="w-4 h-4 ml-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all"></i>
-                        </a>
+                        </button>
                     </div>
 
                     <!-- Правая колонка: QR и Банковские детали -->
-                    <div class="relative">
+                    <div class="relative hidden lg:block">
                         <div class="bg-white rounded-[2rem] p-8 shadow-xl border border-gray-100 transform rotate-1 hover:rotate-0 transition duration-500 relative overflow-hidden group">
                             <div class="absolute top-0 right-0 w-20 h-20 bg-gold/10 rounded-bl-[4rem] transition-all group-hover:scale-150 duration-500"></div>
                             
@@ -66,5 +66,137 @@ import { Image } from 'astro:assets';
             </div>
         </div>
     </div>
+
+    <!-- Модальное окно пожертвования -->
+    <div id="donate-modal" class="fixed inset-0 z-[200] bg-dark/80 backdrop-blur-md hidden items-center justify-center p-4" role="dialog" aria-modal="true">
+        <div class="bg-paper border border-white/20 rounded-[2.5rem] p-8 md:p-10 max-w-lg w-full relative shadow-2xl transition-all duration-300 transform scale-95 opacity-0" id="donate-modal-card">
+            <!-- Кнопка закрытия -->
+            <button id="donate-modal-close" class="absolute top-6 right-6 text-gray-400 hover:text-dark p-2 focus:outline-none transition cursor-pointer" aria-label="Закрыть">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            <!-- Содержимое -->
+            <div class="mt-2">
+                <p class="text-gray-600 text-sm md:text-base leading-relaxed mb-6 font-light">
+                    Мы всё больше используем электронные платежи в повседневной жизни. Так и церковь идёт в ногу со временем. Эта форма даяний создана для того, чтобы вы могли осуществлять финансовые пожертвования через интернет.
+                </p>
+
+                <form id="donate-form" class="space-y-6">
+                    <!-- Поле ввода суммы -->
+                    <div class="relative flex items-center">
+                        <input 
+                            type="number" 
+                            id="donate-amount" 
+                            value="1000" 
+                            min="10"
+                            onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                            class="w-full bg-white border border-gray-200 text-dark font-sans text-lg px-6 py-4 rounded-full focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/30 transition-all shadow-inner"
+                            placeholder="Сумма"
+                            required
+                        />
+                        <span class="absolute right-6 text-gray-400 font-sans text-lg">₽</span>
+                    </div>
+
+                    <!-- Выбор гражданства (радиокнопки) -->
+                    <div class="flex flex-col sm:flex-row gap-4 sm:gap-6 py-2">
+                        <label class="flex items-center gap-3 cursor-pointer group">
+                            <input type="radio" name="citizenship" value="rf" checked class="sr-only peer" />
+                            <div class="w-5 h-5 rounded-full border border-gray-300 flex items-center justify-center peer-checked:border-gold transition group-hover:border-gold/60 peer-checked:[&>div]:scale-100 peer-checked:[&>div]:opacity-100">
+                                <div class="w-2.5 h-2.5 rounded-full bg-gold transform scale-0 opacity-0 transition-all duration-300 shadow-[0_0_8px_rgba(166,123,91,0.8)]"></div>
+                            </div>
+                            <span class="text-sm font-sans text-gray-600 select-none">Я гражданин РФ</span>
+                        </label>
+
+                        <label class="flex items-center gap-3 cursor-pointer group">
+                            <input type="radio" name="citizenship" value="foreign" class="sr-only peer" />
+                            <div class="w-5 h-5 rounded-full border border-gray-300 flex items-center justify-center peer-checked:border-gold transition group-hover:border-gold/60 peer-checked:[&>div]:scale-100 peer-checked:[&>div]:opacity-100">
+                                <div class="w-2.5 h-2.5 rounded-full bg-gold transform scale-0 opacity-0 transition-all duration-300 shadow-[0_0_8px_rgba(166,123,91,0.8)]"></div>
+                            </div>
+                            <span class="text-sm font-sans text-gray-600 select-none">Я иностранный гражданин</span>
+                        </label>
+                    </div>
+
+                    <!-- Кнопка отправки -->
+                    <button 
+                        type="submit" 
+                        class="w-full flex items-center justify-center gap-3 bg-gold hover:bg-gold-dark text-white py-5 rounded-full shadow-lg shadow-gold/30 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 font-medium tracking-wide uppercase text-sm cursor-pointer"
+                    >
+                        <span>Отправить</span>
+                    </button>
+
+                    <!-- Оферта -->
+                    <p class="text-[11px] md:text-xs text-gray-500 font-sans leading-normal">
+                        *Нажимая на кнопку «Отправить», вы соглашаетесь с условиями <a href={`${import.meta.env.BASE_URL}public_offer.pdf`} target="_blank" rel="noopener noreferrer" class="text-gold hover:text-gold-dark font-medium underline transition-colors">публичной оферты</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
 </BaseLayout>
 
+<script>
+    function initDonateModal() {
+        const donateBtn = document.getElementById('donate-btn');
+        const modal = document.getElementById('donate-modal');
+        const card = document.getElementById('donate-modal-card');
+        const closeBtn = document.getElementById('donate-modal-close');
+        const form = document.getElementById('donate-form') as HTMLFormElement | null;
+
+        if (!donateBtn || !modal || !card || !closeBtn) return;
+
+        function openModal() {
+            modal?.classList.remove('hidden');
+            modal?.classList.add('flex');
+            document.body.classList.add('menu-open');
+            setTimeout(() => {
+                card?.classList.remove('scale-95', 'opacity-0');
+                card?.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            card?.classList.remove('scale-100', 'opacity-100');
+            card?.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal?.classList.add('hidden');
+                modal?.classList.remove('flex');
+                document.body.classList.remove('menu-open');
+            }, 300);
+        }
+
+        donateBtn.addEventListener('click', openModal);
+        closeBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        // Закрытие по клавише Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        form?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Открываем ссылку Сбербанка
+            window.open('https://sberbank.ru/qr/uuid=1000297551', '_blank', 'noopener,noreferrer');
+            closeModal();
+        });
+    }
+
+    // Инициализация при загрузке страницы
+    document.addEventListener('astro:page-load', initDonateModal);
+</script>
+
+<style>
+    /* Убираем стрелочки (spinners) у input type="number" чтобы не перекрывали символ рубля */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+</style>
