@@ -113,11 +113,11 @@ const filters = [
             <!-- Блок солнца и лучей -->
             <div class="absolute top-[-500px] left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] flex items-center justify-center">
                 <!-- Вращающиеся лучи (360 градусов) -->
-                <div class="absolute w-[1000px] h-[1000px] rounded-full animate-spin-slow opacity-65" 
+                <div class="absolute w-[1000px] h-[1000px] rounded-full animate-spin-slow opacity-65 sun-rays-1" 
                      style="background: repeating-conic-gradient(from 0deg, rgba(251, 191, 36, 0.28) 0deg 15deg, transparent 15deg 40deg); filter: blur(18px);">
                 </div>
                 <!-- Дополнительный слой лучей для глубины (вращается в обратную сторону) -->
-                <div class="absolute w-[900px] h-[900px] rounded-full animate-spin-reverse opacity-55" 
+                <div class="absolute w-[900px] h-[900px] rounded-full animate-spin-reverse opacity-55 sun-rays-2" 
                      style="background: repeating-conic-gradient(from 30deg, rgba(254, 240, 138, 0.35) 0deg 10deg, transparent 10deg 50deg); filter: blur(15px);">
                 </div>
                 <!-- Яркое свечение солнца -->
@@ -278,5 +278,16 @@ const filters = [
     }
     .animate-spin-reverse {
         animation: spin-reverse 120s linear infinite;
+    }
+
+    @media (max-width: 768px) {
+        .sun-rays-1 {
+            background: repeating-conic-gradient(from 0deg, rgba(251, 191, 36, 0.28) 0deg 6deg, transparent 6deg 30deg) !important;
+            filter: blur(10px) !important;
+        }
+        .sun-rays-2 {
+            background: repeating-conic-gradient(from 30deg, rgba(254, 240, 138, 0.35) 0deg 5deg, transparent 5deg 35deg) !important;
+            filter: blur(8px) !important;
+        }
     }
 </style>
