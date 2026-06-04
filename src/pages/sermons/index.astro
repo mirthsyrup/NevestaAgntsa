@@ -10,8 +10,8 @@ const sermons = await getCollection('sermons');
     <div class="pt-32 pb-24 px-6 bg-paper relative overflow-hidden min-h-screen">
         <!-- Тени от окна и жалюзи (Gobo) в фоне -->
         <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-            <!-- Мягкий свет софита -->
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,rgba(166,123,91,0.28)_0%,transparent_65%),radial-gradient(circle_at_50%_110%,rgba(166,123,91,0.15)_0%,transparent_55%)]"></div>
+            <!-- Естественный свет из окна (подсветка фона) -->
+            <div class="absolute inset-0 gobo-window-light"></div>
             
             <!-- Оконная рама с дыханием -->
             <div class="absolute -inset-[5%] window-overlay"></div>
@@ -61,6 +61,10 @@ const sermons = await getCollection('sermons');
 </BaseLayout>
 
 <style>
+    .gobo-window-light {
+        background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.6) 0%, transparent 100%);
+    }
+
     .window-overlay {
         position: absolute;
         inset: -5%;
