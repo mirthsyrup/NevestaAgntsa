@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { Image } from 'astro:assets';
 import footerBg from '../assets/images/footer-bg.jpg';
+import { contacts } from '../data/contacts';
 ---
 
 <BaseLayout title="Контакты — Церковь «Невеста Агнца»">
@@ -19,10 +20,10 @@ import footerBg from '../assets/images/footer-bg.jpg';
                     
                     <div class="space-y-8 font-light tracking-wide text-lg text-white/80">
                         <div>
-                            <p>Чебоксары, Чувашская Республика</p>
+                            <p>{contacts.city}</p>
                             <p class="flex items-center gap-2 flex-wrap">
-                                <span>ул. Социалистическая 2г</span>
-                                <a href="https://yandex.ru/maps/?text=56.108023,47.177126" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold uppercase tracking-wider border border-gold/40 hover:border-gold hover:bg-gold hover:text-white rounded-full transition-all duration-300">
+                                <span>{contacts.address}</span>
+                                <a href={contacts.mapUrl} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold uppercase tracking-wider border border-gold/40 hover:border-gold hover:bg-gold hover:text-white rounded-full transition-all duration-300">
                                     <i data-feather="map-pin" class="w-3.5 h-3.5 text-gold-light"></i>
                                     <span>На карте</span>
                                 </a>
@@ -30,8 +31,8 @@ import footerBg from '../assets/images/footer-bg.jpg';
                         </div>
 
                         <div class="space-y-1">
-                            <p>Телефон: <a href="tel:+79373864064" class="hover:text-gold transition">+7 (937) 386-40-64</a></p>
-                            <p>Email: <a href="mailto:nevestaagntsa@gmail.com" class="hover:text-gold transition">nevestaagntsa@gmail.com</a></p>
+                            <p>Телефон: <a href={`tel:${contacts.phone}`} aria-label={`Позвонить: ${contacts.phoneFormatted}`} class="hover:text-gold transition">{contacts.phoneFormatted}</a></p>
+                            <p>Email: <a href={`mailto:${contacts.email}`} aria-label={`Написать на ${contacts.email}`} class="hover:text-gold transition">{contacts.email}</a></p>
                         </div>
                         
                         <div class="pt-4">
@@ -55,22 +56,12 @@ import footerBg from '../assets/images/footer-bg.jpg';
                     <h2 class="text-xl font-bold mb-6 text-[#A67B5B] uppercase tracking-widest">Время служений</h2>
                     
                     <div class="space-y-4 text-white/90 text-lg font-light">
-                        <div class="flex justify-between border-b border-white/10 pb-2">
-                            <span>Воскресенье</span>
-                            <span>10:00</span>
-                        </div>
-                        <div class="flex justify-between border-b border-white/10 pb-2">
-                            <span>Вторник (Домашние группы)</span>
-                            <span>18:00</span>
-                        </div>
-                        <div class="flex justify-between border-b border-white/10 pb-2">
-                            <span>Четверг (Изучение книги Откровения)</span>
-                            <span>17:30</span>
-                        </div>
-                        <div class="flex justify-between border-b border-white/10 pb-2">
-                            <span>Пятница (Молитва)</span>
-                            <span>19:00</span>
-                        </div>
+                        {contacts.schedule.map(item => (
+                            <div class="flex justify-between border-b border-white/10 pb-2">
+                                <span>{item.day}</span>
+                                <span>{item.time}</span>
+                            </div>
+                        ))}
                         <div class="pt-4 text-sm text-white/50 italic">
                             *Возможны изменения в праздничные дни
                         </div>
@@ -81,7 +72,7 @@ import footerBg from '../assets/images/footer-bg.jpg';
         </div>
         
         <div class="w-full relative z-10 mt-12 text-center text-xs text-white/30 uppercase tracking-[0.2em]">
-            &copy; {new Date().getFullYear()} МРОХВЕП<br>Церковь "Невеста Агнца"
+            &copy; {new Date().getFullYear()} {contacts.copyright}<br>{contacts.churchName}
         </div>
     </div>
 </BaseLayout>

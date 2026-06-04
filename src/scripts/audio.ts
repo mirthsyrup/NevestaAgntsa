@@ -1,6 +1,4 @@
 let sharedAudioCtx: AudioContext | null = null;
-let cachedAscensionImpulse: AudioBuffer | null = null;
-let cachedNobleImpulse: AudioBuffer | null = null;
 
 export function getAudioContext(): AudioContext | null {
     if (typeof window === 'undefined') return null;

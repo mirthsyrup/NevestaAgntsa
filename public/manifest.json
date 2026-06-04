@@ -6,7 +6,7 @@
   "scope": "/NevestaAgntsa/",
   "display": "standalone",
   "background_color": "#161616",
-  "theme-color": "#161616",
+  "theme_color": "#161616",
   "orientation": "portrait-primary",
   "icons": [
     {

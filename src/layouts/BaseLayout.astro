@@ -63,13 +63,15 @@ const pageTransition = {
     <SEO title={displayTitle} description={description} image={image} />
     <title>{displayTitle}</title>
     
-    <link rel="icon" type="image/png" href={`${import.meta.env.BASE_URL}favicon.png`} />
+    <link rel="icon" type="image/png" sizes="32x32" href={`${import.meta.env.BASE_URL}favicon-32.png`} />
+    <link rel="icon" type="image/png" sizes="512x512" href={`${import.meta.env.BASE_URL}favicon.png`} />
+    <link rel="apple-touch-icon" sizes="180x180" href={`${import.meta.env.BASE_URL}apple-touch-icon.png`} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Rubik+Bubbles&family=Lora:ital,wght@0,400..700;1,400..700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.2/feather.min.js" integrity="sha512-zMm7+ZQ8AZr1r3W8Z8lDATkH05QG5Gm2xc6MlsCdBz9l6oE8Y7IXByMgSm/rdRQrhuHt99HAYfMljBOEZ68q5A==" crossorigin="anonymous" referrerpolicy="no-referrer" is:inline></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.2/feather.min.js" integrity="sha512-zMm7+ZQ8AZr1r3W8Z8lDATkH05QG5Gm2xc6MlsCdBz9l6oE8Y7IXByMgSm/rdRQrhuHt99HAYfMljBOEZ68q5A==" crossorigin="anonymous" referrerpolicy="no-referrer" defer is:inline></script>
     <ViewTransitions />
     <script is:inline>
         if (history.scrollRestoration) {
@@ -100,7 +102,7 @@ const pageTransition = {
     {isHome && <Footer />}
 
     <!-- Модальное окно событий -->
-    <div id="event-modal" class="fixed inset-0 z-[200] bg-dark/80 backdrop-blur-md hidden items-center justify-center p-4">
+    <div id="event-modal" class="fixed inset-0 z-[200] bg-dark/80 backdrop-blur-md hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="modal-title">
         <div class="bg-paper border border-white/20 rounded-[2.5rem] p-8 md:p-10 max-w-xl w-full relative shadow-2xl transition-all duration-300 transform scale-95 opacity-0" id="event-modal-card">
             <!-- Кнопка закрытия -->
             <button id="event-modal-close" class="absolute top-6 right-6 text-gray-400 hover:text-dark p-2 focus:outline-none transition cursor-pointer" aria-label="Закрыть">
@@ -117,7 +119,7 @@ const pageTransition = {
     </div>
 
     <!-- Модальное окно описания проповеди -->
-    <div id="sermon-modal" class="fixed inset-0 z-[200] bg-dark/80 backdrop-blur-md hidden items-center justify-center p-4">
+    <div id="sermon-modal" class="fixed inset-0 z-[200] bg-dark/80 backdrop-blur-md hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="sermon-modal-title">
         <div class="bg-paper border border-white/20 rounded-[2.5rem] p-8 md:p-10 max-w-xl w-full relative shadow-2xl transition-all duration-300 transform scale-95 opacity-0" id="sermon-modal-card">
             <!-- Кнопка закрытия -->
             <button id="sermon-modal-close" class="absolute top-6 right-6 text-gray-400 hover:text-dark p-2 focus:outline-none transition cursor-pointer" aria-label="Закрыть">
@@ -133,6 +135,51 @@ const pageTransition = {
     </div>
 
     <script>
+        // Универсальная функция для управления модальными окнами
+        function createModal(config: {
+            modalId: string;
+            cardId: string;
+            closeId: string;
+            triggerSelector: string;
+            populateCallback: (button: HTMLElement) => void;
+        }) {
+            const modal = document.getElementById(config.modalId);
+            const card = document.getElementById(config.cardId);
+            const closeBtn = document.getElementById(config.closeId);
+
+            function open(button: HTMLElement) {
+                if (!modal || !card) return;
+                config.populateCallback(button);
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                document.body.classList.add('menu-open');
+                setTimeout(() => {
+                    card.classList.remove('scale-95', 'opacity-0');
+                    card.classList.add('scale-100', 'opacity-100');
+                }, 10);
+            }
+
+            function close() {
+                if (!modal || !card) return;
+                card.classList.remove('scale-100', 'opacity-100');
+                card.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                    document.body.classList.remove('menu-open');
+                }, 300);
+            }
+
+            document.querySelectorAll(config.triggerSelector)
+                .forEach(btn => btn.addEventListener('click', () => open(btn as HTMLElement)));
+            closeBtn?.addEventListener('click', close);
+            modal?.addEventListener('click', (e) => {
+                if (e.target === modal) close();
+            });
+
+            return close;
+        }
+
         // Инициализация после загрузки страниц через ViewTransitions
         document.addEventListener('astro:page-load', () => {
             // Feather icons replacement
@@ -150,115 +197,41 @@ const pageTransition = {
             }, { threshold: 0.1 });
             document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-            // Логика модального окна событий
-            const eventModal = document.getElementById('event-modal');
-            const eventModalCard = document.getElementById('event-modal-card');
-            const modalClose = document.getElementById('event-modal-close');
-
-            const modalTitle = document.getElementById('modal-title');
-            const modalDescription = document.getElementById('modal-description');
-            const modalInfo = document.getElementById('modal-info');
-
-            function openEventModal(button: HTMLElement) {
-                if (eventModal && eventModalCard) {
-                    const title = button.getAttribute('data-title') || '';
-                    const description = button.getAttribute('data-description') || '';
-                    const time = button.getAttribute('data-time') || '';
-                    const location = button.getAttribute('data-location') || '';
-
-                    if (modalTitle) modalTitle.textContent = title;
-                    if (modalDescription) modalDescription.textContent = description;
+            // Модальное окно событий
+            const closeEventModal = createModal({
+                modalId: 'event-modal',
+                cardId: 'event-modal-card',
+                closeId: 'event-modal-close',
+                triggerSelector: '.event-details-btn',
+                populateCallback: (button) => {
+                    const modalTitle = document.getElementById('modal-title');
+                    const modalDescription = document.getElementById('modal-description');
+                    const modalInfo = document.getElementById('modal-info');
+                    if (modalTitle) modalTitle.textContent = button.getAttribute('data-title') || '';
+                    if (modalDescription) modalDescription.textContent = button.getAttribute('data-description') || '';
                     if (modalInfo) {
+                        const time = button.getAttribute('data-time') || '';
+                        const location = button.getAttribute('data-location') || '';
                         modalInfo.textContent = `${time} • ${location}`;
                     }
-
-                    eventModal.classList.remove('hidden');
-                    eventModal.classList.add('flex');
-                    document.body.classList.add('menu-open'); // Блокировка скролла
-                    
-                    // Анимация всплытия
-                    setTimeout(() => {
-                        eventModalCard.classList.remove('scale-95', 'opacity-0');
-                        eventModalCard.classList.add('scale-100', 'opacity-100');
-                    }, 10);
-                }
-            }
-
-            function closeEventModal() {
-                if (eventModal && eventModalCard) {
-                    eventModalCard.classList.remove('scale-100', 'opacity-100');
-                    eventModalCard.classList.add('scale-95', 'opacity-0');
-                    
-                    setTimeout(() => {
-                        eventModal.classList.add('hidden');
-                        eventModal.classList.remove('flex');
-                        document.body.classList.remove('menu-open');
-                    }, 300);
-                }
-            }
-
-            // Навешиваем слушатели на кнопки «Подробнее»
-            document.querySelectorAll('.event-details-btn').forEach(button => {
-                button.addEventListener('click', () => openEventModal(button as HTMLElement));
-            });
-
-            modalClose?.addEventListener('click', closeEventModal);
-            eventModal?.addEventListener('click', (e) => {
-                if (e.target === eventModal) {
-                    closeEventModal();
                 }
             });
 
-            // Логика модального окна проповедей
-            const sermonModal = document.getElementById('sermon-modal');
-            const sermonModalCard = document.getElementById('sermon-modal-card');
-            const sermonModalClose = document.getElementById('sermon-modal-close');
-            const sermonModalTitle = document.getElementById('sermon-modal-title');
-            const sermonModalDescription = document.getElementById('sermon-modal-description');
-
-            function openSermonModal(button: HTMLElement) {
-                if (sermonModal && sermonModalCard) {
-                    const title = button.getAttribute('data-title') || '';
-                    const description = button.getAttribute('data-description') || '';
-
-                    if (sermonModalTitle) sermonModalTitle.textContent = title;
-                    if (sermonModalDescription) sermonModalDescription.textContent = description;
-
-                    sermonModal.classList.remove('hidden');
-                    sermonModal.classList.add('flex');
-                    document.body.classList.add('menu-open');
-                    
-                    setTimeout(() => {
-                        sermonModalCard.classList.remove('scale-95', 'opacity-0');
-                        sermonModalCard.classList.add('scale-100', 'opacity-100');
-                    }, 10);
-                }
-            }
-
-            function closeSermonModal() {
-                if (sermonModal && sermonModalCard) {
-                    sermonModalCard.classList.remove('scale-100', 'opacity-100');
-                    sermonModalCard.classList.add('scale-95', 'opacity-0');
-                    
-                    setTimeout(() => {
-                        sermonModal.classList.add('hidden');
-                        sermonModal.classList.remove('flex');
-                        document.body.classList.remove('menu-open');
-                    }, 300);
-                }
-            }
-
-            document.querySelectorAll('.sermon-info-btn').forEach(button => {
-                button.addEventListener('click', () => openSermonModal(button as HTMLElement));
-            });
-
-            sermonModalClose?.addEventListener('click', closeSermonModal);
-            sermonModal?.addEventListener('click', (e) => {
-                if (e.target === sermonModal) {
-                    closeSermonModal();
+            // Модальное окно проповедей
+            const closeSermonModal = createModal({
+                modalId: 'sermon-modal',
+                cardId: 'sermon-modal-card',
+                closeId: 'sermon-modal-close',
+                triggerSelector: '.sermon-info-btn',
+                populateCallback: (button) => {
+                    const sermonTitle = document.getElementById('sermon-modal-title');
+                    const sermonDesc = document.getElementById('sermon-modal-description');
+                    if (sermonTitle) sermonTitle.textContent = button.getAttribute('data-title') || '';
+                    if (sermonDesc) sermonDesc.textContent = button.getAttribute('data-description') || '';
                 }
             });
 
+            // Закрытие модалок по Escape
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
                     closeEventModal();
