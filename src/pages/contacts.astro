@@ -96,7 +96,11 @@ import { contacts } from '../data/contacts';
                             ) : (
                                 <div class="flex justify-between border-b border-white/10 pb-2">
                                     <span>{item.day}</span>
-                                    <span>{item.time}</span>
+                                    {'isSunday' in item ? (
+                                        <span class="sunday-time" data-summer-time="17:00" data-default-time="10:00">{item.time}</span>
+                                    ) : (
+                                        <span>{item.time}</span>
+                                    )}
                                 </div>
                             )
                         ))}
@@ -113,4 +117,14 @@ import { contacts } from '../data/contacts';
             &copy; {new Date().getFullYear()} {contacts.copyright}<br>{contacts.churchName}
         </div>
     </div>
+
+    <script is:inline>
+        (function() {
+            const m = new Date().getMonth();
+            const isSummerTime = m >= 5 && m <= 7;
+            document.querySelectorAll('.sunday-time').forEach(el => {
+                el.textContent = isSummerTime ? el.getAttribute('data-summer-time') : el.getAttribute('data-default-time');
+            });
+        })();
+    </script>
 </BaseLayout>

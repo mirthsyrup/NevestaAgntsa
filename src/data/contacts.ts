@@ -11,7 +11,7 @@ export const contacts = {
         { name: "MAX", url: "https://max.ru/join/M3Dv6oeVwqV-IdYiKvuuUPg8D1X6905NkvuNQjQW4TE", ariaLabel: "MAX" }
     ],
     schedule: [
-        { day: "Воскресенье", time: [5, 6, 7].includes(new Date().getMonth()) ? "17:00" : "10:00" },
+        { day: "Воскресенье", time: [5, 6, 7].includes(new Date().getMonth()) ? "17:00" : "10:00", isSunday: true },
         {
             day: "Понедельник",
             events: [
