@@ -82,7 +82,11 @@ import { contacts } from '../data/contacts';
                                     {item.events.map((event, idx) => (
                                         <div class="flex justify-between">
                                             <div class="flex gap-2">
-                                                <span class={idx > 0 ? "invisible select-none" : ""}>{item.day}</span>
+                                                {event.day ? (
+                                                    <span>{event.day}</span>
+                                                ) : (
+                                                    <span class={idx > 0 ? "invisible select-none" : ""}>{item.day}</span>
+                                                )}
                                                 <span>{event.name}</span>
                                             </div>
                                             <span>{event.time}</span>
