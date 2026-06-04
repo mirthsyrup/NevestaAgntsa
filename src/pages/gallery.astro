@@ -113,17 +113,17 @@ const filters = [
             <!-- Блок солнца и лучей -->
             <div class="absolute top-[-500px] left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] flex items-center justify-center">
                 <!-- Вращающиеся лучи (360 градусов) -->
-                <div class="absolute w-[1000px] h-[1000px] rounded-full animate-spin-slow opacity-30" 
-                     style="background: repeating-conic-gradient(from 0deg, rgba(254, 240, 138, 0.25) 0deg 15deg, transparent 15deg 40deg); filter: blur(35px);">
+                <div class="absolute w-[1000px] h-[1000px] rounded-full animate-spin-slow opacity-65" 
+                     style="background: repeating-conic-gradient(from 0deg, rgba(251, 191, 36, 0.28) 0deg 15deg, transparent 15deg 40deg); filter: blur(18px);">
                 </div>
                 <!-- Дополнительный слой лучей для глубины (вращается в обратную сторону) -->
-                <div class="absolute w-[900px] h-[900px] rounded-full animate-spin-reverse opacity-25" 
-                     style="background: repeating-conic-gradient(from 30deg, rgba(255, 255, 255, 0.3) 0deg 12deg, transparent 12deg 48deg); filter: blur(30px);">
+                <div class="absolute w-[900px] h-[900px] rounded-full animate-spin-reverse opacity-55" 
+                     style="background: repeating-conic-gradient(from 30deg, rgba(254, 240, 138, 0.35) 0deg 10deg, transparent 10deg 50deg); filter: blur(15px);">
                 </div>
                 <!-- Яркое свечение солнца -->
-                <div class="absolute w-[450px] h-[450px] bg-yellow-100/40 rounded-full blur-[70px] shadow-[0_0_120px_60px_rgba(253,230,138,0.35)]"></div>
+                <div class="absolute w-[450px] h-[450px] bg-amber-100/70 rounded-full blur-[50px] shadow-[0_0_150px_70px_rgba(251,191,36,0.55)]"></div>
                 <!-- Ядро солнца -->
-                <div class="absolute w-[200px] h-[200px] bg-white rounded-full blur-[35px] opacity-90"></div>
+                <div class="absolute w-[200px] h-[200px] bg-white rounded-full blur-[20px] opacity-95"></div>
             </div>
         </div>
         
