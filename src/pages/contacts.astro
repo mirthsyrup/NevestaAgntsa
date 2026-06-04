@@ -77,10 +77,24 @@ import { contacts } from '../data/contacts';
                     
                     <div class="space-y-4 text-white/90 text-lg font-light">
                         {contacts.schedule.map(item => (
-                            <div class="flex justify-between border-b border-white/10 pb-2">
-                                <span>{item.day}</span>
-                                <span>{item.time}</span>
-                            </div>
+                            'events' in item ? (
+                                <div class="border-b border-white/10 pb-2 space-y-1">
+                                    {item.events.map((event, idx) => (
+                                        <div class="flex justify-between">
+                                            <div class="flex gap-2">
+                                                <span class={idx > 0 ? "invisible select-none" : ""}>{item.day}</span>
+                                                <span>{event.name}</span>
+                                            </div>
+                                            <span>{event.time}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div class="flex justify-between border-b border-white/10 pb-2">
+                                    <span>{item.day}</span>
+                                    <span>{item.time}</span>
+                                </div>
+                            )
                         ))}
                         <div class="pt-4 text-sm text-white/50 italic">
                             *Возможны изменения в праздничные дни
