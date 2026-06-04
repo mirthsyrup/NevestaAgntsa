@@ -8,14 +8,25 @@ const sermons = await getCollection('sermons');
 
 <BaseLayout title="Проповеди — Церковь «Невеста Агнца»">
     <div class="pt-32 pb-24 px-6 bg-paper relative overflow-hidden min-h-screen">
-        <!-- Узкие божественные лучи света (световые шахты) в фоне -->
-        <div class="absolute -top-40 inset-x-0 bottom-[-50%] pointer-events-none z-0 overflow-hidden opacity-[0.25]">
-            <!-- Луч 1 -->
-            <div class="absolute -top-20 left-[15%] w-[250px] h-[300%] bg-gradient-to-b from-yellow-200/80 via-yellow-400/20 to-transparent rotate-[-20deg] origin-top blur-[60px] animate-beams"></div>
-            <!-- Луч 2 -->
-            <div class="absolute -top-20 left-[45%] w-[350px] h-[300%] bg-gradient-to-b from-yellow-100/60 via-yellow-300/15 to-transparent rotate-[-15deg] origin-top blur-[80px] animate-beams" style="animation-delay: -3s; animation-duration: 20s;"></div>
-            <!-- Луч 3 -->
-            <div class="absolute -top-20 left-[75%] w-[200px] h-[300%] bg-gradient-to-b from-yellow-200/50 via-yellow-400/20 to-transparent rotate-[-25deg] origin-top blur-[70px] animate-beams" style="animation-delay: -6s; animation-duration: 22s;"></div>
+        <!-- Тени от окна и жалюзи (Gobo) в фоне -->
+        <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+            <!-- Мягкий свет софита -->
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,rgba(166,123,91,0.28)_0%,transparent_65%),radial-gradient(circle_at_50%_110%,rgba(166,123,91,0.15)_0%,transparent_55%)]"></div>
+            
+            <!-- Оконная рама с дыханием -->
+            <div class="absolute -inset-[5%] window-overlay"></div>
+            
+            <!-- Тень от листвы за окном -->
+            <div class="absolute inset-0 window-tree-shadow">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 800" class="w-full h-full">
+                    <g fill="rgba(22, 22, 22, 0.045)">
+                        <circle cx="200" cy="150" r="80" />
+                        <circle cx="260" cy="180" r="60" />
+                        <circle cx="320" cy="220" r="50" />
+                        <circle cx="120" cy="90" r="90" />
+                    </g>
+                </svg>
+            </div>
         </div>
 
         <div class="container mx-auto relative z-10">
@@ -48,3 +59,49 @@ const sermons = await getCollection('sermons');
         </div>
     </div>
 </BaseLayout>
+
+<style>
+    .window-overlay {
+        position: absolute;
+        inset: -5%;
+        background: linear-gradient(135deg, transparent 35%, rgba(22, 22, 22, 0.05) 45%, rgba(22, 22, 22, 0.09) 50%, rgba(22, 22, 22, 0.05) 55%, transparent 65%);
+        background-size: 200% 200%;
+        filter: blur(14px);
+        opacity: 0.85;
+        transform: rotate(-10deg);
+        animation: window-breath-page 14s ease-in-out infinite alternate;
+    }
+
+    .window-overlay::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 120px,
+            rgba(0, 0, 0, 0.04) 120px,
+            rgba(0, 0, 0, 0.04) 170px
+        );
+    }
+
+    .window-tree-shadow {
+        position: absolute;
+        inset: 0;
+        filter: blur(18px);
+        opacity: 0.7;
+        animation: tree-drift-page 20s ease-in-out infinite alternate;
+    }
+
+    @keyframes window-breath-page {
+        0% { transform: rotate(-10deg) scale(1) translate(0, 0); opacity: 0.8; }
+        50% { transform: rotate(-9.5deg) scale(1.02) translate(10px, -5px); opacity: 0.9; }
+        100% { transform: rotate(-10.5deg) scale(0.98) translate(-5px, 8px); opacity: 0.8; }
+    }
+
+    @keyframes tree-drift-page {
+        0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+        50% { transform: translate(15px, -10px) rotate(1.5deg) scale(1.05); }
+        100% { transform: translate(-10px, 15px) rotate(-1deg) scale(0.98); }
+    }
+</style>
