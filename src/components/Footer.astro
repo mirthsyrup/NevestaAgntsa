@@ -63,7 +63,7 @@ import { contacts } from '../data/contacts';
                                         ) : (
                                             <span class={`w-20 sm:w-28 md:w-36 shrink-0 ${idx > 0 ? "invisible select-none" : ""}`}>{item.day}</span>
                                         )}
-                                        <span class="text-sm text-white/70 flex-grow text-left px-1 sm:px-2">{event.name}</span>
+                                        <span class="text-sm text-white/70 flex-grow text-left whitespace-pre-line px-1 sm:px-2">{event.name}</span>
                                         <span class="shrink-0 text-right">{event.time}</span>
                                     </div>
                                 ))}
@@ -72,7 +72,7 @@ import { contacts } from '../data/contacts';
                             <div class="flex justify-between items-baseline gap-2 border-b border-white/10 pb-2">
                                 <span class="w-20 sm:w-28 md:w-36 shrink-0">{item.day}</span>
                                 {'name' in item ? (
-                                    <span class="text-sm text-white/70 flex-grow text-left px-1 sm:px-2">{item.name}</span>
+                                    <span class="text-sm text-white/70 flex-grow text-left whitespace-pre-line px-1 sm:px-2">{item.name}</span>
                                 ) : (
                                     <span class="flex-grow"></span>
                                 )}
