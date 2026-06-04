@@ -15,7 +15,7 @@ export const contacts = {
         {
             day: "Понедельник",
             events: [
-                { name: "(Домашние группы)", time: "18:00" },
+                { name: "", time: "" },
                 { name: "(Домашние группы)", time: "18:00", day: "Вторник" }
             ]
         },
