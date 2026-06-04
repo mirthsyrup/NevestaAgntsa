@@ -81,11 +81,11 @@ import { contacts } from '../data/contacts';
                                 <div class="border-b border-white/10 pb-2 space-y-1">
                                     {item.events.map((event, idx) => (
                                         <div class="flex justify-between">
-                                            <div class="flex gap-2">
+                                            <div class="flex gap-4">
                                                 {event.day ? (
-                                                    <span>{event.day}</span>
+                                                    <span class="w-32 md:w-36 shrink-0">{event.day}</span>
                                                 ) : (
-                                                    <span class={idx > 0 ? "invisible select-none" : ""}>{item.day}</span>
+                                                    <span class={`w-32 md:w-36 shrink-0 ${idx > 0 ? "invisible select-none" : ""}`}>{item.day}</span>
                                                 )}
                                                 <span>{event.name}</span>
                                             </div>
@@ -95,7 +95,10 @@ import { contacts } from '../data/contacts';
                                 </div>
                             ) : (
                                 <div class="flex justify-between border-b border-white/10 pb-2">
-                                    <span>{item.day}</span>
+                                    <div class="flex gap-4">
+                                        <span class="w-32 md:w-36 shrink-0">{item.day}</span>
+                                        {'name' in item && <span class="text-white/70">{item.name}</span>}
+                                    </div>
                                     {'isSunday' in item ? (
                                         <span class="sunday-time" data-summer-time="17:00" data-default-time="10:00">{item.time}</span>
                                     ) : (
