@@ -90,14 +90,14 @@ const isHome = currentPath === basePath || currentPath === "" || currentPath ===
             }, delay);
         }
 
-        // Создаем стробоскопический шлейф движения (6 кадров-призраков с нарастающим размытием)
-        const ghostCount = 6;
+        // Создаем стробоскопический шлейф движения (8 плотно наложенных кадров для бесшовного шлейфа)
+        const ghostCount = 8;
         for (let i = 0; i < ghostCount; i++) {
-            const delay = i * 70; // задержка в 70мс между кадрами шлейфа
-            const scale = 1.0;    // одинаковый масштаб, чтобы они шли строго след в след
-            const opacity = 0.85 * Math.pow(0.78, i); // более мягкое затухание прозрачности
-            const blurPx = i * 0.3; // деликатное нарастание размытия (0px, 0.3px, 0.6px, 0.9px...)
-            spawnRing(delay, scale, 1100, opacity, blurPx);
+            const delay = i * 15; // сверхмалая задержка в 15мс, чтобы кольца сливались в единый шлейф
+            const scale = 1.0;    // одинаковый масштаб
+            const opacity = 0.8 * Math.pow(0.72, i); // плавное затухание яркости к хвосту
+            const blurPx = i * 0.25; // очень мягкий нарастающий блюр
+            spawnRing(delay, scale, 1000, opacity, blurPx);
         }
     }
 
