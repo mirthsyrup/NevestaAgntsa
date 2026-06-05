@@ -18,7 +18,7 @@ export function playAscensionSound() {
     try {
         const now = ctx.currentTime;
         const masterGain = ctx.createGain();
-        masterGain.gain.setValueAtTime(0.27, now);
+        masterGain.gain.setValueAtTime(0.19, now);
         masterGain.connect(ctx.destination);
 
         const reverbTime = 4.0;
