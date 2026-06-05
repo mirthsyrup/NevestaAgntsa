@@ -112,18 +112,42 @@ const filters = [
         <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
             <!-- Блок солнца и лучей -->
             <div class="absolute top-[-800px] left-1/2 -translate-x-1/2 w-[1600px] h-[1600px] flex items-center justify-center">
-                <!-- Вращающиеся лучи (360 градусов) - Передний слой (размытый) -->
+
+                <!-- Слой 1: Задние лучи (тёплый янтарный, размытый) -->
                 <div class="absolute w-[1600px] h-[1600px] rounded-full animate-spin-slow opacity-75 sun-rays-1" 
                      style="background: repeating-conic-gradient(from 0deg, rgba(251, 191, 36, 0.28) 0deg 15deg, transparent 15deg 40deg); filter: blur(12px); -webkit-mask-image: radial-gradient(circle, black 20%, transparent 82%); mask-image: radial-gradient(circle, black 20%, transparent 82%);">
                 </div>
-                <!-- Дополнительный слой лучей для глубины (вращается в обратную сторону) - Более четкий задний слой -->
+
+                <!-- Слой 2: Средние лучи (чёткие, в обратную сторону) -->
                 <div class="absolute w-[1450px] h-[1450px] rounded-full animate-spin-reverse opacity-60 sun-rays-2" 
                      style="background: repeating-conic-gradient(from 30deg, rgba(254, 240, 138, 0.35) 0deg 10deg, transparent 10deg 50deg); filter: blur(6px); -webkit-mask-image: radial-gradient(circle, black 25%, transparent 88%); mask-image: radial-gradient(circle, black 25%, transparent 88%);">
                 </div>
+
+                <!-- Слой 3: God Rays — тонкие, резкие лучи -->
+                <div class="absolute w-[1500px] h-[1500px] rounded-full animate-spin-godrays opacity-40 sun-rays-3" 
+                     style="background: repeating-conic-gradient(from 15deg, rgba(255, 255, 255, 0.35) 0deg 3deg, transparent 3deg 24deg); filter: blur(2px); -webkit-mask-image: radial-gradient(circle, black 10%, transparent 70%); mask-image: radial-gradient(circle, black 10%, transparent 70%);">
+                </div>
+
+                <!-- 5. Цветовой переход по длине: белый у центра → янтарный к краям -->
+                <div class="absolute w-[1600px] h-[1600px] rounded-full opacity-30"
+                     style="background: radial-gradient(circle, rgba(255,255,255,0.5) 5%, rgba(251,191,36,0.25) 35%, rgba(180,120,30,0.1) 60%, transparent 80%); pointer-events: none;">
+                </div>
+
+                <!-- 3. Тёплая дымка / атмосфера -->
+                <div class="absolute w-[900px] h-[900px] rounded-full sun-haze opacity-50"
+                     style="background: radial-gradient(circle, rgba(255,236,179,0.6) 0%, rgba(251,191,36,0.15) 50%, transparent 80%); filter: blur(40px);">
+                </div>
+
                 <!-- Яркое свечение солнца -->
-                <div class="absolute w-[450px] h-[450px] bg-amber-100/70 rounded-full blur-[50px] shadow-[0_0_150px_70px_rgba(251,191,36,0.55)]"></div>
-                <!-- Ядро солнца -->
-                <div class="absolute w-[200px] h-[200px] bg-white rounded-full blur-[20px] opacity-95"></div>
+                <div class="absolute w-[450px] h-[450px] bg-amber-100/70 rounded-full blur-[50px] shadow-[0_0_150px_70px_rgba(251,191,36,0.55)] sun-glow"></div>
+
+                <!-- 1. Пульсирующее ядро солнца -->
+                <div class="absolute w-[200px] h-[200px] bg-white rounded-full blur-[20px] opacity-95 sun-core"></div>
+
+                <!-- 4. Блики (lens flare) -->
+                <div class="absolute w-[18px] h-[18px] bg-white/80 rounded-full blur-[4px] sun-flare-1" style="top: 48%; left: 56%;"></div>
+                <div class="absolute w-[10px] h-[10px] bg-yellow-100/70 rounded-full blur-[3px] sun-flare-2" style="top: 52%; left: 42%;"></div>
+                <div class="absolute w-[14px] h-[14px] bg-amber-100/60 rounded-full blur-[5px] sun-flare-3" style="top: 44%; left: 47%;"></div>
             </div>
         </div>
         
@@ -265,6 +289,7 @@ const filters = [
 </script>
 
 <style>
+    /* === Вращение лучей === */
     @keyframes spin-slow {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
@@ -273,13 +298,66 @@ const filters = [
         0% { transform: rotate(0deg); }
         100% { transform: rotate(-360deg); }
     }
+    @keyframes spin-godrays {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
     .animate-spin-slow {
         animation: spin-slow 36s linear infinite;
     }
     .animate-spin-reverse {
         animation: spin-reverse 48s linear infinite;
     }
+    .animate-spin-godrays {
+        animation: spin-godrays 80s linear infinite;
+    }
 
+    /* === 1. Пульсация ядра солнца === */
+    @keyframes sun-pulse {
+        0%, 100% { transform: scale(1); opacity: 0.95; }
+        50% { transform: scale(1.15); opacity: 1; }
+    }
+    .sun-core {
+        animation: sun-pulse 6s ease-in-out infinite;
+    }
+    .sun-glow {
+        animation: sun-pulse 6s ease-in-out infinite;
+        animation-delay: 0.3s;
+    }
+
+    /* === 3. Дымка дышит === */
+    @keyframes haze-breathe {
+        0%, 100% { transform: scale(1); opacity: 0.5; }
+        50% { transform: scale(1.08); opacity: 0.65; }
+    }
+    .sun-haze {
+        animation: haze-breathe 8s ease-in-out infinite;
+    }
+
+    /* === 4. Блики мерцают === */
+    @keyframes flare-twinkle-1 {
+        0%, 100% { opacity: 0.8; transform: scale(1); }
+        50% { opacity: 0.3; transform: scale(0.7); }
+    }
+    @keyframes flare-twinkle-2 {
+        0%, 100% { opacity: 0.7; transform: scale(1); }
+        40% { opacity: 0.2; transform: scale(0.5); }
+    }
+    @keyframes flare-twinkle-3 {
+        0%, 100% { opacity: 0.6; transform: scale(1); }
+        60% { opacity: 0.15; transform: scale(0.6); }
+    }
+    .sun-flare-1 {
+        animation: flare-twinkle-1 4s ease-in-out infinite;
+    }
+    .sun-flare-2 {
+        animation: flare-twinkle-2 5.5s ease-in-out infinite;
+    }
+    .sun-flare-3 {
+        animation: flare-twinkle-3 7s ease-in-out infinite;
+    }
+
+    /* === Мобильная адаптация === */
     @media (max-width: 768px) {
         .sun-rays-1 {
             background: repeating-conic-gradient(from 0deg, rgba(251, 191, 36, 0.28) 0deg 6deg, transparent 6deg 30deg) !important;
@@ -288,6 +366,13 @@ const filters = [
         .sun-rays-2 {
             background: repeating-conic-gradient(from 30deg, rgba(254, 240, 138, 0.35) 0deg 5deg, transparent 5deg 35deg) !important;
             filter: blur(5px) !important;
+        }
+        .sun-rays-3 {
+            background: repeating-conic-gradient(from 15deg, rgba(255, 255, 255, 0.35) 0deg 2deg, transparent 2deg 20deg) !important;
+            filter: blur(1px) !important;
+        }
+        .sun-flare-1, .sun-flare-2, .sun-flare-3 {
+            display: none;
         }
     }
 </style>
