@@ -7,8 +7,9 @@ const isHome = currentPath === basePath || currentPath === "" || currentPath ===
 <nav id="navbar" class={`fixed w-full z-[100] top-0 text-white transition-all duration-300 border-b min-h-[64px] pt-safe flex items-center ${isHome ? 'bg-transparent border-white/5' : 'bg-dark/80 backdrop-blur-sm shadow-md border-white/10'}`} transition:animate="none">
     <div class="w-full container mx-auto flex items-center justify-between px-6">
         
-        <a id="logo-cross" class="text-white no-underline flex items-center group relative z-[101]" href={import.meta.env.BASE_URL} transition:persist="logo-cross" aria-label="Главная страница">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 group-hover:text-gold-light transition-colors" viewBox="0 0 24 24">
+        <a id="logo-cross" class="text-white no-underline flex items-center justify-center p-16 -m-16 group relative z-[101]" href={import.meta.env.BASE_URL} transition:persist="logo-cross" aria-label="Главная страница">
+            <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-gold-light/20 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none scale-75 group-hover:scale-125 z-0"></div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 group-hover:text-gold-light transition-colors relative z-10" viewBox="0 0 24 24">
                 <path d="M12 2v20M5 10h14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="fill-current"/> 
             </svg>
         </a>
@@ -66,42 +67,33 @@ const isHome = currentPath === basePath || currentPath === "" || currentPath ===
         const logo = document.getElementById('logo-cross');
         if (!logo) return;
 
-        const ring = document.createElement('div');
-        ring.className = 'heavenly-ring';
-        logo.appendChild(ring);
-        
-        const ringAnim = ring.animate([
-            { opacity: 0.8, transform: 'scale(0.8)', borderColor: '#C29D7F' },
-            { opacity: 0.5, borderColor: '#e5d4c3', offset: 0.5 },
-            { opacity: 0, transform: 'scale(2.3)', borderColor: '#ffffff' }
-        ], {
-            duration: 1800,
-            easing: 'cubic-bezier(0.1, 0.8, 0.3, 1)',
-            fill: 'forwards'
-        });
-        ringAnim.onfinish = () => ring.remove();
+        function spawnRing(delay: number, scaleFactor: number, duration: number, maxOpacity: number) {
+            setTimeout(() => {
+                const ring = document.createElement('div');
+                ring.className = 'heavenly-ring';
+                logo.appendChild(ring);
+                
+                const ringAnim = ring.animate([
+                    { opacity: 0, transform: `translateY(16px) rotateX(75deg) scale(${0.6 * scaleFactor})` },
+                    { opacity: maxOpacity, transform: `translateY(12px) rotateX(75deg) scale(${1.1 * scaleFactor})`, offset: 0.15 },
+                    { opacity: maxOpacity, transform: `translateY(-12px) rotateX(75deg) scale(${1.1 * scaleFactor})`, offset: 0.85 },
+                    { opacity: 0, transform: `translateY(-18px) rotateX(75deg) scale(${0.6 * scaleFactor})` }
+                ], {
+                    duration: duration,
+                    easing: 'cubic-bezier(0.25, 0.8, 0.25, 1)',
+                    fill: 'forwards'
+                });
+                ringAnim.onfinish = () => ring.remove();
+            }, delay);
+        }
 
-        for (let i = 0; i < 12; i++) {
-            const sparkle = document.createElement('div');
-            sparkle.className = 'heavenly-sparkle';
-            const angle = Math.random() * Math.PI * 2;
-            const distance = Math.random() * 50 + 25;
-            const tx = Math.cos(angle) * distance;
-            const ty = Math.sin(angle) * distance;
-            
-            sparkle.style.left = '50%';
-            sparkle.style.top = '50%';
-            logo.appendChild(sparkle);
-            
-            const sparkleAnim = sparkle.animate([
-                { opacity: 1, transform: 'translate(0, 0) scale(1)' },
-                { opacity: 0, transform: `translate(${tx}px, ${ty}px) scale(0.2)` }
-            ], {
-                duration: 1000,
-                easing: 'cubic-bezier(0.1, 0.8, 0.3, 1)',
-                fill: 'forwards'
-            });
-            sparkleAnim.onfinish = () => sparkle.remove();
+        // Создаем стробоскопический шлейф движения (6 кадров-призраков, как на скриншоте)
+        const ghostCount = 6;
+        for (let i = 0; i < ghostCount; i++) {
+            const delay = i * 70; // задержка в 70мс между кадрами шлейфа
+            const scale = 1.0;    // одинаковый масштаб, чтобы они шли строго след в след
+            const opacity = 0.85 * Math.pow(0.55, i); // экспоненциальное затухание для каждого следующего кадра
+            spawnRing(delay, scale, 1100, opacity);
         }
     }
 
@@ -164,7 +156,7 @@ const isHome = currentPath === basePath || currentPath === "" || currentPath ===
         let lastPlay = 0;
         function handleLogoClick(e: Event) {
             const now = Date.now();
-            if (now - lastPlay >= 1000) {
+            if (now - lastPlay >= 2000) { // Клик не чаще, чем раз в 2 секунды
                 playAscensionSound();
                 createHeavenlyEffect();
                 lastPlay = now;

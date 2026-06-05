@@ -208,14 +208,15 @@ button.is-active .close-icon { transform: translate(-50%, -50%) scale(1) rotate(
 .heavenly-ring {
     position: absolute;
     top: 50%; left: 50%;
-    width: 32px; height: 32px;
-    margin-top: -16px; margin-left: -16px;
-    border: 2px solid #C29D7F;
+    width: 28px;
+    height: 8px; /* эллипс для создания эффекта 3D-обруча */
+    margin-left: -14px;
+    margin-top: -4px;
+    border: 1.5px solid #e5d4c3;
     border-radius: 50%;
     pointer-events: none;
     opacity: 0;
-    transform: scale(0.8);
-    filter: blur(3px);
+    filter: drop-shadow(0 0 3px #C29D7F);
     will-change: transform, opacity;
 }
 
