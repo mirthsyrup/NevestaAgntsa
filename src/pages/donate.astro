@@ -89,8 +89,9 @@ import { Image } from 'astro:assets';
                         <input 
                             type="number" 
                             id="donate-amount" 
-                            value="1000" 
                             min="10"
+                            inputmode="numeric"
+                            pattern="[0-9]*"
                             onkeypress="return event.charCode >= 48 && event.charCode <= 57"
                             class="w-full bg-white border border-gray-200 text-dark font-sans text-lg px-6 py-4 rounded-full focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/30 transition-all shadow-inner"
                             placeholder="Сумма"
@@ -150,6 +151,13 @@ import { Image } from 'astro:assets';
             modal?.classList.remove('hidden');
             modal?.classList.add('flex');
             document.body.classList.add('menu-open');
+            
+            // Сразу фокусируем поле для автоматического открытия клавиатуры
+            const amountInput = document.getElementById('donate-amount') as HTMLInputElement | null;
+            if (amountInput) {
+                amountInput.focus();
+            }
+
             setTimeout(() => {
                 card?.classList.remove('scale-95', 'opacity-0');
                 card?.classList.add('scale-100', 'opacity-100');
