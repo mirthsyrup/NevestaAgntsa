@@ -21,7 +21,7 @@ const events = await getCollection('events');
                 </p>
             </div>
 
-            <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 scrollbar-none md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-8 md:pb-0 px-6 md:px-6">
+            <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 pt-4 -mt-4 pb-6 scrollbar-none md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-8 md:pb-0 px-6 md:px-6">
                 {events.map((event, i) => (
                     <EventCard
                         day={event.data.day}
