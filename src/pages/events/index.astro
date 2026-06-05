@@ -49,7 +49,8 @@ const events = await getCollection('events');
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
-        let particles: Array<{x: number, y: number, vx: number, vy: number, r: number}> = [];
+        let particles: Array<{x: number, y: number, vx: number, vy: number, r: number, baseOpacity: number, sparkIntensity: number, nextSpark: number}> = [];
+        let shootingStars: Array<{x: number, y: number, vx: number, vy: number, trail: Array<{x: number, y: number, a: number}>, life: number, decay: number}> = [];
         let animationFrameId: number;
         let mouseX = -1000;
         let mouseY = -1000;
@@ -63,21 +64,50 @@ const events = await getCollection('events');
 
         const initParticles = () => {
             particles = [];
-            const count = window.innerWidth <= 768 ? 15 : 45;
+            const count = window.innerWidth <= 768 ? 30 : 70;
             for (let i = 0; i < count; i++) {
                 particles.push({
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height,
                     vx: (Math.random() - 0.5) * 0.25,
                     vy: (Math.random() - 0.5) * 0.25,
-                    r: Math.random() * 2 + 1.2
+                    r: Math.random() * 1.5 + 1.0,
+                    baseOpacity: Math.random() * 0.4 + 0.1,
+                    sparkIntensity: 0,
+                    nextSpark: performance.now() + 4000 + Math.random() * 12000,
                 });
             }
         };
 
+        const spawnShootingStar = () => {
+            const side = Math.random();
+            let sx, sy, angle;
+            if (side < 0.5) {
+                sx = Math.random() * canvas.width;
+                sy = -10;
+                angle = Math.PI * 0.3 + Math.random() * 0.4;
+            } else {
+                sx = -10;
+                sy = Math.random() * canvas.height * 0.5;
+                angle = Math.random() * 0.4;
+            }
+            const speed = 4 + Math.random() * 4;
+            shootingStars.push({
+                x: sx, y: sy,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                life: 1,
+                decay: 0,
+                trail: [],
+            });
+        };
+
+        let nextShootAt = performance.now() + 2000 + Math.random() * 4000;
+
         const draw = () => {
             if (!ctx || !canvas) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const now = performance.now();
 
             particles.forEach(p => {
                 p.x += p.vx;
@@ -86,15 +116,47 @@ const events = await getCollection('events');
                 if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
                 if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
 
+                if (now > p.nextSpark) {
+                    p.sparkIntensity = 1;
+                    p.nextSpark = now + 8000 + Math.random() * 12000;
+                }
+                p.sparkIntensity *= 0.96;
+
+                const baseA = p.baseOpacity;
+                const sparkA = p.sparkIntensity * 1.5;
+                const finalA = baseA + sparkA;
+
+                ctx.save();
+                ctx.translate(p.x, p.y);
+
+                const glowR = p.r * 3;
+                const glow = ctx.createRadialGradient(0, 0, 0, 0, 0, glowR);
+                glow.addColorStop(0, `rgba(194, 157, 127, ${finalA})`);
+                glow.addColorStop(1, 'rgba(194, 157, 127, 0)');
+                ctx.fillStyle = glow;
+                ctx.fillRect(-glowR, -glowR, glowR * 2, glowR * 2);
+
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(166, 123, 91, 0.65)';
+                ctx.arc(0, 0, p.r * (1 + p.sparkIntensity * 0.8), 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(166, 123, 91, ${Math.min(finalA * 1.3, 1)})`;
                 ctx.fill();
+
+                if (p.sparkIntensity > 0.1) {
+                    const len = p.r * 6 * p.sparkIntensity;
+                    ctx.strokeStyle = `rgba(194, 157, 127, ${p.sparkIntensity * 0.6})`;
+                    ctx.lineWidth = 0.8;
+                    ctx.beginPath();
+                    ctx.moveTo(-len, 0);
+                    ctx.lineTo(len, 0);
+                    ctx.moveTo(0, -len);
+                    ctx.lineTo(0, len);
+                    ctx.stroke();
+                }
+
+                ctx.restore();
             });
 
-            ctx.strokeStyle = 'rgba(166, 123, 91, 0.22)';
-            ctx.lineWidth = 0.8;
-
+            // Lines with fade based on distance
             for (let i = 0; i < particles.length; i++) {
                 const p1 = particles[i];
                 for (let j = i + 1; j < particles.length; j++) {
@@ -102,8 +164,10 @@ const events = await getCollection('events');
                     const dx = p1.x - p2.x;
                     const dy = p1.y - p2.y;
                     const dist = Math.sqrt(dx * dx + dy * dy);
-
-                    if (dist < 100) {
+                    if (dist < 120) {
+                        const fade = 1 - dist / 120;
+                        ctx.strokeStyle = `rgba(166, 123, 91, ${fade * 0.25})`;
+                        ctx.lineWidth = fade * 1.2;
                         ctx.beginPath();
                         ctx.moveTo(p1.x, p1.y);
                         ctx.lineTo(p2.x, p2.y);
@@ -111,20 +175,56 @@ const events = await getCollection('events');
                     }
                 }
 
-                if (mouseX !== -1000 && mouseY !== -1000) {
+                // Mouse lines
+                if (mouseX !== -1000) {
                     const dx = p1.x - mouseX;
                     const dy = p1.y - mouseY;
                     const dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < 120) {
-                        ctx.strokeStyle = `rgba(166, 123, 91, ${(120 - dist) * 0.0055})`;
+                    if (dist < 150) {
+                        const fade = 1 - dist / 150;
+                        ctx.strokeStyle = `rgba(212, 168, 83, ${fade * 0.4})`;
+                        ctx.lineWidth = fade * 1.5;
                         ctx.beginPath();
                         ctx.moveTo(p1.x, p1.y);
                         ctx.lineTo(mouseX, mouseY);
                         ctx.stroke();
-                        ctx.strokeStyle = 'rgba(166, 123, 91, 0.22)';
                     }
                 }
             }
+
+            // Shooting stars
+            if (now > nextShootAt) {
+                spawnShootingStar();
+                nextShootAt = now + 3000 + Math.random() * 6000;
+            }
+
+            shootingStars = shootingStars.filter(s => s.x > -50 && s.x < canvas.width + 100 && s.y > -50 && s.y < canvas.height + 100);
+            shootingStars.forEach(s => {
+                s.trail.push({ x: s.x, y: s.y, a: s.life });
+                if (s.trail.length > 20) s.trail.shift();
+                s.x += s.vx;
+                s.y += s.vy;
+
+                // Trail
+                for (let i = 1; i < s.trail.length; i++) {
+                    const t = s.trail[i];
+                    const prev = s.trail[i - 1];
+                    const alpha = (i / s.trail.length) * s.life * 0.6;
+                    ctx.strokeStyle = `rgba(212, 168, 83, ${alpha})`;
+                    ctx.lineWidth = (i / s.trail.length) * 2;
+                    ctx.beginPath();
+                    ctx.moveTo(prev.x, prev.y);
+                    ctx.lineTo(t.x, t.y);
+                    ctx.stroke();
+                }
+
+                // Head
+                const headGlow = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, 6);
+                headGlow.addColorStop(0, `rgba(255, 240, 200, ${s.life * 0.8})`);
+                headGlow.addColorStop(1, 'rgba(255, 240, 200, 0)');
+                ctx.fillStyle = headGlow;
+                ctx.fillRect(s.x - 6, s.y - 6, 12, 12);
+            });
 
             animationFrameId = requestAnimationFrame(draw);
         };

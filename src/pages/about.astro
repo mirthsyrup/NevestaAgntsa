@@ -41,8 +41,14 @@ import { Image } from 'astro:assets';
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
-        let circles: Array<{x: number, y: number, r: number, vx: number, vy: number, color: string}> = [];
+        let circles: Array<{x: number, y: number, r: number, baseVx: number, baseVy: number, color: [number, number, number, number]}> = [];
         let animationFrameId: number;
+        let lastScrollY = window.scrollY;
+        let auroraOffset = 0;
+        
+        let lastPulseTime = 0;
+        let targetBoost = 1;
+        let currentBoost = 1;
 
         const resize = () => {
             if (!canvas) return;
@@ -53,21 +59,21 @@ import { Image } from 'astro:assets';
 
         const initCircles = () => {
             circles = [];
-            const colors = [
-                'rgba(194, 157, 127, 0.4)', // gold-light
-                'rgba(166, 123, 91, 0.3)',  // gold
-                'rgba(255, 255, 255, 0.6)', // white
+            const colors: Array<[number, number, number, number]> = [
+                [194, 157, 127, 0.35],
+                [166, 123, 91, 0.25],
+                [255, 255, 255, 0.45],
+                [212, 168, 83, 0.2],
             ];
-            const count = window.innerWidth <= 768 ? 5 : 12;
+            const count = window.innerWidth <= 768 ? 6 : 14;
             for (let i = 0; i < count; i++) {
-                const r = Math.random() * 100 + 80; // 80px - 180px (made bigger)
                 circles.push({
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height,
-                    r: r,
-                    vx: (Math.random() - 0.5) * 0.25,
-                    vy: (Math.random() - 0.5) * 0.25,
-                    color: colors[i % colors.length]
+                    r: Math.random() * 110 + 70,
+                    baseVx: (Math.random() - 0.5) * 0.3,
+                    baseVy: (Math.random() - 0.5) * 0.3,
+                    color: colors[i % colors.length],
                 });
             }
         };
@@ -75,18 +81,57 @@ import { Image } from 'astro:assets';
         const draw = () => {
             if (!ctx || !canvas) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const now = performance.now();
+
+            // Aurora wave
+            auroraOffset += 0.003;
+            const auroraY = canvas.height * 0.45;
+            for (let layer = 0; layer < 3; layer++) {
+                ctx.beginPath();
+                const amp = 40 + layer * 20;
+                const freq = 0.003 - layer * 0.0005;
+                const alpha = 0.06 - layer * 0.015;
+                ctx.moveTo(0, auroraY);
+                for (let x = 0; x <= canvas.width; x += 4) {
+                    const y = auroraY + Math.sin(x * freq + auroraOffset + layer * 1.5) * amp
+                            + Math.sin(x * freq * 1.7 + auroraOffset * 1.3) * amp * 0.5;
+                    ctx.lineTo(x, y);
+                }
+                ctx.lineTo(canvas.width, canvas.height);
+                ctx.lineTo(0, canvas.height);
+                ctx.closePath();
+                const grad = ctx.createLinearGradient(0, auroraY - 60, 0, auroraY + 200);
+                grad.addColorStop(0, `rgba(194, 157, 127, ${alpha})`);
+                grad.addColorStop(0.5, `rgba(212, 168, 83, ${alpha * 1.5})`);
+                grad.addColorStop(1, 'rgba(212, 168, 83, 0)');
+                ctx.fillStyle = grad;
+                ctx.fill();
+            }
+
+            // Scroll-reactive bokeh
+            const currentScroll = window.scrollY;
+            const delta = Math.abs(currentScroll - lastScrollY);
+            lastScrollY = currentScroll;
+
+            if (delta > 5 && now - lastPulseTime > 5000) {
+                targetBoost = 3;
+                lastPulseTime = now;
+            }
+
+            targetBoost = Math.max(1, targetBoost - 0.005);
+            currentBoost += (targetBoost - currentBoost) * 0.015;
 
             circles.forEach(c => {
-                c.x += c.vx;
-                c.y += c.vy;
+                c.x += c.baseVx * currentBoost;
+                c.y += c.baseVy * currentBoost;
 
-                if (c.x - c.r < 0 || c.x + c.r > canvas.width) c.vx *= -1;
-                if (c.y - c.r < 0 || c.y + c.r > canvas.height) c.vy *= -1;
+                if (c.x - c.r < 0 || c.x + c.r > canvas.width) c.baseVx *= -1;
+                if (c.y - c.r < 0 || c.y + c.r > canvas.height) c.baseVy *= -1;
 
+                const [r, g, b, a] = c.color;
                 const grad = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, c.r);
-                grad.addColorStop(0, c.color);
-                grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
-                
+                grad.addColorStop(0, `rgba(${r},${g},${b},${a * Math.min(currentBoost, 2.5)})`);
+                grad.addColorStop(1, 'rgba(255,255,255,0)');
                 ctx.beginPath();
                 ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
                 ctx.fillStyle = grad;
