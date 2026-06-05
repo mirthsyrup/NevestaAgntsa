@@ -67,10 +67,13 @@ const isHome = currentPath === basePath || currentPath === "" || currentPath ===
         const logo = document.getElementById('logo-cross');
         if (!logo) return;
 
-        function spawnRing(delay: number, scaleFactor: number, duration: number, maxOpacity: number) {
+        function spawnRing(delay: number, scaleFactor: number, duration: number, maxOpacity: number, blurPx: number = 0) {
             setTimeout(() => {
                 const ring = document.createElement('div');
                 ring.className = 'heavenly-ring';
+                if (blurPx > 0) {
+                    ring.style.filter = `blur(${blurPx}px) drop-shadow(0 0 3px #C29D7F)`;
+                }
                 logo.appendChild(ring);
                 
                 const ringAnim = ring.animate([
@@ -87,13 +90,14 @@ const isHome = currentPath === basePath || currentPath === "" || currentPath ===
             }, delay);
         }
 
-        // Создаем стробоскопический шлейф движения (6 кадров-призраков, как на скриншоте)
+        // Создаем стробоскопический шлейф движения (6 кадров-призраков с нарастающим размытием)
         const ghostCount = 6;
         for (let i = 0; i < ghostCount; i++) {
             const delay = i * 70; // задержка в 70мс между кадрами шлейфа
             const scale = 1.0;    // одинаковый масштаб, чтобы они шли строго след в след
             const opacity = 0.85 * Math.pow(0.55, i); // экспоненциальное затухание для каждого следующего кадра
-            spawnRing(delay, scale, 1100, opacity);
+            const blurPx = i * 0.8; // нарастание размытия для шлейфа (0px, 0.8px, 1.6px, 2.4px...)
+            spawnRing(delay, scale, 1100, opacity, blurPx);
         }
     }
 
