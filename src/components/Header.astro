@@ -163,6 +163,21 @@ const isHome = currentPath === basePath || currentPath === "" || currentPath ===
             if (now - lastPlay >= 2000) { // Клик не чаще, чем раз в 2 секунды
                 playAscensionSound();
                 createHeavenlyEffect();
+                
+                // Плавное затухание подсветки ховера в течение 0.5 сек
+                const glow = logoCross?.querySelector('div');
+                if (glow) {
+                    glow.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    glow.style.opacity = '0';
+                    glow.style.transform = 'translate(-50%, -50%) scale(0.75)';
+                    
+                    setTimeout(() => {
+                        glow.style.opacity = '';
+                        glow.style.transform = '';
+                        glow.style.transition = '';
+                    }, 500);
+                }
+                
                 lastPlay = now;
             }
             
