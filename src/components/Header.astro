@@ -163,18 +163,7 @@ const isHome = currentPath === basePath || currentPath === "" || currentPath ===
             if (now - lastPlay >= 2000) { // Клик не чаще, чем раз в 2 секунды
                 playAscensionSound();
                 createHeavenlyEffect();
-                
-                // Плавное затухание подсветки ховера в течение 0.5 сек
-                const glow = document.getElementById('hover-glow');
-                if (glow) {
-                    glow.style.setProperty('opacity', '0', 'important');
-                    glow.style.setProperty('transition', 'opacity 0.5s ease', 'important');
-                    
-                    setTimeout(() => {
-                        glow.style.removeProperty('opacity');
-                        glow.style.removeProperty('transition');
-                    }, 2000);
-                }
+
                 
                 lastPlay = now;
             }
