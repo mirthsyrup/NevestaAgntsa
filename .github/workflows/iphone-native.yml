@@ -1,24 +1,27 @@
-name: Build native iPhone IPA
+name: Build iPhone website app
 on:
   push:
     branches: ['codex/iphone-native']
-    paths: ['NevestaAgntsa-iPhone-source.zip', '.github/workflows/iphone-native.yml']
+    paths: ['NevestaAgntsa-iPhone-source.zip']
   workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: iphone-site-build
+  cancel-in-progress: true
 jobs:
   iphone:
     runs-on: macos-15
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - name: Unpack native iPhone project
+      - name: Unpack iPhone project
         run: unzip -o NevestaAgntsa-iPhone-source.zip 'iphone/*'
       - name: Build iPhone device package
         run: bash iphone/build.sh device
       - name: Build simulator package
         run: bash iphone/build.sh simulator
-      - name: Check launch in iPhone simulator
+      - name: Verify live website in iPhone simulator
         run: bash iphone/smoke.sh
       - name: Upload installable package
         if: always()
@@ -28,11 +31,11 @@ jobs:
           path: build/NevestaAgntsa-iPhone.ipa
           if-no-files-found: warn
           retention-days: 30
-      - name: Upload simulator preview
+      - name: Upload all page previews and report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: iPhone-preview
-          path: build/iPhone-home.png
+          path: build/preview/
           if-no-files-found: warn
           retention-days: 30
