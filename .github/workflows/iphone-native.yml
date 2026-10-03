@@ -2,7 +2,7 @@ name: Build iPhone website app
 on:
   push:
     branches: ['codex/iphone-native']
-    paths: ['NevestaAgntsa-iPhone-source.zip']
+    paths: ['NevestaAgntsa-iPhone-source.zip', '.github/workflows/iphone-native.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -21,7 +21,7 @@ jobs:
         run: bash iphone/build.sh device
       - name: Build simulator package
         run: bash iphone/build.sh simulator
-      - name: Verify live website in iPhone simulator
+      - name: Verify offline pages, scroll timing and menu navigation
         run: bash iphone/smoke.sh
       - name: Upload installable package
         if: always()
