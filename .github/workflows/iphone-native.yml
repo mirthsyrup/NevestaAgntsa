@@ -17,6 +17,13 @@ jobs:
       - uses: actions/checkout@v4
       - name: Unpack iPhone project
         run: unzip -o NevestaAgntsa-iPhone-source.zip 'iphone/*'
+      - name: Balance compact header bottom border
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('iphone/prepare_web.py')
+          p.write_text(p.read_text().replace('padding-top: 0; padding-bottom: 0;', 'padding-top: 1px; padding-bottom: 0;'))
+          PY
       - name: Build iPhone device package
         run: bash iphone/build.sh device
       - name: Build simulator package
