@@ -40,6 +40,7 @@ jobs:
           p=pathlib.Path("android/assets")/n[len(prefix):];p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(z.read(n))
         p=pathlib.Path("android/res/drawable/app_icon.png");p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(z.read("Payload/NevestaAgntsa.app/AppIcon60x60@3x.png"))
         PY
+    - uses: android-actions/setup-android@v3
     - name: Install Android build tools
       run: |-
         sdkmanager "platforms;android-35" "build-tools;35.0.0"
