@@ -48,8 +48,8 @@ jobs:
           mkdir -p "$RUNNER_TEMP/church-ipa/Payload"
           cp -R "$app" "$RUNNER_TEMP/church-ipa/Payload/"
           cd "$RUNNER_TEMP/church-ipa"
-          ditto -c -k Payload "$RUNNER_TEMP/nevesta-agntsa-ios-unsigned.ipa"
-          unzip -Z1 "$RUNNER_TEMP/nevesta-agntsa-ios-unsigned.ipa" | grep -F '/Info.plist' > /dev/null
+          ditto -c -k --keepParent Payload "$RUNNER_TEMP/nevesta-agntsa-ios-unsigned.ipa"
+          unzip -Z1 "$RUNNER_TEMP/nevesta-agntsa-ios-unsigned.ipa" | grep -E '^Payload/[^/]+\.app/Info\.plist$' > /dev/null
         env:
           CI: '1'
       - uses: actions/upload-artifact@v4
