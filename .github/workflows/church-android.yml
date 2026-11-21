@@ -1,0 +1,49 @@
+name: Build church Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/church-mobile]
+    paths: ['mobile/**', '.github/workflows/church-android.yml', 'src/content/**', 'src/data/contacts.ts']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: church-android-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  android:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: npm ci
+      - run: npm run sync:content && npm run typecheck
+      - run: npx expo prebuild --platform android --no-install
+        env:
+          CI: '1'
+      - run: sdkmanager 'platforms;android-37.0' 'build-tools;37.0.0' 'ndk;27.1.12297006' 'cmake;3.22.1'
+      - run: ./gradlew :app:assembleRelease -PreactNativeArchitectures=arm64-v8a --console=plain
+        working-directory: mobile/android
+        env:
+          CI: '1'
+      - run: cp android/app/build/outputs/apk/release/app-release.apk "$RUNNER_TEMP/nevesta-agntsa-1.0.0-arm64.apk"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nevesta-agntsa-android-apk
+          path: ${{ runner.temp }}/nevesta-agntsa-1.0.0-arm64.apk
+          if-no-files-found: error
