@@ -33,9 +33,8 @@
         "microphonePermission": false,
         "recordAudioAndroid": false
       }],
-      "expo-notifications",
-      "expo-font",
-      "./plugins/with-local-notifications"
+      ["expo-notifications", { "enableRemoteNotifications": false }],
+      "expo-font"
     ]
   }
 }
