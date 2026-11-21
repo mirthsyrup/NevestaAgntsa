@@ -1,0 +1,59 @@
+name: Build church mobile app
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/church-mobile]
+    paths: ['mobile/**', '.github/workflows/church-mobile.yml', 'src/content/**', 'src/data/contacts.ts']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: church-mobile-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  iphone:
+    runs-on: macos-26
+    timeout-minutes: 35
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - run: npm ci
+      - run: npm run sync:content && npm run typecheck
+      - run: npx expo prebuild --platform ios --no-install
+        env:
+          CI: '1'
+      - run: pod install --project-directory=ios
+      - name: Build unsigned iPhone package
+        run: |
+          set -euo pipefail
+          workspace=$(find ios -maxdepth 1 -name '*.xcworkspace' -print -quit)
+          test -n "$workspace"
+          scheme=$(basename "$workspace" .xcworkspace)
+          xcodebuild -workspace "$workspace" -scheme "$scheme" \
+            -configuration Release -destination 'generic/platform=iOS' \
+            -derivedDataPath "$RUNNER_TEMP/church-ios" \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO build
+          app=$(find "$RUNNER_TEMP/church-ios/Build/Products/Release-iphoneos" -maxdepth 1 -name '*.app' -print -quit)
+          test -n "$app"
+          mkdir -p "$RUNNER_TEMP/church-ipa/Payload"
+          cp -R "$app" "$RUNNER_TEMP/church-ipa/Payload/"
+          cd "$RUNNER_TEMP/church-ipa"
+          ditto -c -k Payload "$RUNNER_TEMP/nevesta-agntsa-ios-unsigned.ipa"
+          unzip -Z1 "$RUNNER_TEMP/nevesta-agntsa-ios-unsigned.ipa" | grep -F '/Info.plist' > /dev/null
+        env:
+          CI: '1'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nevesta-agntsa-ios-unsigned
+          path: ${{ runner.temp }}/nevesta-agntsa-ios-unsigned.ipa
+          if-no-files-found: error

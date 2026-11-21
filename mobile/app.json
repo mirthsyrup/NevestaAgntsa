@@ -1,0 +1,41 @@
+{
+  "expo": {
+    "name": "Невеста Агнца",
+    "slug": "nevesta-agntsa",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "backgroundColor": "#F8F5EE",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "bundleIdentifier": "com.mirthsyrup.nevestaagntsa",
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.mirthsyrup.nevestaagntsa",
+      "adaptiveIcon": {
+        "backgroundColor": "#242335",
+        "foregroundImage": "./assets/android-icon-foreground.png"
+      },
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_CALENDAR",
+        "android.permission.WRITE_CALENDAR"
+      ]
+    },
+    "web": {
+      "bundler": "metro",
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      ["expo-audio", {
+        "enableBackgroundPlayback": true,
+        "microphonePermission": false,
+        "recordAudioAndroid": false
+      }],
+      "expo-notifications",
+      "expo-font",
+      "./plugins/with-local-notifications"
+    ]
+  }
+}

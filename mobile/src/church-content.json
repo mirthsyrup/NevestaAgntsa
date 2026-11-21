@@ -1,0 +1,90 @@
+{
+  "church": {
+    "name": "Невеста Агнца",
+    "city": "Чебоксары",
+    "address": "ул. Социалистическая 2г",
+    "phone": "+79373864064",
+    "phoneFormatted": "+7 (937) 386-40-64",
+    "email": "nevestaagntsa@gmail.com",
+    "mapUrl": "https://yandex.ru/maps/?text=56.108023,47.177126",
+    "socials": [
+      {
+        "name": "Rutube",
+        "url": "https://rutube.ru/channel/42730775/"
+      },
+      {
+        "name": "Telegram",
+        "url": "https://t.me/nevestaagntsa"
+      },
+      {
+        "name": "MAX",
+        "url": "https://max.ru/join/M3Dv6oeVwqV-IdYiKvuuUPg8D1X6905NkvuNQjQW4TE"
+      }
+    ],
+    "site": "https://mirthsyrup.github.io/NevestaAgntsa/",
+    "donate": "https://mirthsyrup.github.io/NevestaAgntsa/donate/",
+    "privacy": "https://mirthsyrup.github.io/NevestaAgntsa/privacy_policy.pdf",
+    "offer": "https://mirthsyrup.github.io/NevestaAgntsa/public_offer.pdf"
+  },
+  "schedule": [
+    {
+      "id": "sunday",
+      "weekday": 0,
+      "title": "Воскресное служение",
+      "time": "10:00",
+      "summerTime": "17:00",
+      "location": "Главный зал"
+    },
+    {
+      "id": "2-1800",
+      "weekday": 2,
+      "title": "Домашние группы",
+      "time": "18:00"
+    },
+    {
+      "id": "4-1730",
+      "weekday": 4,
+      "title": "Изучение книги Откровения",
+      "time": "17:30"
+    },
+    {
+      "id": "5-1800",
+      "weekday": 5,
+      "title": "Молитва за личные нужды",
+      "time": "18:00"
+    },
+    {
+      "id": "5-1900",
+      "weekday": 5,
+      "title": "Молитвенное собрание",
+      "time": "19:00"
+    }
+  ],
+  "sermons": [
+    {
+      "id": "b48708e031ad60374f12b60e69046957",
+      "title": "Упавшее в тернии",
+      "date": "2026-05-24",
+      "speaker": "Евгений Викторов",
+      "description": "Проповедь по притче о сеятеле. О том, как заботы века сего, обольщение богатством и другие сорные мысли могут заглушить посеянное Божье Слово, и как сохранить сердце доброй почвой.",
+      "videoUrl": "https://rutube.ru/video/b48708e031ad60374f12b60e69046957/"
+    },
+    {
+      "id": "a499c0830f13ea779779a3905b58f130",
+      "title": "Исцеляет ли Бог сегодня?",
+      "date": "2026-04-26",
+      "speaker": "Альфа-курс",
+      "description": "Встреча Альфа-курса, посвященная вопросу Божественного исцеления. Разбор библейских обещаний, молитва за больных и размышления о том, как Бог проявляет Свою силу и милость в наши дни.",
+      "videoUrl": "https://rutube.ru/video/a499c0830f13ea779779a3905b58f130/"
+    },
+    {
+      "id": "0bc5a24e10e8cb27fe9322b68cd8d081",
+      "title": "Пасхальный вечер",
+      "date": "2026-04-12",
+      "speaker": "",
+      "description": "Праздничное пасхальное богослужение. Торжественное прославление, молитва благодарения за Воскресение Иисуса Христа и духовное слово о победе над смертью и вечной жизни.",
+      "videoUrl": "https://rutube.ru/video/0bc5a24e10e8cb27fe9322b68cd8d081/"
+    }
+  ],
+  "events": []
+}
